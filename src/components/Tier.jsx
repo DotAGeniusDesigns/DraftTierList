@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Player from './Player';
-import { getTierColor, getTierTextColor } from '../utils/playerData';
 
 const Tier = ({ tierNumber, players, onToggleDraft, onRemoveTier, onMovePlayer, startingRank, darkMode }) => {
     const [isDragOver, setIsDragOver] = useState(false);
@@ -46,7 +45,7 @@ const Tier = ({ tierNumber, players, onToggleDraft, onRemoveTier, onMovePlayer, 
         if (!dragData) return;
 
         try {
-            const { playerId, sourceIndex, sourceTier } = JSON.parse(dragData);
+            const { playerId, sourceTier } = JSON.parse(dragData);
 
             let finalDropIndex = dropIndex !== null ? dropIndex : 0;
 
@@ -101,8 +100,8 @@ const Tier = ({ tierNumber, players, onToggleDraft, onRemoveTier, onMovePlayer, 
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 className={`border rounded-b-lg transition-all duration-200 ${darkMode
-                        ? `${isDragOver ? 'bg-gray-800 border-gray-600' : 'bg-gray-900 border-gray-700'}`
-                        : `${isDragOver ? 'bg-gray-50 border-gray-300' : 'bg-white border-gray-200'}`
+                    ? `${isDragOver ? 'bg-gray-800 border-gray-600' : 'bg-gray-900 border-gray-700'}`
+                    : `${isDragOver ? 'bg-gray-50 border-gray-300' : 'bg-white border-gray-200'}`
                     }`}
             >
                 {players.length === 0 ? (
@@ -116,8 +115,8 @@ const Tier = ({ tierNumber, players, onToggleDraft, onRemoveTier, onMovePlayer, 
                     <div className="relative">
                         {/* Column Headers */}
                         <div className={`flex items-center p-3 border-b text-xs font-semibold ${darkMode
-                                ? 'border-gray-700 bg-gray-800 text-gray-300'
-                                : 'border-gray-200 bg-gray-50 text-gray-600'
+                            ? 'border-gray-700 bg-gray-800 text-gray-300'
+                            : 'border-gray-200 bg-gray-50 text-gray-600'
                             }`}>
                             <div className="w-16 text-center">RANK</div>
                             <div className="w-12 text-center">PHOTO</div>

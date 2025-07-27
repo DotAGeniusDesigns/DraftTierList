@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import TierList from './components/TierList';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers } from './utils/playerData';
@@ -62,10 +62,10 @@ function App() {
                             <button
                                 onClick={() => setHideDrafted(!hideDrafted)}
                                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${hideDrafted
-                                        ? 'bg-blue-600'
-                                        : darkMode
-                                            ? 'bg-gray-600'
-                                            : 'bg-gray-300'
+                                    ? 'bg-blue-600'
+                                    : darkMode
+                                        ? 'bg-gray-600'
+                                        : 'bg-gray-300'
                                     }`}
                             >
                                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${hideDrafted ? 'translate-x-6' : 'translate-x-1'
@@ -81,8 +81,8 @@ function App() {
                             <button
                                 onClick={() => setDarkMode(!darkMode)}
                                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${darkMode
-                                        ? 'bg-blue-600'
-                                        : 'bg-gray-300'
+                                    ? 'bg-blue-600'
+                                    : 'bg-gray-300'
                                     }`}
                             >
                                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${darkMode ? 'translate-x-6' : 'translate-x-1'

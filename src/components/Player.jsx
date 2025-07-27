@@ -28,7 +28,7 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
         if (!dragData) return;
 
         try {
-            const { playerId, sourceIndex, sourceTier } = JSON.parse(dragData);
+            const { playerId } = JSON.parse(dragData);
             console.log('🎯 DROP detected:', playerId, 'onto', player.id, 'at index:', index);
 
             if (playerId !== player.id) {
@@ -121,20 +121,20 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
                 {/* Position */}
                 <div className="w-24 text-center mx-4">
                     <span className={`text-xs font-bold px-2 py-1 rounded ${player.drafted
-                            ? 'bg-gray-300 text-gray-600'
-                            : player.position === 'WR'
-                                ? 'bg-green-100 text-green-800'
-                                : player.position === 'RB'
-                                    ? 'bg-blue-100 text-blue-800'
-                                    : player.position === 'QB'
-                                        ? 'bg-orange-100 text-orange-800'
-                                        : player.position === 'TE'
-                                            ? 'bg-purple-100 text-purple-800'
-                                            : player.position === 'DST'
-                                                ? 'bg-gray-200 text-gray-700'
-                                                : player.position === 'K'
-                                                    ? 'bg-pink-100 text-pink-800'
-                                                    : 'bg-gray-200 text-gray-700'
+                        ? 'bg-gray-300 text-gray-600'
+                        : player.position === 'WR'
+                            ? 'bg-green-100 text-green-800'
+                            : player.position === 'RB'
+                                ? 'bg-blue-100 text-blue-800'
+                                : player.position === 'QB'
+                                    ? 'bg-orange-100 text-orange-800'
+                                    : player.position === 'TE'
+                                        ? 'bg-purple-100 text-purple-800'
+                                        : player.position === 'DST'
+                                            ? 'bg-gray-200 text-gray-700'
+                                            : player.position === 'K'
+                                                ? 'bg-pink-100 text-pink-800'
+                                                : 'bg-gray-200 text-gray-700'
                         }`}>
                         {player.position}
                     </span>

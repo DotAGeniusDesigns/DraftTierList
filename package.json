@@ -1,7 +1,6 @@
 {
     "name": "fantasy-football-draft-tier-list",
     "version": "1.0.0",
-    "homepage": "https://dotagenius.github.io/DraftList",
     "private": true,
     "description": "A draggable tier list for fantasy football players with draft tracking",
     "main": "index.js",
@@ -45,6 +44,6 @@
         ]
     },
     "devDependencies": {
-        "gh-pages": "^6.3.0"
+        "gh-pages": "^6.1.0"
     }
 }
