@@ -39,6 +39,41 @@ function App() {
         };
     }, [isPositionDropdownOpen]);
 
+    // Global touch event handler to prevent scrolling during drag
+    useEffect(() => {
+        let isDragging = false;
+
+        const handleGlobalTouchStart = (e) => {
+            // Check if the touch target is a draggable element
+            const target = e.target.closest('[draggable="true"]');
+            if (target) {
+                isDragging = true;
+            }
+        };
+
+        const handleGlobalTouchMove = (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        };
+
+        const handleGlobalTouchEnd = () => {
+            isDragging = false;
+        };
+
+        // Add global touch event listeners
+        document.addEventListener('touchstart', handleGlobalTouchStart, { passive: false });
+        document.addEventListener('touchmove', handleGlobalTouchMove, { passive: false });
+        document.addEventListener('touchend', handleGlobalTouchEnd, { passive: false });
+
+        return () => {
+            document.removeEventListener('touchstart', handleGlobalTouchStart);
+            document.removeEventListener('touchmove', handleGlobalTouchMove);
+            document.removeEventListener('touchend', handleGlobalTouchEnd);
+        };
+    }, []);
+
     // Toggle draft status for a player
     const handleToggleDraft = (playerId) => {
         const updatedPlayers = players.map(player =>
@@ -127,9 +162,9 @@ function App() {
 
     return (
         <div className={`min-h-screen transition-colors duration-200 ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
-            <div className="container mx-auto px-4 py-8 max-w-7xl">
+            <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-7xl">
                 {/* Header with toggles */}
-                <div className="mb-6">
+                <div className="mb-4 sm:mb-6">
                     {/* Title and controls container */}
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                         <h1 className={`text-xl lg:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -142,8 +177,8 @@ function App() {
                                 <button
                                     onClick={() => setIsPositionDropdownOpen(!isPositionDropdownOpen)}
                                     className={`px-3 py-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 ${darkMode
-                                            ? 'bg-gray-700 border-gray-600 text-white'
-                                            : 'bg-white border-gray-300 text-gray-900'
+                                        ? 'bg-gray-700 border-gray-600 text-white'
+                                        : 'bg-white border-gray-300 text-gray-900'
                                         }`}
                                 >
                                     <span>{getPositionFilterDisplay()}</span>

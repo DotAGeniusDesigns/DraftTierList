@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Player from './Player';
 
 const Tier = ({ tierNumber, players, onToggleDraft, onRemoveTier, onMovePlayer, startingRank, darkMode }) => {
     const [isDragOver, setIsDragOver] = useState(false);
     const [dropIndex, setDropIndex] = useState(null);
+    const [isTouchDragging, setIsTouchDragging] = useState(false);
+    const tierRef = useRef(null);
 
     const handleDragOver = (e) => {
         e.preventDefault();
@@ -69,6 +71,71 @@ const Tier = ({ tierNumber, players, onToggleDraft, onRemoveTier, onMovePlayer, 
         setDropIndex(null);
     };
 
+    // Touch event handlers for mobile
+    useEffect(() => {
+        const handleTouchDragMove = (e) => {
+            if (!isTouchDragging) return;
+            
+            const touch = e.detail;
+            const rect = tierRef.current?.getBoundingClientRect();
+            if (!rect) return;
+
+            const y = touch.clientY - rect.top;
+            const containerHeight = rect.height;
+            const headerHeight = 48;
+            const availableHeight = containerHeight - headerHeight;
+            const dynamicDropZoneHeight = availableHeight / players.length;
+            const padding = 12;
+
+            const adjustedY = y - padding;
+            const newIndex = Math.max(0, Math.floor(adjustedY / dynamicDropZoneHeight));
+            setDropIndex(Math.min(newIndex, players.length));
+            setIsDragOver(true);
+        };
+
+        const handleTouchDragStart = (e) => {
+            setIsTouchDragging(true);
+        };
+
+        const handleTouchDragEnd = (e) => {
+            if (!isTouchDragging) return;
+            
+            const touch = e.detail;
+            const { playerId, sourceTier } = touch.dragData;
+
+            let finalDropIndex = dropIndex !== null ? dropIndex : 0;
+
+            // Adjust for same-tier dragging
+            if (sourceTier === tierNumber) {
+                const draggedPlayerIndex = players.findIndex(p => p.id === playerId);
+                if (draggedPlayerIndex !== -1 && finalDropIndex > draggedPlayerIndex) {
+                    finalDropIndex = finalDropIndex - 1;
+                }
+            }
+
+            console.log('Touch drop in tier:', playerId, 'to tier', tierNumber, 'at index:', finalDropIndex);
+            if (playerId) {
+                onMovePlayer && onMovePlayer(playerId, tierNumber, finalDropIndex);
+            }
+
+            setIsTouchDragging(false);
+            setIsDragOver(false);
+            setDropIndex(null);
+        };
+
+        // Add event listeners
+        document.addEventListener('playerDragStart', handleTouchDragStart);
+        document.addEventListener('playerDragMove', handleTouchDragMove);
+        document.addEventListener('playerDragEnd', handleTouchDragEnd);
+
+        // Cleanup
+        return () => {
+            document.removeEventListener('playerDragStart', handleTouchDragStart);
+            document.removeEventListener('playerDragMove', handleTouchDragMove);
+            document.removeEventListener('playerDragEnd', handleTouchDragEnd);
+        };
+    }, [isTouchDragging, dropIndex, players, tierNumber, onMovePlayer]);
+
     return (
         <div className="mb-6">
             {/* Clean Tier Header */}
@@ -96,6 +163,7 @@ const Tier = ({ tierNumber, players, onToggleDraft, onRemoveTier, onMovePlayer, 
 
             {/* Clean Tier Content */}
             <div
+                ref={tierRef}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -113,8 +181,8 @@ const Tier = ({ tierNumber, players, onToggleDraft, onRemoveTier, onMovePlayer, 
                     </div>
                 ) : (
                     <div className="relative">
-                        {/* Column Headers */}
-                        <div className={`flex items-center p-3 border-b text-xs font-semibold ${darkMode
+                        {/* Column Headers - hidden on mobile */}
+                        <div className={`hidden sm:flex items-center p-3 border-b text-xs font-semibold ${darkMode
                             ? 'border-gray-700 bg-gray-800 text-gray-300'
                             : 'border-gray-200 bg-gray-50 text-gray-600'
                             }`}>
