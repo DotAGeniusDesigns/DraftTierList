@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TierList from './components/TierList';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers } from './utils/playerData';
@@ -12,6 +12,32 @@ function App() {
 
     // Hide drafted players state
     const [hideDrafted, setHideDrafted] = useLocalStorage('hide-drafted', false);
+
+    // Position filter state - now an array of selected positions
+    const [positionFilters, setPositionFilters] = useLocalStorage('position-filters', []);
+
+    // Dropdown open state
+    const [isPositionDropdownOpen, setIsPositionDropdownOpen] = useState(false);
+
+    // Ref for the dropdown container
+    const dropdownRef = useRef(null);
+
+    // Click outside handler
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsPositionDropdownOpen(false);
+            }
+        };
+
+        if (isPositionDropdownOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isPositionDropdownOpen]);
 
     // Toggle draft status for a player
     const handleToggleDraft = (playerId) => {
@@ -39,55 +65,155 @@ function App() {
         setPlayers(updatedPlayers);
     };
 
-    // Filter players based on hide drafted setting
-    const filteredPlayers = hideDrafted
-        ? players.filter(player => !player.drafted)
-        : players;
+    // Handle position filter checkbox changes
+    const handlePositionFilterChange = (position) => {
+        setPositionFilters(prev => {
+            if (prev.includes(position)) {
+                // Remove position if already selected
+                return prev.filter(p => p !== position);
+            } else {
+                // Add position if not selected
+                return [...prev, position];
+            }
+        });
+    };
+
+    // Get position tag styling
+    const getPositionTagStyle = (position) => {
+        const baseStyle = 'text-xs font-bold px-2 py-1 rounded';
+        switch (position) {
+            case 'WR':
+                return `${baseStyle} bg-green-100 text-green-800`;
+            case 'RB':
+                return `${baseStyle} bg-blue-100 text-blue-800`;
+            case 'QB':
+                return `${baseStyle} bg-orange-100 text-orange-800`;
+            case 'TE':
+                return `${baseStyle} bg-purple-100 text-purple-800`;
+            case 'DST':
+                return `${baseStyle} bg-gray-200 text-gray-700`;
+            case 'K':
+                return `${baseStyle} bg-pink-100 text-pink-800`;
+            default:
+                return `${baseStyle} bg-gray-200 text-gray-700`;
+        }
+    };
+
+    // Get display text for dropdown
+    const getPositionFilterDisplay = () => {
+        if (positionFilters.length === 6) {
+            return 'All Positions';
+        } else if (positionFilters.length === 0) {
+            return 'Positions';
+        } else {
+            return `${positionFilters.length} Position${positionFilters.length > 1 ? 's' : ''}`;
+        }
+    };
+
+    // Filter players based on hide drafted setting and position filters
+    const filteredPlayers = players.filter(player => {
+        // First filter by draft status
+        if (hideDrafted && player.drafted) {
+            return false;
+        }
+
+        // Then filter by position (if any positions are selected)
+        if (positionFilters.length > 0 && !positionFilters.includes(player.position)) {
+            return false;
+        }
+
+        return true;
+    });
 
     return (
         <div className={`min-h-screen transition-colors duration-200 ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
             <div className="container mx-auto px-4 py-8 max-w-7xl">
                 {/* Header with toggles */}
-                <div className="mb-6 flex items-center justify-between">
-                    <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                        Fantasy Football Draft Tier List
-                    </h1>
+                <div className="mb-6">
+                    {/* Title and controls container */}
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        <h1 className={`text-xl lg:text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            Fantasy Football Draft Tier List
+                        </h1>
 
-                    <div className="flex items-center gap-4">
-                        {/* Hide Drafted Toggle */}
-                        <div className="flex items-center gap-2">
-                            <label className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                                Hide Drafted
-                            </label>
-                            <button
-                                onClick={() => setHideDrafted(!hideDrafted)}
-                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${hideDrafted
-                                    ? 'bg-blue-600'
-                                    : darkMode
-                                        ? 'bg-gray-600'
-                                        : 'bg-gray-300'
-                                    }`}
-                            >
-                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${hideDrafted ? 'translate-x-6' : 'translate-x-1'
-                                    }`} />
-                            </button>
-                        </div>
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                            {/* Position Filters Dropdown */}
+                            <div className="relative" ref={dropdownRef}>
+                                <button
+                                    onClick={() => setIsPositionDropdownOpen(!isPositionDropdownOpen)}
+                                    className={`px-3 py-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 ${darkMode
+                                            ? 'bg-gray-700 border-gray-600 text-white'
+                                            : 'bg-white border-gray-300 text-gray-900'
+                                        }`}
+                                >
+                                    <span>{getPositionFilterDisplay()}</span>
+                                    <svg className={`w-4 h-4 transition-transform ${isPositionDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
 
-                        {/* Dark Mode Toggle */}
-                        <div className="flex items-center gap-2">
-                            <label className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                                Dark Mode
-                            </label>
-                            <button
-                                onClick={() => setDarkMode(!darkMode)}
-                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${darkMode
-                                    ? 'bg-blue-600'
-                                    : 'bg-gray-300'
-                                    }`}
-                            >
-                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${darkMode ? 'translate-x-6' : 'translate-x-1'
-                                    }`} />
-                            </button>
+                                {/* Dropdown Menu */}
+                                {isPositionDropdownOpen && (
+                                    <div className={`absolute top-full left-0 mt-1 w-48 rounded-md shadow-lg z-10 ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'
+                                        }`}>
+                                        <div className="py-1">
+                                            {['QB', 'RB', 'WR', 'TE', 'K', 'DST'].map(position => (
+                                                <label key={position} className={`flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                                                    }`}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={positionFilters.includes(position)}
+                                                        onChange={() => handlePositionFilterChange(position)}
+                                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                                                    />
+                                                    <span className={getPositionTagStyle(position)}>
+                                                        {position}
+                                                    </span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Toggles container */}
+                            <div className="flex items-center gap-4">
+                                {/* Hide Drafted Toggle */}
+                                <div className="flex items-center gap-2">
+                                    <label className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                        Hide Drafted
+                                    </label>
+                                    <button
+                                        onClick={() => setHideDrafted(!hideDrafted)}
+                                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${hideDrafted
+                                            ? 'bg-blue-600'
+                                            : darkMode
+                                                ? 'bg-gray-600'
+                                                : 'bg-gray-300'
+                                            }`}
+                                    >
+                                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${hideDrafted ? 'translate-x-6' : 'translate-x-1'
+                                            }`} />
+                                    </button>
+                                </div>
+
+                                {/* Dark Mode Toggle */}
+                                <div className="flex items-center gap-2">
+                                    <label className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                        Dark Mode
+                                    </label>
+                                    <button
+                                        onClick={() => setDarkMode(!darkMode)}
+                                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${darkMode
+                                            ? 'bg-blue-600'
+                                            : 'bg-gray-300'
+                                            }`}
+                                    >
+                                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${darkMode ? 'translate-x-6' : 'translate-x-1'
+                                            }`} />
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
