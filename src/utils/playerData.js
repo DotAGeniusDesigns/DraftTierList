@@ -1,5 +1,4 @@
-import { getTeamLogo, getByeWeek } from './teamData';
-import { getTeamLogoUrl } from './espnApi';
+import { getByeWeek, getOlineRank } from './teamData';
 import { getAllPlayers } from './playerDatabase';
 
 // Get all players from the local database
@@ -9,8 +8,8 @@ const databasePlayers = getAllPlayers();
 export const initialPlayers = databasePlayers.map(player => ({
     ...player,
     drafted: false,
-    teamLogo: getTeamLogoUrl(player.team),
-    byeWeek: getByeWeek(player.team)
+    byeWeek: getByeWeek(player.team),
+    olineRank: getOlineRank(player.team)
 }));
 
 // Helper function to get tier color

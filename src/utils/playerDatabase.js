@@ -1,5 +1,5 @@
 // Local player database with images and information
-import { getTeamLogo, getByeWeek } from './teamData.js';
+import { getTeamLogo } from './teamData.js';
 
 export const playerDatabase = {
     // Tier 1 Players

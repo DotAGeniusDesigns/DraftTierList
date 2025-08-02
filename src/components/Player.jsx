@@ -1,10 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
+import { getOlineRank } from '../utils/teamData';
 
 const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
     const [isDragging, setIsDragging] = useState(false);
-    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     const playerRef = useRef(null);
-    const dragDataRef = useRef(null);
+
+    // Toggle states for the new buttons
+    const [isHandcuff, setIsHandcuff] = useState(false);
+    const [isInjured, setIsInjured] = useState(false);
+    const [isStar, setIsStar] = useState(false);
 
     const handleClick = (e) => {
         e.preventDefault();
@@ -54,26 +58,19 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
     const handleTouchStart = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        const touch = e.touches[0];
-        const rect = playerRef.current.getBoundingClientRect();
-        
-        setDragOffset({
-            x: touch.clientX - rect.left,
-            y: touch.clientY - rect.top
-        });
-        
+
         setIsDragging(true);
-        
+
         // Store drag data
-        dragDataRef.current = {
+        const dragData = {
             playerId: player.id,
             sourceIndex: index,
             sourceTier: player.tier
         };
-        
+
         // Dispatch custom drag start event
         const dragStartEvent = new CustomEvent('playerDragStart', {
-            detail: dragDataRef.current,
+            detail: dragData,
             bubbles: true
         });
         document.dispatchEvent(dragStartEvent);
@@ -81,19 +78,23 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
 
     const handleTouchMove = (e) => {
         if (!isDragging) return;
-        
+
         // Prevent scrolling during drag
         e.preventDefault();
         e.stopPropagation();
-        
+
         const touch = e.touches[0];
-        
+
         // Dispatch custom drag move event
         const dragMoveEvent = new CustomEvent('playerDragMove', {
             detail: {
                 clientX: touch.clientX,
                 clientY: touch.clientY,
-                dragData: dragDataRef.current
+                dragData: {
+                    playerId: player.id,
+                    sourceIndex: index,
+                    sourceTier: player.tier
+                }
             },
             bubbles: true
         });
@@ -102,30 +103,51 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
 
     const handleTouchEnd = (e) => {
         if (!isDragging) return;
-        
+
         // Prevent any default behavior
         e.preventDefault();
         e.stopPropagation();
-        
+
         const touch = e.changedTouches[0];
-        
+
         // Dispatch custom drag end event
         const dragEndEvent = new CustomEvent('playerDragEnd', {
             detail: {
                 clientX: touch.clientX,
                 clientY: touch.clientY,
-                dragData: dragDataRef.current
+                dragData: {
+                    playerId: player.id,
+                    sourceIndex: index,
+                    sourceTier: player.tier
+                }
             },
             bubbles: true
         });
         document.dispatchEvent(dragEndEvent);
-        
+
         setIsDragging(false);
-        dragDataRef.current = null;
     };
 
-    // Debug: Log team logo URL
-    console.log(`Team logo for ${player.name} (${player.team}):`, player.teamLogo);
+    // Toggle button handlers
+    const handleToggleHandcuff = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsHandcuff(!isHandcuff);
+    };
+
+    const handleToggleInjured = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsInjured(!isInjured);
+    };
+
+    const handleToggleStar = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsStar(!isStar);
+    };
+
+
 
     return (
         <div
@@ -157,7 +179,7 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
                 </div>
             )}
 
-            {/* Player info - responsive layout */}
+            {/* Player info - reorganized columns */}
             <div className="flex items-center gap-2 sm:gap-0">
                 {/* Rank */}
                 <div className={`w-8 sm:w-16 text-center font-bold text-xs sm:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'
@@ -182,38 +204,16 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
                     </div>
                 </div>
 
-                {/* Player name and team - mobile optimized */}
-                <div className="flex-1 min-w-0 px-2 sm:px-12">
+                {/* Player name - mobile optimized */}
+                <div className="flex-1 min-w-0 px-2 sm:px-4">
                     <div className={`font-semibold text-sm ${player.drafted ? 'line-through' : ''} ${darkMode ? 'text-gray-200' : 'text-gray-900'
                         }`}>
                         {player.name}
                     </div>
-                    {/* Show team on mobile */}
-                    <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} sm:hidden`}>
-                        {player.team}
-                    </div>
-                </div>
-
-                {/* Team logo - hidden on mobile, shown on desktop */}
-                <div className="hidden sm:block w-12 h-12 flex-shrink-0">
-                    <img
-                        src={player.teamLogo}
-                        alt={player.team}
-                        className="w-full h-full object-contain"
-                        onError={(e) => {
-                            console.error(`Failed to load team logo for ${player.team}:`, player.teamLogo);
-                            e.target.style.display = 'none';
-                            e.target.nextSibling.style.display = 'flex';
-                        }}
-                    />
-                    <div className={`w-full h-full flex items-center justify-center text-xs font-bold ${darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-200 text-gray-600'
-                        }`} style={{ display: 'none' }}>
-                        {player.team}
-                    </div>
                 </div>
 
                 {/* Position */}
-                <div className="w-16 sm:w-24 text-center mx-2 sm:mx-4">
+                <div className="w-16 sm:w-20 text-center mx-1 sm:mx-2">
                     <span className={`text-xs font-bold px-1 sm:px-2 py-1 rounded ${player.drafted
                         ? 'bg-gray-300 text-gray-600'
                         : player.position === 'WR'
@@ -234,12 +234,97 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
                     </span>
                 </div>
 
-                {/* Bye week - hidden on mobile */}
-                <div className="hidden sm:block w-24 text-center">
+                {/* Team logo */}
+                <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
+                    <img
+                        src={player.teamLogo}
+                        alt={player.team}
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                            console.error(`Failed to load team logo for ${player.team}:`, player.teamLogo);
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'flex';
+                        }}
+                    />
+                    <div className={`w-full h-full flex items-center justify-center text-xs font-bold ${darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-200 text-gray-600'
+                        }`} style={{ display: 'none' }}>
+                        {player.team}
+                    </div>
+                </div>
+
+                {/* O-Line Ranking */}
+                <div className="w-12 sm:w-16 text-center">
+                    <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        {player.olineRank || getOlineRank(player.team) || '--'}
+                    </span>
+                </div>
+
+                {/* Bye week */}
+                <div className="w-12 sm:w-16 text-center">
                     <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'
                         }`}>
-                        BYE {player.byeWeek}
+                        {player.byeWeek}
                     </span>
+                </div>
+
+                {/* Toggle Buttons */}
+                <div className="flex items-center gap-1 sm:gap-2 mx-1 sm:mx-2">
+                    {/* Handcuff Button */}
+                    <button
+                        onClick={handleToggleHandcuff}
+                        className={`relative p-1 rounded transition-colors group ${isHandcuff
+                            ? 'text-red-500 bg-red-100'
+                            : darkMode
+                                ? 'text-gray-400 hover:text-red-400'
+                                : 'text-gray-500 hover:text-red-500'
+                            }`}
+                        title="Handcuff"
+                    >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                        </svg>
+                        <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                            Handcuff
+                        </span>
+                    </button>
+
+                    {/* Injured Button */}
+                    <button
+                        onClick={handleToggleInjured}
+                        className={`relative p-1 rounded transition-colors group ${isInjured
+                            ? 'text-orange-500 bg-orange-100'
+                            : darkMode
+                                ? 'text-gray-400 hover:text-orange-400'
+                                : 'text-gray-500 hover:text-orange-500'
+                            }`}
+                        title="Injured"
+                    >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        </svg>
+                        <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                            Injured
+                        </span>
+                    </button>
+
+                    {/* Star Button */}
+                    <button
+                        onClick={handleToggleStar}
+                        className={`relative p-1 rounded transition-colors group ${isStar
+                            ? 'text-yellow-500 bg-yellow-100'
+                            : darkMode
+                                ? 'text-gray-400 hover:text-yellow-400'
+                                : 'text-gray-500 hover:text-yellow-500'
+                            }`}
+                        title="High Potential"
+                    >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                            High Potential
+                        </span>
+                    </button>
                 </div>
 
                 {/* Drag handle - larger on mobile for better touch */}

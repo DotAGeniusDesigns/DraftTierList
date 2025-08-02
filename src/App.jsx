@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TierList from './components/TierList';
+import ExportImport from './components/ExportImport';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers } from './utils/playerData';
 
@@ -18,6 +19,9 @@ function App() {
 
     // Dropdown open state
     const [isPositionDropdownOpen, setIsPositionDropdownOpen] = useState(false);
+
+    // Export/Import modal state
+    const [showExportImport, setShowExportImport] = useState(false);
 
     // Ref for the dropdown container
     const dropdownRef = useRef(null);
@@ -111,6 +115,12 @@ function App() {
                 return [...prev, position];
             }
         });
+    };
+
+    // Handle importing players
+    const handleImportPlayers = (importedPlayers) => {
+        setPlayers(importedPlayers);
+        setShowExportImport(false);
     };
 
     // Get position tag styling
@@ -213,6 +223,17 @@ function App() {
 
                             {/* Toggles container */}
                             <div className="flex items-center gap-4">
+                                {/* Export/Import Button */}
+                                <button
+                                    onClick={() => setShowExportImport(true)}
+                                    className={`px-3 py-1 text-sm border rounded-md transition-colors ${darkMode
+                                            ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
+                                            : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                                        }`}
+                                >
+                                    📤 Export/Import
+                                </button>
+
                                 {/* Hide Drafted Toggle */}
                                 <div className="flex items-center gap-2">
                                     <label className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -261,6 +282,30 @@ function App() {
                     darkMode={darkMode}
                 />
             </div>
+
+            {/* Export/Import Modal */}
+            {showExportImport && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="max-w-md w-full">
+                        <ExportImport
+                            players={players}
+                            onImportPlayers={handleImportPlayers}
+                            darkMode={darkMode}
+                        />
+                        <div className="mt-4 text-center">
+                            <button
+                                onClick={() => setShowExportImport(false)}
+                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
+                                        ? 'bg-gray-600 hover:bg-gray-700 text-white'
+                                        : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
+                                    }`}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
