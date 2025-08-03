@@ -8,6 +8,40 @@ function App() {
     // Use localStorage hook to persist player data
     const [players, setPlayers] = useLocalStorage('fantasy-football-players', initialPlayers);
 
+    // Merge new database properties with existing localStorage data
+    useEffect(() => {
+        const mergeNewProperties = () => {
+            const currentPlayers = players;
+            const databasePlayers = initialPlayers;
+
+            // Create a map of database players by ID for quick lookup
+            const databaseMap = new Map(databasePlayers.map(p => [p.id, p]));
+
+            // Update existing players with new properties from database
+            const updatedPlayers = currentPlayers.map(player => {
+                const databasePlayer = databaseMap.get(player.id);
+                if (databasePlayer) {
+                    return {
+                        ...player,
+                        // Preserve existing properties but add new ones from database
+                        isInjured: databasePlayer.isInjured || player.isInjured || false,
+                        injuryNote: databasePlayer.injuryNote || player.injuryNote || null,
+                        isHandcuff: databasePlayer.isHandcuff || player.isHandcuff || false,
+                        isStar: databasePlayer.isStar || player.isStar || false,
+                        // Update bye week and oline rank from current database
+                        byeWeek: databasePlayer.byeWeek,
+                        olineRank: databasePlayer.olineRank
+                    };
+                }
+                return player;
+            });
+
+            setPlayers(updatedPlayers);
+        };
+
+        mergeNewProperties();
+    }, []); // Only run once on component mount
+
     // Dark mode state
     const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false);
 
@@ -227,8 +261,8 @@ function App() {
                                 <button
                                     onClick={() => setShowExportImport(true)}
                                     className={`px-3 py-1 text-sm border rounded-md transition-colors ${darkMode
-                                            ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
-                                            : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                                        ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
+                                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
                                         }`}
                                 >
                                     📤 Export/Import
@@ -296,8 +330,8 @@ function App() {
                             <button
                                 onClick={() => setShowExportImport(false)}
                                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
-                                        ? 'bg-gray-600 hover:bg-gray-700 text-white'
-                                        : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
+                                    ? 'bg-gray-600 hover:bg-gray-700 text-white'
+                                    : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
                                     }`}
                             >
                                 Close

@@ -135,6 +135,15 @@ export const teamData = {
         primaryColor: '#006778',
         olineRank: 26
     },
+    'JAC': {
+        name: 'Jacksonville Jaguars',
+        logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/jax.png',
+        byeWeek: 12,
+        conference: 'AFC',
+        division: 'South',
+        primaryColor: '#006778',
+        olineRank: 26
+    },
     'KC': {
         name: 'Kansas City Chiefs',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/kc.png',

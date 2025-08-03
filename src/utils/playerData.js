@@ -1,5 +1,8 @@
 import { getByeWeek, getOlineRank } from './teamData';
 import { getAllPlayers } from './playerDatabase';
+import injuredPlayersData from './injuredPlayers.json';
+import handcuffPlayersData from './handcuffPlayers.json';
+import primaryTargetPlayersData from './primaryTargetPlayers.json';
 
 // Get all players from the local database
 const databasePlayers = getAllPlayers();
@@ -9,7 +12,13 @@ export const initialPlayers = databasePlayers.map(player => ({
     ...player,
     drafted: false,
     byeWeek: getByeWeek(player.team),
-    olineRank: getOlineRank(player.team)
+    olineRank: getOlineRank(player.team),
+    // Merge injured player data if this player is injured
+    ...(injuredPlayersData[player.id] || {}),
+    // Merge handcuff player data if this player is a handcuff
+    ...(handcuffPlayersData[player.id] || {}),
+    // Merge primary target player data if this player is a primary target/bellcow
+    ...(primaryTargetPlayersData[player.id] || {})
 }));
 
 // Helper function to get tier color
