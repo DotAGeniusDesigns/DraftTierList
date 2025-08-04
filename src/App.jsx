@@ -21,17 +21,28 @@ function App() {
             const updatedPlayers = currentPlayers.map(player => {
                 const databasePlayer = databaseMap.get(player.id);
                 if (databasePlayer) {
-                    return {
+                    const updatedPlayer = {
                         ...player,
-                        // Preserve existing properties but add new ones from database
-                        isInjured: databasePlayer.isInjured || player.isInjured || false,
+                        // Prioritize database values over localStorage for these properties
+                        isInjured: databasePlayer.isInjured,
                         injuryNote: databasePlayer.injuryNote || player.injuryNote || null,
-                        isHandcuff: databasePlayer.isHandcuff || player.isHandcuff || false,
-                        isStar: databasePlayer.isStar || player.isStar || false,
+                        isHandcuff: databasePlayer.isHandcuff,
+                        isStar: databasePlayer.isStar,
                         // Update bye week and oline rank from current database
                         byeWeek: databasePlayer.byeWeek,
                         olineRank: databasePlayer.olineRank
                     };
+
+                    // Debug: Log if any of the new properties are true
+                    if (databasePlayer.isInjured || databasePlayer.isHandcuff || databasePlayer.isStar) {
+                        console.log(`🔍 Updated ${player.name}:`, {
+                            isInjured: databasePlayer.isInjured,
+                            isHandcuff: databasePlayer.isHandcuff,
+                            isStar: databasePlayer.isStar
+                        });
+                    }
+
+                    return updatedPlayer;
                 }
                 return player;
             });
