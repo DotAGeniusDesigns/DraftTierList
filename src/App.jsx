@@ -24,6 +24,7 @@ function App() {
                     const updatedPlayer = {
                         ...player,
                         // Prioritize database values over localStorage for these properties
+                        team: databasePlayer.team, // Always use current team from database
                         isInjured: databasePlayer.isInjured,
                         injuryNote: databasePlayer.injuryNote || player.injuryNote || null,
                         isHandcuff: databasePlayer.isHandcuff,
