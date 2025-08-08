@@ -27,18 +27,20 @@ function App() {
                         isInjured: databasePlayer.isInjured,
                         injuryNote: databasePlayer.injuryNote || player.injuryNote || null,
                         isHandcuff: databasePlayer.isHandcuff,
-                        isStar: databasePlayer.isStar,
+                        isRisky: databasePlayer.isRisky,
+                        riskyReason: databasePlayer.riskyReason || player.riskyReason || null,
                         // Update bye week and oline rank from current database
                         byeWeek: databasePlayer.byeWeek,
                         olineRank: databasePlayer.olineRank
                     };
 
                     // Debug: Log if any of the new properties are true
-                    if (databasePlayer.isInjured || databasePlayer.isHandcuff || databasePlayer.isStar) {
+                    if (databasePlayer.isInjured || databasePlayer.isHandcuff || databasePlayer.isRisky) {
                         console.log(`🔍 Updated ${player.name}:`, {
                             isInjured: databasePlayer.isInjured,
                             isHandcuff: databasePlayer.isHandcuff,
-                            isStar: databasePlayer.isStar
+                            isRisky: databasePlayer.isRisky,
+                            riskyReason: databasePlayer.riskyReason
                         });
                     }
 
@@ -166,6 +168,25 @@ function App() {
     const handleImportPlayers = (importedPlayers) => {
         setPlayers(importedPlayers);
         setShowExportImport(false);
+    };
+
+    // Reset all drafted players
+    const handleResetDrafted = () => {
+        const updatedPlayers = players.map(player => ({
+            ...player,
+            drafted: false
+        }));
+        setPlayers(updatedPlayers);
+    };
+
+    // Toggle risky status for a player
+    const handleToggleRisky = (playerId, isRisky) => {
+        const updatedPlayers = players.map(player =>
+            player.id === playerId
+                ? { ...player, isRisky }
+                : player
+        );
+        setPlayers(updatedPlayers);
     };
 
     // Get position tag styling
@@ -314,6 +335,17 @@ function App() {
                                             }`} />
                                     </button>
                                 </div>
+
+                                {/* Reset Drafted Button */}
+                                <button
+                                    onClick={handleResetDrafted}
+                                    className={`px-3 py-1 text-sm border rounded-md transition-colors ${darkMode
+                                        ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
+                                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                                        }`}
+                                >
+                                    🔄 Reset Drafted
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -321,8 +353,10 @@ function App() {
 
                 <TierList
                     players={filteredPlayers}
+                    allPlayers={players}
                     onUpdatePlayers={handleUpdatePlayers}
                     onToggleDraft={handleToggleDraft}
+                    onToggleRisky={handleToggleRisky}
                     onRemoveTier={handleRemoveTier}
                     darkMode={darkMode}
                 />

@@ -1,9 +1,9 @@
 import React from 'react';
 import Tier from './Tier';
 
-const TierList = ({ players, onUpdatePlayers, onToggleDraft, onRemoveTier, darkMode }) => {
-    // Group players by tier
-    const playersByTier = players.reduce((acc, player) => {
+const TierList = ({ players, allPlayers, onUpdatePlayers, onToggleDraft, onToggleRisky, onRemoveTier, darkMode }) => {
+    // Group players by tier (use allPlayers for ranking calculation)
+    const playersByTier = allPlayers.reduce((acc, player) => {
         if (!acc[player.tier]) {
             acc[player.tier] = [];
         }
@@ -16,7 +16,7 @@ const TierList = ({ players, onUpdatePlayers, onToggleDraft, onRemoveTier, darkM
         .map(Number)
         .sort((a, b) => a - b);
 
-    // Calculate starting rank for each tier (cumulative)
+    // Calculate starting rank for each tier (cumulative) - using allPlayers
     let cumulativeRank = 1;
     const tierRanks = {};
     tierNumbers.forEach(tierNumber => {
@@ -25,15 +25,18 @@ const TierList = ({ players, onUpdatePlayers, onToggleDraft, onRemoveTier, darkM
         cumulativeRank += playersByTier[tierNumber].length;
     });
 
+    // Create a set of filtered player IDs for quick lookup
+    const filteredPlayerIds = new Set(players.map(p => p.id));
+
     const handleMovePlayer = (playerId, newTier, targetIndex = null) => {
         console.log('Moving player:', playerId, 'to tier:', newTier, 'at index:', targetIndex);
 
         // Find the player being moved
-        const playerToMove = players.find(p => p.id === playerId);
+        const playerToMove = allPlayers.find(p => p.id === playerId);
         if (!playerToMove) return;
 
         // Remove the player from the current position
-        let updatedPlayers = players.filter(p => p.id !== playerId);
+        let updatedPlayers = allPlayers.filter(p => p.id !== playerId);
 
         // Get players in the target tier
         const targetTierPlayers = updatedPlayers.filter(p => p.tier === newTier);
@@ -59,18 +62,33 @@ const TierList = ({ players, onUpdatePlayers, onToggleDraft, onRemoveTier, darkM
     return (
         <div className="space-y-8">
             {/* Tiers */}
-            {tierNumbers.map(tierNumber => (
-                <Tier
-                    key={tierNumber}
-                    tierNumber={tierNumber}
-                    players={playersByTier[tierNumber]}
-                    onToggleDraft={onToggleDraft}
-                    onRemoveTier={onRemoveTier}
-                    onMovePlayer={handleMovePlayer}
-                    startingRank={tierRanks[tierNumber]}
-                    darkMode={darkMode}
-                />
-            ))}
+            {tierNumbers.map(tierNumber => {
+                // Get all players in this tier (unfiltered)
+                const allTierPlayers = playersByTier[tierNumber];
+
+                // Filter players in this tier to only show filtered players
+                const tierPlayers = allTierPlayers.filter(player =>
+                    filteredPlayerIds.has(player.id)
+                );
+
+                // Only render tier if it has visible players
+                if (tierPlayers.length === 0) return null;
+
+                return (
+                    <Tier
+                        key={tierNumber}
+                        tierNumber={tierNumber}
+                        players={tierPlayers}
+                        allTierPlayers={allTierPlayers}
+                        onToggleDraft={onToggleDraft}
+                        onToggleRisky={onToggleRisky}
+                        onRemoveTier={onRemoveTier}
+                        onMovePlayer={handleMovePlayer}
+                        startingRank={tierRanks[tierNumber]}
+                        darkMode={darkMode}
+                    />
+                );
+            })}
         </div>
     );
 };

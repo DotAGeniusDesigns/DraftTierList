@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getOlineRank } from '../utils/teamData';
 
-const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
+const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, darkMode }) => {
     const [isDragging, setIsDragging] = useState(false);
     const playerRef = useRef(null);
 
     // Toggle states for the new buttons - initialize from player data
     const [isHandcuff, setIsHandcuff] = useState(player.isHandcuff || false);
     const [isInjured, setIsInjured] = useState(player.isInjured || false);
-    const [isStar, setIsStar] = useState(player.isStar || false);
+    const [isRisky, setIsRisky] = useState(player.isRisky || false);
 
     // Debug logging for injured players
     useEffect(() => {
@@ -21,6 +21,8 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
             });
         }
     }, [player]);
+
+
 
     const handleClick = (e) => {
         e.preventDefault();
@@ -153,12 +155,15 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
         setIsInjured(!isInjured);
     };
 
-    const handleToggleStar = (e) => {
+    const handleToggleRisky = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        setIsStar(!isStar);
+        setIsRisky(!isRisky);
+        // Update the player data in parent component
+        if (onToggleRisky) {
+            onToggleRisky(player.id, !isRisky);
+        }
     };
-
 
 
     return (
@@ -281,33 +286,14 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
 
                 {/* Toggle Buttons */}
                 <div className="flex items-center gap-1 sm:gap-2 mx-1 sm:mx-2">
-                    {/* Handcuff Button */}
-                    <button
-                        onClick={handleToggleHandcuff}
-                        className={`relative p-1 rounded transition-colors group ${isHandcuff
-                            ? 'text-red-500 bg-red-100'
-                            : darkMode
-                                ? 'text-gray-400 hover:text-red-400'
-                                : 'text-gray-500 hover:text-red-500'
-                            }`}
-                        title="Handcuff"
-                    >
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                        </svg>
-                        <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-                            Handcuff
-                        </span>
-                    </button>
-
                     {/* Injured Button */}
                     <button
                         onClick={handleToggleInjured}
                         className={`relative p-1 rounded transition-colors group ${isInjured
-                            ? 'text-orange-500 bg-orange-100'
+                            ? 'text-red-500 bg-red-100'
                             : darkMode
-                                ? 'text-gray-400 hover:text-orange-400'
-                                : 'text-gray-500 hover:text-orange-500'
+                                ? 'text-gray-400 hover:text-red-400'
+                                : 'text-gray-500 hover:text-red-500'
                             }`}
                         title="Injured"
                     >
@@ -319,22 +305,41 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, darkMode }) => {
                         </span>
                     </button>
 
-                    {/* Star Button */}
+                    {/* Risky Button */}
                     <button
-                        onClick={handleToggleStar}
-                        className={`relative p-1 rounded transition-colors group ${isStar
-                            ? 'text-yellow-500 bg-yellow-100'
+                        onClick={handleToggleRisky}
+                        className={`relative p-1 rounded transition-colors group ${isRisky
+                            ? 'text-yellow-600 bg-yellow-100'
                             : darkMode
                                 ? 'text-gray-400 hover:text-yellow-400'
-                                : 'text-gray-500 hover:text-yellow-500'
+                                : 'text-gray-500 hover:text-yellow-600'
                             }`}
-                        title="High Potential"
+                        title="Risky"
                     >
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.736 6.979C9.208 6.193 9.696 6 10 6c.304 0 .792.193 1.264.979.446.743.736 1.79.736 3.021 0 1.23-.29 2.278-.736 3.021C10.792 13.807 10.304 14 10 14c-.304 0-.792-.193-1.264-.979C8.29 12.278 8 11.23 8 10c0-1.231.29-2.278.736-3.021zM10 16a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                        </svg>
+                        <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none w-52 text-center leading-relaxed z-50">
+                            {player.riskyReason ? `Risky: ${player.riskyReason}` : 'Risky'}
+                        </span>
+                    </button>
+
+                    {/* Handcuff Button */}
+                    <button
+                        onClick={handleToggleHandcuff}
+                        className={`relative p-1 rounded transition-colors group ${isHandcuff
+                            ? 'text-blue-500 bg-blue-100'
+                            : darkMode
+                                ? 'text-gray-400 hover:text-blue-400'
+                                : 'text-gray-500 hover:text-blue-500'
+                            }`}
+                        title="Handcuff"
+                    >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 616 0z" clipRule="evenodd" />
                         </svg>
                         <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-                            Primary Target/Bellcow
+                            Handcuff
                         </span>
                     </button>
                 </div>

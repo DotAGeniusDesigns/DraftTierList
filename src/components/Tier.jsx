@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Player from './Player';
 
-const Tier = ({ tierNumber, players, onToggleDraft, onRemoveTier, onMovePlayer, startingRank, darkMode }) => {
+const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisky, onRemoveTier, onMovePlayer, startingRank, darkMode }) => {
     const [isDragOver, setIsDragOver] = useState(false);
     const [dropIndex, setDropIndex] = useState(null);
     const [isTouchDragging, setIsTouchDragging] = useState(false);
@@ -198,21 +198,28 @@ const Tier = ({ tierNumber, players, onToggleDraft, onRemoveTier, onMovePlayer, 
                         </div>
 
                         {/* Players List */}
-                        {players.map((player, index) => (
-                            <div key={player.id} className="relative">
-                                {/* Drop indicator */}
-                                {isDragOver && dropIndex === index && (
-                                    <div className="absolute -top-1 left-0 right-0 h-0.5 bg-blue-500 z-10"></div>
-                                )}
-                                <Player
-                                    player={player}
-                                    index={startingRank + index}
-                                    onToggleDraft={onToggleDraft}
-                                    onMovePlayer={onMovePlayer}
-                                    darkMode={darkMode}
-                                />
-                            </div>
-                        ))}
+                        {players.map((player, index) => {
+                            // Calculate the correct index based on player's position in the full tier
+                            const playerIndexInFullTier = allTierPlayers.findIndex(p => p.id === player.id);
+                            const correctIndex = startingRank + playerIndexInFullTier;
+
+                            return (
+                                <div key={player.id} className="relative">
+                                    {/* Drop indicator */}
+                                    {isDragOver && dropIndex === index && (
+                                        <div className="absolute -top-1 left-0 right-0 h-0.5 bg-blue-500 z-10"></div>
+                                    )}
+                                    <Player
+                                        player={player}
+                                        index={correctIndex}
+                                        onToggleDraft={onToggleDraft}
+                                        onToggleRisky={onToggleRisky}
+                                        onMovePlayer={onMovePlayer}
+                                        darkMode={darkMode}
+                                    />
+                                </div>
+                            );
+                        })}
                         {/* Drop indicator at the end */}
                         {isDragOver && dropIndex === players.length && (
                             <div className="h-0.5 bg-blue-500"></div>

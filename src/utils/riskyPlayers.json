@@ -1,0 +1,254 @@
+{
+    "jahmyr-gibbs": {
+        "isRisky": true,
+        "riskyReason": "RBBC"
+    },
+    "aj-brown": {
+        "isRisky": true,
+        "riskyReason": "Inconsistent usage"
+    },
+    "davante-adams": {
+        "isRisky": true,
+        "riskyReason": "Veteran in new system"
+    },
+    "dj-moore": {
+        "isRisky": true,
+        "riskyReason": "Crowded room"
+    },
+    "omarion-hampton": {
+        "isRisky": true,
+        "riskyReason": "Rookie"
+    },
+    "rashee-rice": {
+        "isRisky": true,
+        "riskyReason": "Crowded room / Injury prone"
+    },
+    "devonta-smith": {
+        "isRisky": true,
+        "riskyReason": "Inconsistent usage"
+    },
+    "jameson-williams": {
+        "isRisky": true,
+        "riskyReason": "Crowded room"
+    },
+    "amon-ra-st-brown": {
+        "isRisky": true,
+        "riskyReason": "Crowded room"
+    },
+    "david-montgomery": {
+        "isRisky": true,
+        "riskyReason": "RBBC"
+    },
+    "sam-laporta": {
+        "isRisky": true,
+        "riskyReason": "Crowded room"
+    },
+    "xavier-worthy": {
+        "isRisky": true,
+        "riskyReason": "Crowded room"
+    },
+    "treveyon-henderson": {
+        "isRisky": true,
+        "riskyReason": "Rookie"
+    },
+    "ashton-jeanty": {
+        "isRisky": true,
+        "riskyReason": "Rookie"
+    },
+    "jaylen-waddle": {
+        "isRisky": true,
+        "riskyReason": "Inconsistent usage"
+    },
+    "tyreek-hill": {
+        "isRisky": true,
+        "riskyReason": "Inconsistent usage / Injury prone"
+    },
+    "aaron-jones-sr": {
+        "isRisky": true,
+        "riskyReason": "RBBC"
+    },
+    "kaleb-johnson": {
+        "isRisky": true,
+        "riskyReason": "Rookie"
+    },
+    "tony-pollard": {
+        "isRisky": true,
+        "riskyReason": "RBBC"
+    },
+    "george-pickens": {
+        "isRisky": true,
+        "riskyReason": "Veteran in new system"
+    },
+    "travis-hunter": {
+        "isRisky": true,
+        "riskyReason": "Rookie"
+    },
+    "jordan-addison": {
+        "isRisky": true,
+        "riskyReason": "Inconsistent usage"
+    },
+    "rome-odunze": {
+        "isRisky": true,
+        "riskyReason": "Crowded room"
+    },
+    "travis-etienne-jr": {
+        "isRisky": true,
+        "riskyReason": "RBBC"
+    },
+    "tyrone-tracy-jr": {
+        "isRisky": true,
+        "riskyReason": "RBBC"
+    },
+    "jaylen-warren": {
+        "isRisky": true,
+        "riskyReason": "RBBC"
+    },
+    "jayden-reed": {
+        "isRisky": true,
+        "riskyReason": "Crowded room"
+    },
+    "deebo-samuel-sr": {
+        "isRisky": true,
+        "riskyReason": "Veteran in new system"
+    },
+    "javonte-williams": {
+        "isRisky": true,
+        "riskyReason": "Inconsistent usage"
+    },
+    "najee-harris": {
+        "isRisky": true,
+        "riskyReason": "RBBC"
+    },
+    "jordan-mason": {
+        "isRisky": true,
+        "riskyReason": "RBBC"
+    },
+    "rhamondre-stevenson": {
+        "isRisky": true,
+        "riskyReason": "RBBC"
+    },
+    "cam-skattebo": {
+        "isRisky": true,
+        "riskyReason": "Rookie"
+    },
+    "tyjae-spears": {
+        "isRisky": true,
+        "riskyReason": "RBBC"
+    },
+    "tank-bigsby": {
+        "isRisky": true,
+        "riskyReason": "RBBC"
+    },
+    "jk-dobbins": {
+        "isRisky": true,
+        "riskyReason": "Veteran in new system"
+    },
+    "emeka-egbuka": {
+        "isRisky": true,
+        "riskyReason": "Rookie"
+    },
+    "rj-harvey": {
+        "isRisky": true,
+        "riskyReason": "Rookie"
+    },
+    "matthew-golden": {
+        "isRisky": true,
+        "riskyReason": "Rookie"
+    },
+    "christian-mccaffrey": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "marvin-harrison-jr": {
+        "isRisky": true,
+        "riskyReason": "Inconsistent usage"
+    },
+    "breece-hall": {
+        "isRisky": true,
+        "riskyReason": "Inconsistent usage"
+    },
+    "chris-olave": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "garrett-wilson": {
+        "isRisky": true,
+        "riskyReason": "Inconsistent usage"
+    },
+    "dak-prescott": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "trevor-lawrence": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "chris-godwin": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "stefon-diggs": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "brandon-aiyuk": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "christian-watson": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "tank-dell": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "mike-evans": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "isiah-pacheco": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "marquise-brown": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "tua-tagovailoa": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "christian-kirk": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "dalton-kincaid": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "cooper-kupp": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "kyle-pitts": {
+        "isRisky": true,
+        "riskyReason": "Kyle Pitts"
+    },
+    "jonathan-taylor": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "anthony-richardson-sr": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    },
+    "jonnu-smith": {
+        "isRisky": true,
+        "riskyReason": "Veteran in new system"
+    },
+    "dallas-goedert": {
+        "isRisky": true,
+        "riskyReason": "Injury prone"
+    }
+}

@@ -2,10 +2,12 @@ import { getByeWeek, getOlineRank } from './teamData';
 import { getAllPlayers } from './playerDatabase';
 import injuredPlayersData from './injuredPlayers.json';
 import handcuffPlayersData from './handcuffPlayers.json';
-import primaryTargetPlayersData from './primaryTargetPlayers.json';
+import riskyPlayersData from './riskyPlayers.json';
 
 // Get all players from the local database
 const databasePlayers = getAllPlayers();
+
+
 
 // Initial player data structure using local database
 export const initialPlayers = databasePlayers.map(player => ({
@@ -17,8 +19,8 @@ export const initialPlayers = databasePlayers.map(player => ({
     ...(injuredPlayersData[player.id] || {}),
     // Merge handcuff player data if this player is a handcuff
     ...(handcuffPlayersData[player.id] || {}),
-    // Merge primary target player data if this player is a primary target/bellcow
-    ...(primaryTargetPlayersData[player.id] || {})
+    // Merge risky player data if this player is risky
+    ...(riskyPlayersData[player.id] || {})
 }));
 
 // Helper function to get tier color
