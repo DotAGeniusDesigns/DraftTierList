@@ -10,7 +10,14 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
     const [isInjured, setIsInjured] = useState(player.isInjured || false);
     const [isRisky, setIsRisky] = useState(player.isRisky || false);
 
-    // Debug logging for injured players
+    // Sync local state with player prop changes (important for localStorage updates)
+    useEffect(() => {
+        setIsHandcuff(player.isHandcuff || false);
+        setIsInjured(player.isInjured || false);
+        setIsRisky(player.isRisky || false);
+    }, [player.isHandcuff, player.isInjured, player.isRisky]);
+
+    // Debug logging for injured and risky players
     useEffect(() => {
         if (player.isInjured) {
             console.log(`🔴 INJURED PLAYER: ${player.name}`, {
@@ -20,7 +27,14 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
                 olineRank: player.olineRank
             });
         }
-    }, [player]);
+        if (player.isRisky) {
+            console.log(`⚠️ RISKY PLAYER: ${player.name}`, {
+                isRisky: player.isRisky,
+                riskyReason: player.riskyReason,
+                localState: isRisky
+            });
+        }
+    }, [player, isRisky]);
 
 
 
