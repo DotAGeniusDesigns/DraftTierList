@@ -1,4 +1,4 @@
-import { getByeWeek, getOlineRank } from './teamData';
+import { getByeWeek, getOlineRank, getTeamLogo } from './teamData';
 import { getAllPlayers } from './playerDatabase';
 import injuredPlayersData from './injuredPlayers.json';
 import handcuffPlayersData from './handcuffPlayers.json';
@@ -15,6 +15,7 @@ export const initialPlayers = databasePlayers.map(player => ({
     drafted: false,
     byeWeek: getByeWeek(player.team),
     olineRank: getOlineRank(player.team),
+    teamLogo: getTeamLogo(player.team),
     // Merge injured player data if this player is injured
     ...(injuredPlayersData[player.id] || {}),
     // Merge handcuff player data if this player is a handcuff

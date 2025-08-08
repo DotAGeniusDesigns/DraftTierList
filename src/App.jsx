@@ -3,6 +3,7 @@ import TierList from './components/TierList';
 import ExportImport from './components/ExportImport';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers } from './utils/playerData';
+import { getTeamLogo } from './utils/teamData';
 
 function App() {
     // Use localStorage hook to persist player data
@@ -25,6 +26,7 @@ function App() {
                         ...player,
                         // Prioritize database values over localStorage for these properties
                         team: databasePlayer.team, // Always use current team from database
+                        teamLogo: getTeamLogo(databasePlayer.team), // Update team logo when team changes
                         isInjured: databasePlayer.isInjured,
                         injuryNote: databasePlayer.injuryNote || player.injuryNote || null,
                         isHandcuff: databasePlayer.isHandcuff,
