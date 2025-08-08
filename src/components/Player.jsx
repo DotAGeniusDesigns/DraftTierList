@@ -192,7 +192,7 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
             className={`
-                relative p-2 sm:p-3 border-b cursor-grab active:cursor-grabbing transition-all duration-200
+                relative p-3 sm:p-3 border-b cursor-grab active:cursor-grabbing transition-all duration-200
                 ${isDragging ? 'opacity-50 scale-105 z-50' : ''}
                 ${darkMode
                     ? `border-gray-700 ${player.drafted ? 'bg-gray-800 opacity-60' : 'bg-gray-900 hover:bg-gray-800'}`
@@ -211,7 +211,7 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
             )}
 
             {/* Player info - reorganized columns */}
-            <div className="flex items-center gap-2 sm:gap-0">
+            <div className="flex items-center gap-1 sm:gap-0">
                 {/* Rank */}
                 <div className={`w-8 sm:w-16 text-center font-bold text-xs sm:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'
                     }`}>
@@ -236,7 +236,7 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
                 </div>
 
                 {/* Player name - mobile optimized */}
-                <div className="flex-1 min-w-0 px-2 sm:px-4">
+                <div className="flex-1 min-w-0 px-1 sm:px-4">
                     <div className={`font-semibold text-sm ${player.drafted ? 'line-through' : ''} ${darkMode ? 'text-gray-200' : 'text-gray-900'
                         }`}>
                         {player.name}
@@ -244,7 +244,7 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
                 </div>
 
                 {/* Position */}
-                <div className="w-16 sm:w-20 text-center mx-1 sm:mx-2">
+                <div className="w-10 sm:w-20 text-center mx-1 sm:mx-2">
                     <span className={`text-xs font-bold px-1 sm:px-2 py-1 rounded ${player.drafted
                         ? 'bg-gray-300 text-gray-600'
                         : player.position === 'WR'
@@ -283,23 +283,49 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
                     </div>
                 </div>
 
-                {/* O-Line Ranking */}
-                <div className="w-12 sm:w-16 text-center">
+                {/* O-Line Ranking - hidden on mobile */}
+                <div className="hidden sm:block w-12 sm:w-16 text-center">
                     <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                         {player.olineRank || getOlineRank(player.team) || '--'}
                     </span>
                 </div>
 
-                {/* Bye week */}
-                <div className="w-12 sm:w-16 text-center">
+                {/* Bye week - hidden on mobile */}
+                <div className="hidden sm:block w-12 sm:w-16 text-center">
                     <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'
                         }`}>
                         {player.byeWeek}
                     </span>
                 </div>
 
-                {/* Toggle Buttons */}
-                <div className="flex items-center gap-1 sm:gap-2 mx-1 sm:mx-2">
+                {/* ADP */}
+                <div className="w-8 sm:w-16 text-center">
+                    <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'
+                        }`}>
+                        {player.adp ? player.adp.toFixed(1) : '--'}
+                    </span>
+                </div>
+
+                {/* RvADP (User Rank vs ADP) */}
+                <div className="w-12 sm:w-20 text-center">
+                    {player.adp ? (
+                        <span className={`text-xs font-medium ${index - player.adp < 0
+                            ? (darkMode ? 'text-green-400' : 'text-green-600') // Good value (user ranks higher)
+                            : index - player.adp > 0
+                                ? (darkMode ? 'text-red-400' : 'text-red-600') // Reach (user ranks lower)
+                                : (darkMode ? 'text-gray-400' : 'text-gray-600') // Even
+                            }`}>
+                            {(index - player.adp) > 0 ? '+' : ''}{(index - player.adp).toFixed(1)}
+                        </span>
+                    ) : (
+                        <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            --
+                        </span>
+                    )}
+                </div>
+
+                {/* Toggle Buttons - hidden on mobile */}
+                <div className="hidden sm:flex items-center gap-1 sm:gap-2 mx-1 sm:mx-2">
                     {/* Injured Button */}
                     <button
                         onClick={handleToggleInjured}
@@ -358,13 +384,7 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
                     </button>
                 </div>
 
-                {/* Drag handle - larger on mobile for better touch */}
-                <div className={`w-8 sm:w-12 transition-colors flex-shrink-0 ml-1 sm:ml-2 ${darkMode ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'
-                    }`}>
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M7 2a2 2 0 1 1 .001 4.001A2 2 0 0 1 7 2zm0 6a2 2 0 1 1 .001 4.001A2 2 0 0 1 7 8zm0 6a2 2 0 1 1 .001 4.001A2 2 0 0 1 7 14zm6-8a2 2 0 1 1-.001-4.001A2 2 0 0 1 13 6zm0 2a2 2 0 1 1 .001 4.001A2 2 0 0 1 13 8zm0 6a2 2 0 1 1 .001 4.001A2 2 0 0 1 13 14z" />
-                    </svg>
-                </div>
+
             </div>
         </div>
     );

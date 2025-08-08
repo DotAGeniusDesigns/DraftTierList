@@ -181,20 +181,35 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
                     </div>
                 ) : (
                     <div className="relative">
-                        {/* Column Headers - hidden on mobile */}
+                        {/* Mobile Column Headers */}
+                        <div className={`sm:hidden flex items-center p-3 border-b text-xs font-semibold ${darkMode
+                            ? 'border-gray-700 bg-gray-800 text-gray-300'
+                            : 'border-gray-200 bg-gray-50 text-gray-600'
+                            }`}>
+                            <div className="w-8 text-center">RK</div>
+                            <div className="w-10 text-center"></div>
+                            <div className="flex-1 px-3">PLAYER</div>
+                            <div className="w-10 text-center">POS</div>
+                            <div className="w-10 text-center">TM</div>
+                            <div className="w-8 text-center">ADP</div>
+                            <div className="w-12 text-center">RvADP</div>
+                        </div>
+
+                        {/* Desktop Column Headers */}
                         <div className={`hidden sm:flex items-center p-3 pl-1 border-b text-xs font-semibold ${darkMode
                             ? 'border-gray-700 bg-gray-800 text-gray-300'
                             : 'border-gray-200 bg-gray-50 text-gray-600'
                             }`}>
                             <div className="w-8 sm:w-16 text-center">RANK</div>
-                            <div className="w-10 sm:w-12 text-center ml-1">PHOTO</div>
+                            <div className="w-10 sm:w-12 text-center">PHOTO</div>
                             <div className="flex-1 px-2 sm:px-4">PLAYER</div>
-                            <div className="w-16 sm:w-30 text-center mx-1 sm:mx-2">POS</div>
-                            <div className="w-10 sm:w-16 text-center">TEAM</div>
+                            <div className="w-16 sm:w-20 text-center mx-1 sm:mx-2">POS</div>
+                            <div className="w-10 sm:w-12 text-center">TEAM</div>
                             <div className="w-12 sm:w-16 text-center">O-LINE</div>
-                            <div className="w-12 sm:w-26 text-center">BYE</div>
+                            <div className="w-12 sm:w-16 text-center">BYE</div>
+                            <div className="w-12 sm:w-16 text-center">ADP</div>
+                            <div className="w-16 sm:w-20 text-center">RvADP</div>
                             <div className="w-20 sm:w-24 text-center mx-1 sm:mx-2">NOTES</div>
-                            <div className="w-8 sm:w-12 ml-1 sm:ml-2"></div>
                         </div>
 
                         {/* Players List */}

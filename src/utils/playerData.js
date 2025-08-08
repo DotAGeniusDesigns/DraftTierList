@@ -3,6 +3,7 @@ import { getAllPlayers } from './playerDatabase';
 import injuredPlayersData from './injuredPlayers.json';
 import handcuffPlayersData from './handcuffPlayers.json';
 import riskyPlayersData from './riskyPlayers.json';
+import adpData from './adpData.json';
 
 // Get all players from the local database
 const databasePlayers = getAllPlayers();
@@ -16,6 +17,8 @@ export const initialPlayers = databasePlayers.map(player => ({
     byeWeek: getByeWeek(player.team),
     olineRank: getOlineRank(player.team),
     teamLogo: getTeamLogo(player.team),
+    // Merge ADP data if available
+    adp: adpData[player.id]?.adp || null,
     // Merge injured player data if this player is injured
     ...(injuredPlayersData[player.id] || {}),
     // Merge handcuff player data if this player is a handcuff
