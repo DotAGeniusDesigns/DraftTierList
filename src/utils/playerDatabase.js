@@ -9,7 +9,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'CIN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/ja_marr_chase.png',
-        tier: 1
+        tier: 1,
+        adp: 1.5
     },
     'bijan-robinson': {
         id: 'bijan-robinson',
@@ -17,7 +18,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'ATL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/bijan_robinson.png',
-        tier: 1
+        tier: 1,
+        adp: 2.7
     },
     'saquon-barkley': {
         id: 'saquon-barkley',
@@ -25,7 +27,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'PHI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/saquon_barkley.png',
-        tier: 1
+        tier: 1,
+        adp: 2.5
     },
     'justin-jefferson': {
         id: 'justin-jefferson',
@@ -33,7 +36,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'MIN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/justin_jefferson.png',
-        tier: 1
+        tier: 1,
+        adp: 5.4
     },
     'jahmyr-gibbs': {
         id: 'jahmyr-gibbs',
@@ -41,7 +45,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'DET',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jahmyr_gibbs.png',
-        tier: 1
+        tier: 1,
+        adp: 4.2
     },
     'ceedee-lamb': {
         id: 'ceedee-lamb',
@@ -49,7 +54,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'DAL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/ceedee_lamb.png',
-        tier: 1
+        tier: 1,
+        adp: 6.9
     },
 
     // Tier 2 Players
@@ -59,7 +65,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'LAR',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/puka_nacua.png',
-        tier: 2
+        tier: 2,
+        adp: 10.9
     },
     'malik-nabers': {
         id: 'malik-nabers',
@@ -67,7 +74,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'NYG',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/malik_nabers.png',
-        tier: 2
+        tier: 2,
+        adp: 13.8
     },
     'amon-ra-st-brown': {
         id: 'amon-ra-st-brown',
@@ -75,7 +83,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'DET',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/amonra_st_brown.png',
-        tier: 2
+        tier: 2,
+        adp: 10.8
     },
     'nico-collins': {
         id: 'nico-collins',
@@ -83,7 +92,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'HOU',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/nico_collins.png',
-        tier: 2
+        tier: 2,
+        adp: 10.4
     },
     'ashton-jeanty': {
         id: 'ashton-jeanty',
@@ -91,7 +101,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'LV',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/ashton_jeanty.png',
-        tier: 2
+        tier: 2,
+        adp: 11.4
     },
     'derrick-henry': {
         id: 'derrick-henry',
@@ -99,7 +110,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'BAL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/derrick_henry.png',
-        tier: 2
+        tier: 2,
+        adp: 8.2
     },
     'christian-mccaffrey': {
         id: 'christian-mccaffrey',
@@ -107,7 +119,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'SF',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/christian_mccaffrey.png',
-        tier: 2
+        tier: 2,
+        adp: 9.7
     },
     'brian-thomas-jr': {
         id: 'brian-thomas-jr',
@@ -115,7 +128,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'JAC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/brian_thomas_jr.png',
-        tier: 2
+        tier: 2,
+        adp: 16.5
     },
     'de-von-achane': {
         id: 'de-von-achane',
@@ -123,7 +137,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'MIA',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/de_von_achane.png',
-        tier: 2
+        tier: 2,
+        adp: 16.4
     },
 
     // Tier 3 Players
@@ -133,7 +148,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'ATL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/drake_london.png',
-        tier: 3
+        tier: 3,
+        adp: 21.1
     },
     'brock-bowers': {
         id: 'brock-bowers',
@@ -141,7 +157,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'LV',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/brock_bowers.png',
-        tier: 3
+        tier: 3,
+        adp: 20.7
     },
     'aj-brown': {
         id: 'aj-brown',
@@ -149,7 +166,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'PHI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/aj_brown.png',
-        tier: 3
+        tier: 3,
+        adp: 21.3
     },
     'josh-jacobs': {
         id: 'josh-jacobs',
@@ -157,7 +175,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'GB',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/josh_jacobs.png',
-        tier: 3
+        tier: 3,
+        adp: 16.6
     },
     'jonathan-taylor': {
         id: 'jonathan-taylor',
@@ -165,7 +184,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'IND',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jonathan_taylor.png',
-        tier: 3
+        tier: 3,
+        adp: 16
     },
     'bucky-irving': {
         id: 'bucky-irving',
@@ -173,7 +193,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'TB',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/bucky_irving.png',
-        tier: 3
+        tier: 3,
+        adp: 21.4
     },
     'ladd-mcconkey': {
         id: 'ladd-mcconkey',
@@ -181,7 +202,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'LAC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/ladd_mcconkey.png',
-        tier: 3
+        tier: 3,
+        adp: 23.2
     },
     'trey-mcbride': {
         id: 'trey-mcbride',
@@ -189,7 +211,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'ARI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/trey_mcbride.png',
-        tier: 3
+        tier: 3,
+        adp: 28.7
     },
     'josh-allen': {
         id: 'josh-allen',
@@ -197,7 +220,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'BUF',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/josh_allen.png',
-        tier: 3
+        tier: 3,
+        adp: 21.3
     },
     'lamar-jackson': {
         id: 'lamar-jackson',
@@ -205,7 +229,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'BAL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/lamar_jackson.png',
-        tier: 3
+        tier: 3,
+        adp: 21.6
     },
 
     // Tier 4 Players
@@ -215,7 +240,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'CIN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/chase_brown.png',
-        tier: 4
+        tier: 4,
+        adp: 26.2
     },
     'kyren-williams': {
         id: 'kyren-williams',
@@ -223,7 +249,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'LAR',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/kyren_williams.png',
-        tier: 4
+        tier: 4,
+        adp: 24.7
     },
     'tee-higgins': {
         id: 'tee-higgins',
@@ -231,7 +258,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'CIN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/tee_higgins.png',
-        tier: 4
+        tier: 4,
+        adp: 29.5
     },
     'jaxon-smith-njigba': {
         id: 'jaxon-smith-njigba',
@@ -239,7 +267,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'SEA',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jaxon_smithnjigba.png',
-        tier: 4
+        tier: 4,
+        adp: 33.5
     },
     'tyreek-hill': {
         id: 'tyreek-hill',
@@ -247,7 +276,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'MIA',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/tyreek_hill.png',
-        tier: 4
+        tier: 4,
+        adp: 34.1
     },
     'jayden-daniels': {
         id: 'jayden-daniels',
@@ -255,7 +285,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'WAS',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jayden_daniels.png',
-        tier: 4
+        tier: 4,
+        adp: 28.7
     },
     'garrett-wilson': {
         id: 'garrett-wilson',
@@ -263,7 +294,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'NYJ',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/garrett_wilson.png',
-        tier: 4
+        tier: 4,
+        adp: 38.6
     },
     'george-kittle': {
         id: 'george-kittle',
@@ -271,7 +303,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'SF',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/george_kittle.png',
-        tier: 4
+        tier: 4,
+        adp: 32.9
     },
     'davante-adams': {
         id: 'davante-adams',
@@ -279,7 +312,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'LAR',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/davante_adams.png',
-        tier: 4
+        tier: 4,
+        adp: 39.4
     },
     'breece-hall': {
         id: 'breece-hall',
@@ -287,7 +321,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'NYJ',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/breece_hall.png',
-        tier: 4
+        tier: 4,
+        adp: 37.9
     },
     'mike-evans': {
         id: 'mike-evans',
@@ -295,7 +330,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'TB',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/mike_evans.png',
-        tier: 4
+        tier: 4,
+        adp: 36.8
     },
     'james-cook': {
         id: 'james-cook',
@@ -303,7 +339,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'BUF',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/james_cook.png',
-        tier: 4
+        tier: 4,
+        adp: 31.9
     },
     'jalen-hurts': {
         id: 'jalen-hurts',
@@ -311,7 +348,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'PHI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jalen_hurts.png',
-        tier: 4
+        tier: 4,
+        adp: 34
     },
     'terry-mclaurin': {
         id: 'terry-mclaurin',
@@ -319,7 +357,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'WAS',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/terry_mclaurin.png',
-        tier: 4
+        tier: 4,
+        adp: 40.1
     },
     'kenneth-walker-iii': {
         id: 'kenneth-walker-iii',
@@ -327,7 +366,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'SEA',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/kenneth_walker_iii.png',
-        tier: 4
+        tier: 4,
+        adp: 42.8
     },
     'alvin-kamara': {
         id: 'alvin-kamara',
@@ -335,7 +375,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'NO',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/alvin_kamara.png',
-        tier: 4
+        tier: 4,
+        adp: 44
     },
     'marvin-harrison-jr': {
         id: 'marvin-harrison-jr',
@@ -343,7 +384,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'ARI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/marvin_harrison_jr.png',
-        tier: 4
+        tier: 4,
+        adp: 43.4
     },
 
     // Tier 5 Players
@@ -353,7 +395,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'CHI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/dj_moore.png',
-        tier: 5
+        tier: 5,
+        adp: 55.2
     },
     'chuba-hubbard': {
         id: 'chuba-hubbard',
@@ -361,7 +404,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'CAR',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/chuba_hubbard.png',
-        tier: 5
+        tier: 5,
+        adp: 41.2
     },
     'joe-burrow': {
         id: 'joe-burrow',
@@ -369,7 +413,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'CIN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/joe_burrow.png',
-        tier: 5
+        tier: 5,
+        adp: 41.3
     },
     'james-conner': {
         id: 'james-conner',
@@ -377,7 +422,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'ARI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/james_conner.png',
-        tier: 5
+        tier: 5,
+        adp: 47.5
     },
     'dk-metcalf': {
         id: 'dk-metcalf',
@@ -385,7 +431,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'PIT',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/dk_metcalf.png',
-        tier: 5
+        tier: 5,
+        adp: 49.3
     },
     'omarion-hampton': {
         id: 'omarion-hampton',
@@ -393,7 +440,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'LAC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/omarion_hampton.png',
-        tier: 5
+        tier: 5,
+        adp: 45.3
     },
     'courtland-sutton': {
         id: 'courtland-sutton',
@@ -401,7 +449,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'DEN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/courtland_sutton.png',
-        tier: 5
+        tier: 5,
+        adp: 60.6
     },
     'rashee-rice': {
         id: 'rashee-rice',
@@ -409,7 +458,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'KC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/rashee_rice.png',
-        tier: 5
+        tier: 5,
+        adp: 58.3
     },
     'joe-mixon': {
         id: 'joe-mixon',
@@ -417,7 +467,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'HOU',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/joe_mixon.png',
-        tier: 5
+        tier: 5,
+        adp: 58
     },
     'devonta-smith': {
         id: 'devonta-smith',
@@ -425,7 +476,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'PHI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/devonta_smith.png',
-        tier: 5
+        tier: 5,
+        adp: 60.5
     },
     'zay-flowers': {
         id: 'zay-flowers',
@@ -433,7 +485,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'BAL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/zay_flowers.png',
-        tier: 5
+        tier: 5,
+        adp: 60.8
     },
     'jameson-williams': {
         id: 'jameson-williams',
@@ -441,7 +494,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'DET',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jameson_williams.png',
-        tier: 5
+        tier: 5,
+        adp: 66.9
     },
     'david-montgomery': {
         id: 'david-montgomery',
@@ -449,7 +503,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'DET',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/david_montgomery.png',
-        tier: 5
+        tier: 5,
+        adp: 51
     },
     'xavier-worthy': {
         id: 'xavier-worthy',
@@ -457,7 +512,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'KC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/xavier_worthy.png',
-        tier: 5
+        tier: 5,
+        adp: 65.1
     },
     'sam-laporta': {
         id: 'sam-laporta',
@@ -465,7 +521,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'DET',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/sam_laporta.png',
-        tier: 5
+        tier: 5,
+        adp: 48.6
     },
     'd-andre-swift': {
         id: 'd-andre-swift',
@@ -481,7 +538,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'CAR',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/tetairoa_mcmillan.png',
-        tier: 5
+        tier: 5,
+        adp: 82.6
     },
     'treveyon-henderson': {
         id: 'treveyon-henderson',
@@ -489,7 +547,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'NE',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/treveyon_henderson.png',
-        tier: 5
+        tier: 5,
+        adp: 79.3
     },
     'jaylen-waddle': {
         id: 'jaylen-waddle',
@@ -497,7 +556,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'MIA',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jaylen_waddle.png',
-        tier: 5
+        tier: 5,
+        adp: 79.2
     },
     'rj-harvey': {
         id: 'rj-harvey',
@@ -505,7 +565,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'DEN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/rj_harvey.png',
-        tier: 5
+        tier: 5,
+        adp: 63.2
     },
 
     // Tier 6 Players
@@ -515,7 +576,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'KC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/patrick_mahomes.png',
-        tier: 6
+        tier: 6,
+        adp: 51.5
     },
     'aaron-jones-sr': {
         id: 'aaron-jones-sr',
@@ -523,7 +585,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'MIN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/aaron_jones_sr.png',
-        tier: 6
+        tier: 6,
+        adp: 72.8
     },
     'calvin-ridley': {
         id: 'calvin-ridley',
@@ -531,7 +594,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'TEN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/calvin_ridley.png',
-        tier: 6
+        tier: 6,
+        adp: 81.8
     },
     'chris-olave': {
         id: 'chris-olave',
@@ -539,7 +603,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'NO',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/chris_olave.png',
-        tier: 6
+        tier: 6,
+        adp: 85.6
     },
     'kaleb-johnson': {
         id: 'kaleb-johnson',
@@ -547,7 +612,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'PIT',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/kaleb_johnson.png',
-        tier: 6
+        tier: 6,
+        adp: 68.1
     },
     'tony-pollard': {
         id: 'tony-pollard',
@@ -555,7 +621,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'TEN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/tony_pollard.png',
-        tier: 6
+        tier: 6,
+        adp: 65.2
     },
     'isiah-pacheco': {
         id: 'isiah-pacheco',
@@ -563,7 +630,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'KC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/isiah_pacheco.png',
-        tier: 6
+        tier: 6,
+        adp: 65.8
     },
     'george-pickens': {
         id: 'george-pickens',
@@ -571,7 +639,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'DAL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/george_pickens.png',
-        tier: 6
+        tier: 6,
+        adp: 70.8
     },
     'baker-mayfield': {
         id: 'baker-mayfield',
@@ -579,7 +648,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'TB',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/baker_mayfield.png',
-        tier: 6
+        tier: 6,
+        adp: 57.6
     },
     'tj-hockenson': {
         id: 'tj-hockenson',
@@ -587,7 +657,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'MIN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/tj_hockenson.png',
-        tier: 6
+        tier: 6,
+        adp: 59.4
     },
     'travis-hunter': {
         id: 'travis-hunter',
@@ -595,7 +666,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'JAC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/travis_hunter.png',
-        tier: 6
+        tier: 6,
+        adp: 71.9
     },
     'chris-godwin': {
         id: 'chris-godwin',
@@ -603,7 +675,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'TB',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/chris_godwin.png',
-        tier: 6
+        tier: 6,
+        adp: 85.9
     },
     'brian-robinson-jr': {
         id: 'brian-robinson-jr',
@@ -611,7 +684,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'WAS',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/brian_robinson_jr.png',
-        tier: 6
+        tier: 6,
+        adp: 87.3
     },
     'bo-nix': {
         id: 'bo-nix',
@@ -619,7 +693,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'DEN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/bo_nix.png',
-        tier: 6
+        tier: 6,
+        adp: 68.5
     },
     'jerry-jeudy': {
         id: 'jerry-jeudy',
@@ -627,7 +702,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'CLE',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jerry_jeudy.png',
-        tier: 6
+        tier: 6,
+        adp: 95.3
     },
     'kyler-murray': {
         id: 'kyler-murray',
@@ -635,7 +711,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'ARI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/kyler_murray.png',
-        tier: 6
+        tier: 6,
+        adp: 97.4
     },
     'jordan-addison': {
         id: 'jordan-addison',
@@ -643,7 +720,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'MIN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jordan_addison.png',
-        tier: 6
+        tier: 6,
+        adp: 92.2
     },
     'rome-odunze': {
         id: 'rome-odunze',
@@ -651,7 +729,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'CHI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/rome_odunze.png',
-        tier: 6
+        tier: 6,
+        adp: 90.8
     },
     'travis-kelce': {
         id: 'travis-kelce',
@@ -659,7 +738,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'KC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/travis_kelce.png',
-        tier: 6
+        tier: 6,
+        adp: 62.6
     },
     'mark-andrews': {
         id: 'mark-andrews',
@@ -667,7 +747,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'BAL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/mark_andrews.png',
-        tier: 6
+        tier: 6,
+        adp: 63.3
     },
     'jauan-jennings': {
         id: 'jauan-jennings',
@@ -675,7 +756,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'SF',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jauan_jennings.png',
-        tier: 6
+        tier: 6,
+        adp: 105.9
     },
 
     // Tier 7 Players
@@ -685,7 +767,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'LV',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jakobi_meyers.png',
-        tier: 7
+        tier: 7,
+        adp: 111.4
     },
     'david-njoku': {
         id: 'david-njoku',
@@ -693,7 +776,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'CLE',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/david_njoku.png',
-        tier: 7
+        tier: 7,
+        adp: 79.9
     },
     'travis-etienne-jr': {
         id: 'travis-etienne-jr',
@@ -701,7 +785,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'JAC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/travis_etienne_jr.png',
-        tier: 7
+        tier: 7,
+        adp: 110.8
     },
     'tyrone-tracy-jr': {
         id: 'tyrone-tracy-jr',
@@ -709,7 +794,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'NYG',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/tyrone_tracy_jr.png',
-        tier: 7
+        tier: 7,
+        adp: 96.1
     },
     'justin-fields': {
         id: 'justin-fields',
@@ -717,7 +803,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'NYJ',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/justin_fields.png',
-        tier: 7
+        tier: 7,
+        adp: 83.8
     },
     'evan-engram': {
         id: 'evan-engram',
@@ -725,7 +812,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'DEN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/evan_engram.png',
-        tier: 7
+        tier: 7,
+        adp: 88
     },
     'jaylen-warren': {
         id: 'jaylen-warren',
@@ -733,7 +821,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'PIT',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jaylen_warren.png',
-        tier: 7
+        tier: 7,
+        adp: 96.1
     },
     'khalil-shakir': {
         id: 'khalil-shakir',
@@ -741,7 +830,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'BUF',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/khalil_shakir.png',
-        tier: 7
+        tier: 7,
+        adp: 116.6
     },
     'brock-purdy': {
         id: 'brock-purdy',
@@ -749,7 +839,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'SF',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/brock_purdy.png',
-        tier: 7
+        tier: 7,
+        adp: 84.6
     },
     'quinshon-judkins': {
         id: 'quinshon-judkins',
@@ -757,7 +848,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'CLE',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/quinshon_judkins.png',
-        tier: 7
+        tier: 7,
+        adp: 100.5
     },
     'caleb-williams': {
         id: 'caleb-williams',
@@ -765,7 +857,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'CHI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/caleb_williams.png',
-        tier: 7
+        tier: 7,
+        adp: 114.8
     },
     'dak-prescott': {
         id: 'dak-prescott',
@@ -773,7 +866,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'DAL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/dak_prescott.png',
-        tier: 7
+        tier: 7,
+        adp: 104.3
     },
     'jayden-reed': {
         id: 'jayden-reed',
@@ -781,7 +875,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'GB',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jayden_reed.png',
-        tier: 7
+        tier: 7,
+        adp: 103.6
     },
     'justin-herbert': {
         id: 'justin-herbert',
@@ -789,7 +884,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'LAC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/justin_herbert.png',
-        tier: 7
+        tier: 7,
+        adp: 103.1
     },
     'stefon-diggs': {
         id: 'stefon-diggs',
@@ -797,7 +893,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'NE',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/stefon_diggs.png',
-        tier: 7
+        tier: 7,
+        adp: 104.7
     },
     'deebo-samuel-sr': {
         id: 'deebo-samuel-sr',
@@ -805,7 +902,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'WAS',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/deebo_samuel_sr.png',
-        tier: 7
+        tier: 7,
+        adp: 104.1
     },
     'javonte-williams': {
         id: 'javonte-williams',
@@ -813,7 +911,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'DAL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/javonte_williams.png',
-        tier: 7
+        tier: 7,
+        adp: 124.7
     },
     'najee-harris': {
         id: 'najee-harris',
@@ -821,7 +920,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'LAC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/najee_harris.png',
-        tier: 7
+        tier: 7,
+        adp: 114.6
     },
     'tucker-kraft': {
         id: 'tucker-kraft',
@@ -829,7 +929,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'GB',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/tucker_kraft.png',
-        tier: 7
+        tier: 7,
+        adp: 100.1
     },
     'jared-goff': {
         id: 'jared-goff',
@@ -837,7 +938,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'DET',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jared_goff.png',
-        tier: 7
+        tier: 7,
+        adp: 100.2
     },
     'ricky-pearsall': {
         id: 'ricky-pearsall',
@@ -845,7 +947,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'SF',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/ricky_pearsall.png',
-        tier: 7
+        tier: 7,
+        adp: 112.8
     },
     'josh-downs': {
         id: 'josh-downs',
@@ -853,7 +956,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'IND',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/josh_downs.png',
-        tier: 7
+        tier: 7,
+        adp: 123.5
     },
     'jordan-mason': {
         id: 'jordan-mason',
@@ -861,7 +965,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'MIN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jordan_mason.png',
-        tier: 7
+        tier: 7,
+        adp: 102.1
     },
     'rhamondre-stevenson': {
         id: 'rhamondre-stevenson',
@@ -869,7 +974,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'NE',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/rhamondre_stevenson.png',
-        tier: 7
+        tier: 7,
+        adp: 117.1
     },
     'drake-maye': {
         id: 'drake-maye',
@@ -877,7 +983,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'NE',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/drake_maye.png',
-        tier: 7
+        tier: 7,
+        adp: 119.2
     },
     'zach-charbonnet': {
         id: 'zach-charbonnet',
@@ -885,7 +992,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'SEA',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/zach_charbonnet.png',
-        tier: 7
+        tier: 7,
+        adp: 115.3
     },
     'jordan-love': {
         id: 'jordan-love',
@@ -893,7 +1001,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'GB',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jordan_love.png',
-        tier: 7
+        tier: 7,
+        adp: 118.4
     },
     'michael-pittman-jr': {
         id: 'michael-pittman-jr',
@@ -901,7 +1010,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'IND',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/michael_pittman_jr.png',
-        tier: 7
+        tier: 7,
+        adp: 129.5
     },
     'cam-skattebo': {
         id: 'cam-skattebo',
@@ -909,7 +1019,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'NYG',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/cam_skattebo.png',
-        tier: 7
+        tier: 7,
+        adp: 113
     },
     'cooper-kupp': {
         id: 'cooper-kupp',
@@ -917,7 +1028,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'SEA',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/cooper_kupp.png',
-        tier: 7
+        tier: 7,
+        adp: 113
     },
     'tyjae-spears': {
         id: 'tyjae-spears',
@@ -925,7 +1037,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'TEN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/tyjae_spears.png',
-        tier: 7
+        tier: 7,
+        adp: 129.7
     },
     'dalton-kincaid': {
         id: 'dalton-kincaid',
@@ -933,7 +1046,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'BUF',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/dalton_kincaid.png',
-        tier: 7
+        tier: 7,
+        adp: 116.9
     },
     'trevor-lawrence': {
         id: 'trevor-lawrence',
@@ -941,7 +1055,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'JAC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/trevor_lawrence.png',
-        tier: 7
+        tier: 7,
+        adp: 132.2
     },
     'darnell-mooney': {
         id: 'darnell-mooney',
@@ -949,7 +1064,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'ATL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/darnell_mooney.png',
-        tier: 7
+        tier: 7,
+        adp: 132
     },
     'brandon-aiyuk': {
         id: 'brandon-aiyuk',
@@ -957,7 +1073,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'SF',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/brandon_aiyuk.png',
-        tier: 7
+        tier: 7,
+        adp: 126
     },
     // Tier 8 Players
     'cj-stroud': {
@@ -966,7 +1083,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'HOU',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/cj_stroud.png',
-        tier: 8
+        tier: 8,
+        adp: 121.2
     },
     'jake-ferguson': {
         id: 'jake-ferguson',
@@ -974,7 +1092,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'DAL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jake_ferguson.png',
-        tier: 8
+        tier: 8,
+        adp: 120
     },
     'rachaad-white': {
         id: 'rachaad-white',
@@ -982,7 +1101,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'TB',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/rachaad_white.png',
-        tier: 8
+        tier: 8,
+        adp: 129.3
     },
     'dallas-goedert': {
         id: 'dallas-goedert',
@@ -990,7 +1110,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'PHI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/dallas_goedert.png',
-        tier: 8
+        tier: 8,
+        adp: 116.6
     },
     'tyler-warren': {
         id: 'tyler-warren',
@@ -998,7 +1119,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'IND',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/tyler_warren.png',
-        tier: 8
+        tier: 8,
+        adp: 121
     },
     'tank-bigsby': {
         id: 'tank-bigsby',
@@ -1006,7 +1128,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'JAC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/tank_bigsby.png',
-        tier: 8
+        tier: 8,
+        adp: 124.7
     },
     'jk-dobbins': {
         id: 'jk-dobbins',
@@ -1014,7 +1137,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'DEN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jk_dobbins.png',
-        tier: 8
+        tier: 8,
+        adp: 116
     },
     'emeka-egbuka': {
         id: 'emeka-egbuka',
@@ -1022,7 +1146,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'TB',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/emeka_egbuka.png',
-        tier: 8
+        tier: 8,
+        adp: 124
     },
     'matthew-golden': {
         id: 'matthew-golden',
@@ -1030,7 +1155,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'GB',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/matthew_golden.png',
-        tier: 8
+        tier: 8,
+        adp: 123.3
     },
     'jj-mccarthy': {
         id: 'jj-mccarthy',
@@ -1038,7 +1164,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'MIN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jj_mccarthy.png',
-        tier: 8
+        tier: 8,
+        adp: 124.4
     },
     'keon-coleman': {
         id: 'keon-coleman',
@@ -1046,7 +1173,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'BUF',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/keon_coleman.png',
-        tier: 8
+        tier: 8,
+        adp: 129.1
     },
     'austin-ekeler': {
         id: 'austin-ekeler',
@@ -1054,7 +1182,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'WAS',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/austin_ekeler.png',
-        tier: 8
+        tier: 8,
+        adp: 128.9
     },
     'rashid-shaheed': {
         id: 'rashid-shaheed',
@@ -1062,7 +1191,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'NO',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/rashid_shaheed.png',
-        tier: 8
+        tier: 8,
+        adp: 131.9
     },
     'trey-benson': {
         id: 'trey-benson',
@@ -1070,7 +1200,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'ARI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/trey_benson.png',
-        tier: 8
+        tier: 8,
+        adp: 130.7
     },
     'ray-davis': {
         id: 'ray-davis',
@@ -1078,7 +1209,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'BUF',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/ray_davis.png',
-        tier: 8
+        tier: 8,
+        adp: 130.4
     },
     'matthew-stafford': {
         id: 'matthew-stafford',
@@ -1086,7 +1218,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'LAR',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/matthew_stafford.png',
-        tier: 8
+        tier: 8,
+        adp: 127.5
     },
     'christian-kirk': {
         id: 'christian-kirk',
@@ -1094,7 +1227,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'HOU',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/christian_kirk.png',
-        tier: 8
+        tier: 8,
+        adp: 132.6
     },
     'tua-tagovailoa': {
         id: 'tua-tagovailoa',
@@ -1102,7 +1236,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'MIA',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/tua_tagovailoa.png',
-        tier: 8
+        tier: 8,
+        adp: 126.4
     },
     'jonnu-smith': {
         id: 'jonnu-smith',
@@ -1110,7 +1245,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'PIT',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jonnu_smith.png',
-        tier: 8
+        tier: 8,
+        adp: 115.2
     },
     'colston-loveland': {
         id: 'colston-loveland',
@@ -1118,7 +1254,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'CHI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/colston_loveland.png',
-        tier: 8
+        tier: 8,
+        adp: 126.5
     },
     'rashod-bateman': {
         id: 'rashod-bateman',
@@ -1126,7 +1263,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'BAL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/rashod_bateman.png',
-        tier: 8
+        tier: 8,
+        adp: 130.6
     },
     'tyler-allgeier': {
         id: 'tyler-allgeier',
@@ -1134,7 +1272,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'ATL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/tyler_allgeier.png',
-        tier: 8
+        tier: 8,
+        adp: 131.3
     },
     'isaac-guerendo': {
         id: 'isaac-guerendo',
@@ -1142,7 +1281,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'SF',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/isaac_guerendo.png',
-        tier: 8
+        tier: 8,
+        adp: 128.1
     },
     'bryce-young': {
         id: 'bryce-young',
@@ -1150,7 +1290,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'CAR',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/bryce_young.png',
-        tier: 8
+        tier: 8,
+        adp: 127.5
     },
     'rico-dowdle': {
         id: 'rico-dowdle',
@@ -1158,7 +1299,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'CAR',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/rico_dowdle.png',
-        tier: 8
+        tier: 8,
+        adp: 129.4
     },
     'luther-burden-iii': {
         id: 'luther-burden-iii',
@@ -1166,7 +1308,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'CHI',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/luther_burden_iii.png',
-        tier: 8
+        tier: 8,
+        adp: 129.2
     },
     'hunter-henry': {
         id: 'hunter-henry',
@@ -1174,7 +1317,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'NE',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/hunter_henry.png',
-        tier: 8
+        tier: 8,
+        adp: 128.5
     },
     'cedric-tillman': {
         id: 'cedric-tillman',
@@ -1190,7 +1334,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'JAC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/bhayshul_tuten.png',
-        tier: 8
+        tier: 8,
+        adp: 130.4
     },
     'marvin-mims-jr': {
         id: 'marvin-mims-jr',
@@ -1198,7 +1343,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'DEN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/marvin_mims_jr.png',
-        tier: 8
+        tier: 8,
+        adp: 132.5
     },
     'jaylen-wright': {
         id: 'jaylen-wright',
@@ -1206,7 +1352,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'MIA',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jaylen_wright.png',
-        tier: 8
+        tier: 8,
+        adp: 130.5
     },
     'tre-harris': {
         id: 'tre-harris',
@@ -1214,15 +1361,17 @@ export const playerDatabase = {
         position: 'WR',
         team: 'LAC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/tre_harris.png',
-        tier: 8
+        tier: 8,
+        adp: 130.9
     },
     'marquise-brown': {
         id: 'marquise-brown',
-        name: 'Marquise Brown',
+        name: 'Hollywood Brown',
         position: 'WR',
         team: 'KC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/marquise_brown.png',
-        tier: 8
+        tier: 8,
+        adp: 129.5
     },
     'michael-penix-jr': {
         id: 'michael-penix-jr',
@@ -1230,7 +1379,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'ATL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/michael_penix_jr.png',
-        tier: 8
+        tier: 8,
+        adp: 125.9
     },
     'jayden-higgins': {
         id: 'jayden-higgins',
@@ -1238,7 +1388,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'HOU',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jayden_higgins.png',
-        tier: 8
+        tier: 8,
+        adp: 132
     },
 
     // Tier 9 Players
@@ -1248,7 +1399,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'ATL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/kyle_pitts.png',
-        tier: 9
+        tier: 9,
+        adp: 126.3
     },
     'braelon-allen': {
         id: 'braelon-allen',
@@ -1256,7 +1408,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'NYJ',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/braelon_allen.png',
-        tier: 9
+        tier: 9,
+        adp: 130
     },
     'jaydon-blue': {
         id: 'jaydon-blue',
@@ -1264,7 +1417,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'DAL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jaydon_blue.png',
-        tier: 9
+        tier: 9,
+        adp: 128.9
     },
     'jerome-ford': {
         id: 'jerome-ford',
@@ -1272,7 +1426,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'CLE',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jerome_ford.png',
-        tier: 9
+        tier: 9,
+        adp: 130.1
     },
     'romeo-doubs': {
         id: 'romeo-doubs',
@@ -1288,7 +1443,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'WAS',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/zach_ertz.png',
-        tier: 9
+        tier: 9,
+        adp: 131.6
     },
     'adam-thielen': {
         id: 'adam-thielen',
@@ -1296,7 +1452,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'CAR',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/adam_thielen.png',
-        tier: 9
+        tier: 9,
+        adp: 128.4
     },
     'geno-smith': {
         id: 'geno-smith',
@@ -1304,7 +1461,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'LV',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/geno_smith.png',
-        tier: 9
+        tier: 9,
+        adp: 123.9
     },
     'quentin-johnston': {
         id: 'quentin-johnston',
@@ -1320,7 +1478,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'NE',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 9
+        tier: 9,
+        adp: 130.1
     },
     'jalen-mcmillan': {
         id: 'jalen-mcmillan',
@@ -1328,7 +1487,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'TB',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jalen_mcmillan.png',
-        tier: 9
+        tier: 9,
+        adp: 129.3
     },
     'roschon-johnson': {
         id: 'roschon-johnson',
@@ -1344,7 +1504,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'BAL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/isaiah_likely.png',
-        tier: 9
+        tier: 9,
+        adp: 131.2
     },
     'marshawn-lloyd': {
         id: 'marshawn-lloyd',
@@ -1360,7 +1521,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'CLE',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/dylan_sampson.png',
-        tier: 9
+        tier: 9,
+        adp: 131.4
     },
     'nick-chubb': {
         id: 'nick-chubb',
@@ -1368,7 +1530,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'HOU',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/nick_chubb.png',
-        tier: 9
+        tier: 9,
+        adp: 125
     },
     'wan-dale-robinson': {
         id: 'wan-dale-robinson',
@@ -1384,7 +1547,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'LAR',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/blake_corum.png',
-        tier: 9
+        tier: 9,
+        adp: 128.8
     },
     'xavier-legette': {
         id: 'xavier-legette',
@@ -1400,7 +1564,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'BAL',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/deandre_hopkins.png',
-        tier: 9
+        tier: 9,
+        adp: 125.9
     },
     'sam-darnold': {
         id: 'sam-darnold',
@@ -1408,7 +1573,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'SEA',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/sam_darnold.png',
-        tier: 9
+        tier: 9,
+        adp: 123.4
     },
     'joshua-palmer': {
         id: 'joshua-palmer',
@@ -1424,7 +1590,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'DEN',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 9
+        tier: 9,
+        adp: 78.1
     },
     'demario-douglas': {
         id: 'demario-douglas',
@@ -1440,7 +1607,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'CIN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/mike_gesicki.png',
-        tier: 9
+        tier: 9,
+        adp: 130.7
     },
     'brenton-strange': {
         id: 'brenton-strange',
@@ -1448,7 +1616,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'JAC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/brenton_strange.png',
-        tier: 9
+        tier: 9,
+        adp: 134.6
     },
     'philadelphia-eagles': {
         id: 'philadelphia-eagles',
@@ -1456,7 +1625,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'PHI',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 9
+        tier: 9,
+        adp: 78.5
     },
     'cameron-ward': {
         id: 'cameron-ward',
@@ -1464,7 +1634,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'TEN',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 9
+        tier: 9,
+        adp: 124.1
     },
     'pat-freiermuth': {
         id: 'pat-freiermuth',
@@ -1472,7 +1643,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'PIT',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/pat_freiermuth.png',
-        tier: 9
+        tier: 9,
+        adp: 131.4
     },
     'jalen-coker': {
         id: 'jalen-coker',
@@ -1488,7 +1660,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'LV',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/jack_bech.png',
-        tier: 9
+        tier: 9,
+        adp: 130.9
     },
     'kareem-hunt': {
         id: 'kareem-hunt',
@@ -1496,7 +1669,8 @@ export const playerDatabase = {
         position: 'RB',
         team: 'KC',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/kareem_hunt.png',
-        tier: 9
+        tier: 9,
+        adp: 126.5
     },
     'alec-pierce': {
         id: 'alec-pierce',
@@ -1512,7 +1686,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'TB',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/cade_otton.png',
-        tier: 9
+        tier: 9,
+        adp: 127.9
     },
     'baltimore-ravens': {
         id: 'baltimore-ravens',
@@ -1520,7 +1695,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'BAL',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 9
+        tier: 9,
+        adp: 91.6
     },
     'minnesota-vikings': {
         id: 'minnesota-vikings',
@@ -1528,7 +1704,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'MIN',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 9
+        tier: 9,
+        adp: 107.8
     },
 
     // Tier 10 Players
@@ -1538,7 +1715,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'PIT',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 90.1
     },
     'dj-giddens': {
         id: 'dj-giddens',
@@ -1554,7 +1732,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'TEN',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/chig_okonkwo.png',
-        tier: 10
+        tier: 10,
+        adp: 131.7
     },
     'justice-hill': {
         id: 'justice-hill',
@@ -1570,7 +1749,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'HOU',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 118
     },
     'aaron-rodgers': {
         id: 'aaron-rodgers',
@@ -1578,7 +1758,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'PIT',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/aaron_rodgers.png',
-        tier: 10
+        tier: 10,
+        adp: 122
     },
     'kansas-city-chiefs': {
         id: 'kansas-city-chiefs',
@@ -1586,7 +1767,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'KC',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 109.3
     },
     'michael-wilson': {
         id: 'michael-wilson',
@@ -1602,7 +1784,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'BUF',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 127.6
     },
     'mason-taylor': {
         id: 'mason-taylor',
@@ -1618,7 +1801,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'DAL',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 83.4
     },
     'adonai-mitchell': {
         id: 'adonai-mitchell',
@@ -1642,7 +1826,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'DET',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 100.7
     },
     'dontayvion-wicks': {
         id: 'dontayvion-wicks',
@@ -1682,7 +1867,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'LAR',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 142.5
     },
     'darius-slayton': {
         id: 'darius-slayton',
@@ -1698,7 +1884,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'DEN',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 126.6
     },
     'los-angeles-chargers': {
         id: 'los-angeles-chargers',
@@ -1706,7 +1893,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'LAC',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 133.5
     },
     'cameron-dicker': {
         id: 'cameron-dicker',
@@ -1714,7 +1902,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'LAC',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 94.4
     },
     'green-bay-packers': {
         id: 'green-bay-packers',
@@ -1722,7 +1911,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'GB',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 141.2
     },
     'andrei-iosivas': {
         id: 'andrei-iosivas',
@@ -1746,7 +1936,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'PIT',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 110.5
     },
     'seattle-seahawks': {
         id: 'seattle-seahawks',
@@ -1754,7 +1945,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'SEA',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 142.8
     },
     'will-shipley': {
         id: 'will-shipley',
@@ -1770,7 +1962,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'TB',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 131.8
     },
     'kyle-monangai': {
         id: 'kyle-monangai',
@@ -1794,7 +1987,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'HOU',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 115.9
     },
     'miles-sanders': {
         id: 'miles-sanders',
@@ -1810,7 +2004,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'CIN',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 130.3
     },
     'jaleel-mclaughlin': {
         id: 'jaleel-mclaughlin',
@@ -1826,7 +2021,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'KC',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 128.2
     },
     'new-york-jets': {
         id: 'new-york-jets',
@@ -1834,7 +2030,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'NYJ',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 142.6
     },
     'keenan-allen': {
         id: 'keenan-allen',
@@ -1842,7 +2039,8 @@ export const playerDatabase = {
         position: 'WR',
         team: 'LAC',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 128.7
     },
     'calvin-austin-iii': {
         id: 'calvin-austin-iii',
@@ -1866,7 +2064,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'IND',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/anthony_richardson_sr.png',
-        tier: 10
+        tier: 10,
+        adp: 127.7
     },
     'keaton-mitchell': {
         id: 'keaton-mitchell',
@@ -1882,7 +2081,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'BUF',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 137.8
     },
     'jatavion-sanders': {
         id: 'jatavion-sanders',
@@ -1930,7 +2130,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'SF',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 131.3
     },
     'elic-ayomanor': {
         id: 'elic-ayomanor',
@@ -1954,7 +2155,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'PHI',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 10
+        tier: 10,
+        adp: 135.4
     },
     'cole-kmet': {
         id: 'cole-kmet',
@@ -2012,7 +2214,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'MIA',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 11
+        tier: 11,
+        adp: 138.4
     },
     'ollie-gordon-ii': {
         id: 'ollie-gordon-ii',
@@ -2044,7 +2247,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'ATL',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 11
+        tier: 11,
+        adp: 134.7
     },
     'trevor-etienne': {
         id: 'trevor-etienne',
@@ -2084,7 +2288,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'DAL',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 11
+        tier: 11,
+        adp: 135.7
     },
     'elijah-moore': {
         id: 'elijah-moore',
@@ -2100,7 +2305,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'TB',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 11
+        tier: 11,
+        adp: 131.4
     },
     'antonio-gibson': {
         id: 'antonio-gibson',
@@ -2116,7 +2322,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'LAR',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 11
+        tier: 11,
+        adp: 135.8
     },
     'devin-singletary': {
         id: 'devin-singletary',
@@ -2204,7 +2411,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'WAS',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 11
+        tier: 11,
+        adp: 139.2
     },
     'noah-gray': {
         id: 'noah-gray',
@@ -2236,7 +2444,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'CLE',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 11
+        tier: 11,
+        adp: 144.7
     },
     'woody-marks': {
         id: 'woody-marks',
@@ -2308,7 +2517,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'CHI',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 11
+        tier: 11,
+        adp: 131.1
     },
     'darren-waller': {
         id: 'darren-waller',
@@ -2316,7 +2526,8 @@ export const playerDatabase = {
         position: 'TE',
         team: 'MIA',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 11
+        tier: 11,
+        adp: 132.5
     },
     'tim-patrick': {
         id: 'tim-patrick',
@@ -2380,7 +2591,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'LV',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 11
+        tier: 11,
+        adp: 137.4
     },
     'xavier-restrepo': {
         id: 'xavier-restrepo',
@@ -2549,7 +2761,8 @@ export const playerDatabase = {
         position: 'QB',
         team: 'CLE',
         photo: 'https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/shedeur_sanders.png',
-        tier: 12
+        tier: 12,
+        adp: 119.7
     },
     'tez-johnson': {
         id: 'tez-johnson',
@@ -2565,7 +2778,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'NE',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 12
+        tier: 12,
+        adp: 134.7
     },
     'raheim-sanders': {
         id: 'raheim-sanders',
@@ -2621,7 +2835,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'MIA',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 12
+        tier: 12,
+        adp: 132.3
     },
     'will-reichard': {
         id: 'will-reichard',
@@ -2629,7 +2844,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'MIN',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 12
+        tier: 12,
+        adp: 136.5
     },
     'will-dissly': {
         id: 'will-dissly',
@@ -2645,7 +2861,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'ARI',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 12
+        tier: 12,
+        adp: 140
     },
     'zamir-white': {
         id: 'zamir-white',
@@ -2685,7 +2902,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'BAL',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 12
+        tier: 12,
+        adp: 136.8
     },
     'gus-edwards': {
         id: 'gus-edwards',
@@ -2862,7 +3080,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'SF',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 13
+        tier: 13,
+        adp: 131.5
     },
     'austin-hooper': {
         id: 'austin-hooper',
@@ -2886,7 +3105,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'NYG',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 13
+        tier: 13,
+        adp: 136.4
     },
     'donovan-edwards': {
         id: 'donovan-edwards',
@@ -2902,7 +3122,8 @@ export const playerDatabase = {
         position: 'K',
         team: 'GB',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 13
+        tier: 13,
+        adp: 131.1
     },
     'tank-dell': {
         id: 'tank-dell',
@@ -2950,7 +3171,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'WAS',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 13
+        tier: 13,
+        adp: 135.9
     },
     'greg-dortch': {
         id: 'greg-dortch',
@@ -3150,7 +3372,8 @@ export const playerDatabase = {
         position: 'DST',
         team: 'CIN',
         photo: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg',
-        tier: 13
+        tier: 13,
+        adp: 134.3
     },
     'kendrick-bourne': {
         id: 'kendrick-bourne',

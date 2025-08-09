@@ -310,9 +310,9 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
                 <div className="w-12 sm:w-20 text-center">
                     {player.adp ? (
                         <span className={`text-xs font-medium ${index - player.adp < 0
-                            ? (darkMode ? 'text-green-400' : 'text-green-600') // Good value (user ranks higher)
+                            ? (darkMode ? 'text-red-400' : 'text-red-600') // Reach (user ranks higher)
                             : index - player.adp > 0
-                                ? (darkMode ? 'text-red-400' : 'text-red-600') // Reach (user ranks lower)
+                                ? (darkMode ? 'text-green-400' : 'text-green-600') // Good value (user ranks lower)
                                 : (darkMode ? 'text-gray-400' : 'text-gray-600') // Even
                             }`}>
                             {(index - player.adp) > 0 ? '+' : ''}{(index - player.adp).toFixed(1)}
