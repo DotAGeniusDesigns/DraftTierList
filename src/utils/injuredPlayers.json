@@ -1,210 +1,250 @@
 {
-  "marvin-harrison-jr": {
-    "isInjured": true,
-    "injuryNote": "Missing third straight practice due to knee issue and illness"
-  },
-  "michael-wilson": {
-    "isInjured": true,
-    "injuryNote": "In NFL's concussion protocol"
-  },
-  "darnell-mooney": {
-    "isInjured": true,
-    "injuryNote": "Coach non-committal on Week 1 readiness due to shoulder injury"
-  },
-  "isaiah-likely": {
-    "isInjured": true,
-    "injuryNote": "Underwent surgery for broken bone in foot, 6-week recovery timeline"
-  },
-  "joshua-palmer": {
-    "isInjured": true,
-    "injuryNote": "Not practicing due to groin injury"
-  },
-  "khalil-shakir": {
-    "isInjured": true,
-    "injuryNote": "Diagnosed with high-ankle sprain, considered week-to-week"
-  },
-  "tyler-bass": {
-    "isInjured": true,
-    "injuryNote": "Did not participate in practice due to pelvis injury"
-  },
-  "curtis-samuel": {
-    "isInjured": true,
-    "injuryNote": "GM said will return \"sooner rather than later\" from hamstring injury"
-  },
-  "tommy-tremble": {
-    "isInjured": true,
-    "injuryNote": "Ran routes on side during training camp due to back injury"
-  },
-  "kenny-pickett": {
-    "isInjured": true,
-    "injuryNote": "Will return to practice in limited capacity due to hamstring injury"
-  },
-  "shedeur-sanders": {
-    "isInjured": true,
-    "injuryNote": "Did not participate in team drills due to arm soreness"
-  },
-  "miles-sanders": {
-    "isInjured": true,
-    "injuryNote": "Not practicing due to slight knee bruise"
-  },
-  "tucker-kraft": {
-    "isInjured": true,
-    "injuryNote": "Unable to practice due to groin injury"
-  },
-  "dontayvion-wicks": {
-    "isInjured": true,
-    "injuryNote": "Unable to practice due to calf injury"
-  },
-  "emanuel-wilson": {
-    "isInjured": true,
-    "injuryNote": "Tweaked knee at practice, not expected to miss much time"
-  },
-  "marshawn-lloyd": {
-    "isInjured": true,
-    "injuryNote": "Dealing with groin injury, not anticipated for this week"
-  },
-  "christian-watson": {
-    "isInjured": true,
-    "injuryNote": "Still won't be rushed into practices this summer due to knee injury"
-  },
-  "joe-mixon": {
-    "isInjured": true,
-    "injuryNote": "Expected to face extended absence due to foot/ankle injury, re-evaluated closer to season"
-  },
-  "tank-dell": {
-    "isInjured": true,
-    "injuryNote": "On active/PUP list with knee injury, no timetable for return"
-  },
-  "dameon-pierce": {
-    "isInjured": true,
-    "injuryNote": "Placed on active/PUP list for start of training camp"
-  },
-  "michael-pittman-jr": {
-    "isInjured": true,
-    "injuryNote": "Did not practice due to groin injury"
-  },
-  "bhayshul-tuten": {
-    "isInjured": true,
-    "injuryNote": "Returned to practice field after hamstring injury"
-  },
-  "marquise-brown": {
-    "isInjured": true,
-    "injuryNote": "Did not practice due to ankle injury"
-  },
-  "najee-harris": {
-    "isInjured": true,
-    "injuryNote": "Eye injury, was in helmet and weighted vest while walking around practice field"
-  },
-  "ladd-mcconkey": {
-    "isInjured": true,
-    "injuryNote": "Won't practice due to undisclosed injury"
-  },
-  "matthew-stafford": {
-    "isInjured": true,
-    "injuryNote": "Unlikely to participate in joint practices due to back injury"
-  },
-  "terrance-ferguson": {
-    "isInjured": true,
-    "injuryNote": "Unable to practice due to groin strain"
-  },
-  "darren-waller": {
-    "isInjured": true,
-    "injuryNote": "Coach said in \"tremendous shape\" but not \"football shape\""
-  },
-  "tj-hockenson": {
-    "isInjured": true,
-    "injuryNote": "Suffered apparent groin injury during practice, walking with noticeable limp"
-  },
-  "justin-jefferson": {
-    "isInjured": true,
-    "injuryNote": "Working with team trainers on side due to hamstring injury"
-  },
-  "kendrick-bourne": {
-    "isInjured": true,
-    "injuryNote": "Limped off field during scrimmage before heading to locker room"
-  },
-  "stefon-diggs": {
-    "isInjured": true,
-    "injuryNote": "Practicing through knee issue, noted as \"cut above\" at receiver position"
-  },
-  "antonio-gibson": {
-    "isInjured": true,
-    "injuryNote": "Did not work in walk-through practice, won't participate in scrimmage"
-  },
-  "juwan-johnson": {
-    "isInjured": true,
-    "injuryNote": "Took part in individual drills after undisclosed injury"
-  },
-  "foster-moreau": {
-    "isInjured": true,
-    "injuryNote": "Listed as out with no specific details provided"
-  },
-  "taysom-hill": {
-    "isInjured": true,
-    "injuryNote": "Placed on active/PUP list due to knee injury"
-  },
-  "malik-nabers": {
-    "isInjured": true,
-    "injuryNote": "Coach said will participate in practice and is \"good\" despite shoulder injury"
-  },
-  "wan-dale-robinson": {
-    "isInjured": true,
-    "injuryNote": "Returned to practice in limited capacity due to leg injury"
-  },
-  "cam-skattebo": {
-    "isInjured": true,
-    "injuryNote": "Day-to-day with hamstring injury, will not practice"
-  },
-  "justin-fields": {
-    "isInjured": true,
-    "injuryNote": "Practicing with plastic shield on cleat to protect dislocated toe"
-  },
   "aj-brown": {
     "isInjured": true,
-    "injuryNote": "Not practicing due to hamstring issue"
+    "injuryNote": "Aug 18: Brown (undisclosed) didn't participate in Tuesday's practice, Dave Zangaro of NBC Sports Philadelphia reports."
   },
-  "isaac-guerendo": {
+  "alexander-mattison": {
     "isInjured": true,
-    "injuryNote": "Had early departure from practice due to apparent shoulder injury"
+    "injuryNote": "Aug 12: Mattison (neck), who was placed on season-ending IR on Monday, does not have a career-ending injury, David Furones of the South Florida Sun Sentinel reports."
   },
-  "jordan-james": {
+  "allen-lazard": {
     "isInjured": true,
-    "injuryNote": "Listed as questionable with no specific details provided"
-  },
-  "jauan-jennings": {
-    "isInjured": true,
-    "injuryNote": "Dealing with calf injury reaggravation from spring activities"
+    "injuryNote": "Aug 20: Lazard (shoulder) is day-to-day but did not practice Monday, Rich Cimini of ESPN.com reports."
   },
   "brandon-aiyuk": {
     "isInjured": true,
-    "injuryNote": "On active/PUP list with knee injury, been \"coach on the side\" during camp"
+    "injuryNote": "Aug 19: Aiyuk (groin) did not participate in Sunday's practice, Nick Wagoner of ESPN.com reports."
   },
-  "jacob-cowing": {
+  "calvin-austin-iii": {
     "isInjured": true,
-    "injuryNote": "Coach hopeful he'll be back by Aug. 11 for joint practices due to hamstring"
+    "injuryNote": "Aug 14: Austin (ankle) did not participate in practice Wednesday, Brooke Pryor of ESPN.com reports."
   },
-  "baker-mayfield": {
+  "calvin-ridley": {
     "isInjured": true,
-    "injuryNote": "Will not participate in practice due to hand injury, expected back next week"
-  },
-  "cade-otton": {
-    "isInjured": true,
-    "injuryNote": "Missed practice due to mild hamstring injury"
+    "injuryNote": "Aug 20: Ridley (ankle) is sitting out of Tuesday's practice, Michael DiRocco of ESPN.com reports."
   },
   "chris-godwin": {
     "isInjured": true,
-    "injuryNote": "Coach said \"on track\" but no specific timeline to return from ankle injury"
+    "injuryNote": "Aug 18: Godwin (hamstring) missed Saturday's preseason game, Jenna Laine of ESPN.com reports."
   },
-  "deebo-samuel-sr": {
+  "christian-watson": {
     "isInjured": true,
-    "injuryNote": "Injured left hand while diving for catch during practice"
+    "injuryNote": "Aug 12: Packers coach Matt LaFleur said Tuesday that Watson (knee) likely will begin the regular season on the PUP list but will be \"chomping at the bit\" to return, Matt Schneidman of The Athletic reports."
   },
-  "terry-mclaurin": {
+  "curtis-samuel": {
     "isInjured": true,
-    "injuryNote": "Requested trade due to ankle injury, team not interested in dealing him"
+    "injuryNote": "Aug 15: Samuel (hamstring) will be limited at practice Friday, Maddy Glab of the Bills' official site reports."
   },
-  "cooper-kupp": {
+  "dallas-goedert": {
     "isInjured": true,
-    "injuryNote": "Coach non-committal on Week 1 readiness due to shoulder injury"
+    "injuryNote": "Aug 18: Goedert (ankle) was held out of practice Sunday, Tim McManus of ESPN.com reports."
+  },
+  "darnell-mooney": {
+    "isInjured": true,
+    "injuryNote": "Aug 12: Falcons coach Raheem Morris said Tuesday that he doesn't know when Mooney (shoulder) will return, but he's confident it will be this year, Josh Kendall of The Athletic reports."
+  },
+  "darren-waller": {
+    "isInjured": true,
+    "injuryNote": "Aug 18: Head coach Mike McDaniel said Monday that Waller (undisclosed) could begin practicing this week, David Furones of the South Florida Sun Sentinel reports."
+  },
+  "de-von-achane": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Achane (calf) didn't practice Wednesday, Marcel Louis-Jacques of ESPN.com reports."
+  },
+  "deandre-hopkins": {
+    "isInjured": true,
+    "injuryNote": "Aug 19: Hopkins (knee) is participating in practice Tuesday, Jonas Shaffer of TheBaltimoreBanner.com reports."
+  },
+  "devonta-smith": {
+    "isInjured": true,
+    "injuryNote": "Aug 18: Smith (ankle) is not practicing Saturday, Tim McManus of ESPN.com reports."
+  },
+  "devin-neal": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Neal (hamstring) didn't practice Monday, Matt Connolly of ESPN.com reports."
+  },
+  "dexter-lawrence-ii": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Lawrence (hamstring) is sitting out practice Monday, Jordan Raanan of ESPN.com reports."
+  },
+  "donald-parham-jr": {
+    "isInjured": true,
+    "injuryNote": "Aug 17: Parham (ankle) is not practicing Sunday, Kris Rhim of ESPN.com reports."
+  },
+  "drew-sanders": {
+    "isInjured": true,
+    "injuryNote": "Aug 3: Sanders (foot) underwent successful foot surgery earlier this week, Zac Stevens of TheDNVR.com reports."
+  },
+  "foster-moreau": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Moreau (ankle) was held out of Monday's practice, Katherine Terrell of ESPN.com reports."
+  },
+  "hollywood-brown": {
+    "isInjured": true,
+    "injuryNote": "Aug 18: Brown (ankle/foot) has resumed practicing, Matt McMullen of the Chiefs' official site reports."
+  },
+  "jj-russell": {
+    "isInjured": true,
+    "injuryNote": "Jul 25: Russell was placed in concussion protocol Friday, Tyler Drake of ArizonaSports.com reports."
+  },
+  "jt-gray": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Gray (hamstring) was limited at practice Monday, Katherine Terrell of ESPN.com reports."
+  },
+  "jaalin-conyers": {
+    "isInjured": true,
+    "injuryNote": "Aug 4: The Dolphins placed Conyers (leg) on injured reserve Monday."
+  },
+  "jalen-mcmillan": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: McMillan (hamstring) was held out of Sunday's practice, Adam Jude of The Seattle Times reports."
+  },
+  "jayden-reed": {
+    "isInjured": true,
+    "injuryNote": "Aug 14: Reed (foot) is not wearing a walking boot at Thursday's practice, though he is not participating in on-field activities, Matt Schneidman of The Athletic reports."
+  },
+  "joey-porter-jr": {
+    "isInjured": true,
+    "injuryNote": "Aug 17: Porter (ankle) did not practice Friday, Brooke Pryor of ESPN.com reports."
+  },
+  "jordan-love": {
+    "isInjured": true,
+    "injuryNote": "Aug 18: Love (thumb) is participating in 7-on-7 drills at Monday's practice, Ryan Wood of USA Today reports."
+  },
+  "josh-downs": {
+    "isInjured": true,
+    "injuryNote": "Aug 21: Downs (hamstring) did not practice Wednesday, the Indianapolis Star reports."
+  },
+  "kareem-hunt": {
+    "isInjured": true,
+    "injuryNote": "Aug 13: Chiefs coach Andy Reid said Wednesday that Hunt (quadriceps) is dealing with a quad contusion and may not be available for Friday's preseason matchup against Seattle, Nate Taylor of ESPN.com reports."
+  },
+  "kendrick-bourne": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Bourne (knee) did not practice Tuesday, Mike Reiss of ESPN.com reports."
+  },
+  "khalil-shakir": {
+    "isInjured": true,
+    "injuryNote": "Aug 7: Bills head coach Sean McDermott said Thursday that Shakir (ankle) should be ready for the start of the regular season, Alaina Getzenberg of ESPN.com reports."
+  },
+  "kris-boyd": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Boyd (undisclosed) did not participate in Sunday's practice, Jamison Hensley of ESPN.com reports."
+  },
+  "ljarius-sneed": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Sneed (knee) was limited in Monday's practice, Adam Teicher of ESPN.com reports."
+  },
+  "malik-nabers": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Nabers (ankle) was limited at practice Monday, Jordan Raanan of ESPN.com reports."
+  },
+  "marshawn-lloyd": {
+    "isInjured": true,
+    "injuryNote": "Aug 17: Head coach Matt LaFleur told reporters Sunday that Lloyd \"is going to miss some time\" due to a hamstring injury that he suffered in Saturday's preseason game against the Colts, Rob Demovsky of ESPN.com reports."
+  },
+  "matthew-stafford": {
+    "isInjured": true,
+    "injuryNote": "Aug 19: Stafford (back) is dressed for practice Tuesday, Adam Grosbard of The Orange County Register reports."
+  },
+  "micah-parsons": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Cowboys head coach Brian Schottenheimer said \"I feel good about that, yeah\" when asked Wednesday whether he expects Parsons (back) to suit up Week 1 against the Eagles, Calvin Watkins of The Dallas Morning News reports."
+  },
+  "mike-gesicki": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Gesicki (hamstring) is nearing a return and might be able to play if the Bengals had a regular-season game coming up this weekend, Paul Dehner Jr. of The Athletic reports."
+  },
+  "najee-harris": {
+    "isInjured": true,
+    "injuryNote": "Aug 12: Harris (eye) participated in drills with a football Tuesday for the first time during training camp, Kris Rhim of ESPN.com reports."
+  },
+  "nick-bosa": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Bosa (hamstring) didn't practice Sunday, Nick Wagoner of ESPN.com reports."
+  },
+  "patrick-taylor-jr": {
+    "isInjured": true,
+    "injuryNote": "Aug 18: Taylor (ankle) did not participate in practice Friday, Rob Demovsky of ESPN.com reports."
+  },
+  "quentin-johnston": {
+    "isInjured": true,
+    "injuryNote": "Aug 16: Johnston (head) was carted off the field during Saturday's preseason game versus the Rams, Greg Beacham of the Associated Press reports."
+  },
+  "rachaad-white": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: White (undisclosed) did not participate in practice Monday, Jenna Laine of ESPN.com reports."
+  },
+  "rashawn-slater": {
+    "isInjured": true,
+    "injuryNote": "Aug 9: The Chargers placed Slater (knee) on injured reserve Saturday."
+  },
+  "ronnie-rivers": {
+    "isInjured": true,
+    "injuryNote": "Aug 10: Rams head coach Sean McVay said Sunday that Rivers (ribs) will be out for \"a little bit of time,\" Greg Beacham of ESPN.com reports."
+  },
+  "rondale-moore": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Moore (ankle) was limited at practice Monday, Josh Weinfuss of ESPN.com reports."
+  },
+  "sam-darnold": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Darnold (shoulder) was limited in Tuesday's practice, Nick Wagoner of ESPN.com reports."
+  },
+  "samson-ebukam": {
+    "isInjured": true,
+    "injuryNote": "Aug 17: Ebukam (back) did not play in Saturday's preseason loss to Green Bay."
+  },
+  "savion-williams": {
+    "isInjured": true,
+    "injuryNote": "Aug 19: Williams (hamstring) is not practicing Tuesday, Wes Hodkiewicz of the Packers' official site reports."
+  },
+  "shedeur-sanders": {
+    "isInjured": true,
+    "injuryNote": "Aug 19: Sanders (oblique) isn't practicing but could return for Wednesday's session, Mary Kay Cabot of The Cleveland Plain Dealer reports."
+  },
+  "stefon-diggs": {
+    "isInjured": true,
+    "injuryNote": "Aug 18: Diggs (hamstring) was limited in Saturday's practice, Alaina Getzenberg of ESPN.com reports."
+  },
+  "tank-dell": {
+    "isInjured": true,
+    "injuryNote": "Jul 23: GM Nick Caserio acknowledged Wednesday that there's no timetable for the return of Dell (knee), who is on the active/PUP list, Jonathan M. Alexander of The Houston Chronicle reports."
+  },
+  "taysom-hill": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Hill (oblique) was limited in practice Monday, Katherine Terrell of ESPN.com reports."
+  },
+  "terrance-ferguson": {
+    "isInjured": true,
+    "injuryNote": "Aug 18: Ferguson (groin) participated in practice Monday, Cameron DaSilva of USA Today reports."
+  },
+  "tetairoa-mcmillan": {
+    "isInjured": true,
+    "injuryNote": "Aug 19: McMillan (hamstring) is not practicing Tuesday, Joe Person of The Athletic reports."
+  },
+  "tommy-tremble": {
+    "isInjured": true,
+    "injuryNote": "Aug 19: Panthers head coach Dave Canales said Tuesday that Tremble (back), who remains on the active/PUP list, is still on track to suit up for Week 1 but won't be a candidate to return in time for Thursday's preseason finale, David Newton of ESPN.com reports."
+  },
+  "tory-horton": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Horton (ankle) was limited in practice Monday, Michael DiRocco of ESPN.com reports."
+  },
+  "travis-hunter": {
+    "isInjured": true,
+    "injuryNote": "Aug 19: Hunter (upper body) remains day-to-day and may return for Thursday's joint practice with the Dolphins, Mia O'Brien of 1010 XL 92.5 FM Jacksonville reports."
+  },
+  "tyjae-spears": {
+    "isInjured": true,
+    "injuryNote": "Aug 18: Spears (ankle) was limited in practice Sunday, Turron Davenport of ESPN.com reports."
+  },
+  "tyler-bass": {
+    "isInjured": true,
+    "injuryNote": "Aug 15: Bills head coach Sean McDermott said Friday that Bass (pelvis) is \"moving in the right direction\" and hopes he'll be available for the team's preseason finale against Tampa Bay on Sat., Aug. 23, Katherine Fitzgerald of The Buffalo News reports."
+  },
+  "tyreek-hill": {
+    "isInjured": true,
+    "injuryNote": "Aug 20: Hill (oblique) is not practicing Wednesday, Omar Kelly of the Miami Herald reports."
   }
-} 
+}

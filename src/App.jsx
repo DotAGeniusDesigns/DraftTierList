@@ -75,6 +75,9 @@ function App() {
     // Export/Import modal state
     const [showExportImport, setShowExportImport] = useState(false);
 
+    // Reset to default confirmation modal state
+    const [showResetConfirm, setShowResetConfirm] = useState(false);
+
     // Ref for the dropdown container
     const dropdownRef = useRef(null);
 
@@ -182,6 +185,13 @@ function App() {
             drafted: false
         }));
         setPlayers(updatedPlayers);
+    };
+
+    // Reset to default database order
+    const handleResetToDefault = () => {
+        // Clear localStorage and reload fresh data
+        localStorage.removeItem('fantasy-football-players');
+        window.location.reload();
     };
 
     // Toggle risky status for a player
@@ -356,6 +366,17 @@ function App() {
                             >
                                 🔄 Reset Drafted
                             </button>
+
+                            {/* Reset to Default Button */}
+                            <button
+                                onClick={() => setShowResetConfirm(true)}
+                                className={`px-3 py-1 text-sm border rounded-md transition-colors whitespace-nowrap ${darkMode
+                                    ? 'bg-red-700 border-red-600 text-white hover:bg-red-600'
+                                    : 'bg-red-100 border-red-300 text-red-700 hover:bg-red-200'
+                                    }`}
+                            >
+                                ⚠️ Reset to Default
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -388,6 +409,41 @@ function App() {
                                         }`}
                                 >
                                     Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Reset to Default Confirmation Modal */}
+                {showResetConfirm && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                        <div className={`max-w-md w-full p-6 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+                            <div className="text-center mb-6">
+                                <div className="text-4xl mb-4">⚠️</div>
+                                <h3 className={`text-lg font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                    Reset to Default?
+                                </h3>
+                                <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                                    This will clear all your custom tier arrangements and draft status,
+                                    then reload the default database order. This action cannot be undone.
+                                </p>
+                            </div>
+                            <div className="flex gap-3 justify-center">
+                                <button
+                                    onClick={() => setShowResetConfirm(false)}
+                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
+                                        ? 'bg-gray-600 hover:bg-gray-700 text-white'
+                                        : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
+                                        }`}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleResetToDefault}
+                                    className="px-4 py-2 rounded-md text-sm font-medium bg-red-600 hover:bg-red-700 text-white transition-colors"
+                                >
+                                    Yes, Reset
                                 </button>
                             </div>
                         </div>
