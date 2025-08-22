@@ -24,8 +24,8 @@ const NewPage = ({ darkMode }) => {
                 // Migrate old format (names only) to new format (user objects)
                 const migratedSlots = decodedSlots.map(slot => ({
                     ...slot,
-                    available: slot.available.map(item => 
-                        typeof item === 'string' 
+                    available: slot.available.map(item =>
+                        typeof item === 'string'
                             ? { name: item, color: getAutoColor(item) }
                             : item
                     )
@@ -228,9 +228,9 @@ const NewPage = ({ darkMode }) => {
     const getAllColors = () => {
         return [
             'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-pink-500',
-            'bg-indigo-500', 'bg-yellow-500', 'bg-red-500', 'bg-teal-500',
-            'bg-orange-500', 'bg-cyan-500', 'bg-emerald-500', 'bg-violet-500',
-            'bg-rose-500', 'bg-amber-500', 'bg-lime-500', 'bg-sky-500'
+            'bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-emerald-500',
+            'bg-cyan-500', 'bg-indigo-500', 'bg-violet-500', 'bg-rose-500',
+            'bg-gray-700', 'bg-amber-600', 'bg-stone-600', 'bg-white'
         ];
     };
 
@@ -260,7 +260,7 @@ const NewPage = ({ darkMode }) => {
         if (name === userName && userColor) {
             return userColor;
         }
-        
+
         // For other users, try to find their color in time slots
         for (const slot of timeSlots) {
             const user = slot.available.find(u => u.name === name);
@@ -268,7 +268,7 @@ const NewPage = ({ darkMode }) => {
                 return user.color;
             }
         }
-        
+
         // Fallback to auto-assigned color
         return getAutoColor(name);
     };
@@ -457,13 +457,12 @@ const NewPage = ({ darkMode }) => {
                                                 key={color}
                                                 onClick={() => setUserColor(color)}
                                                 disabled={isUsed && !isSelected}
-                                                className={`w-12 h-12 rounded-lg border-2 transition-all ${
-                                                    isSelected 
-                                                        ? 'border-white shadow-lg scale-110' 
-                                                        : isUsed 
-                                                            ? 'border-gray-400 opacity-50 cursor-not-allowed' 
+                                                className={`w-12 h-12 rounded-lg border-2 transition-all ${isSelected
+                                                        ? 'border-white shadow-lg scale-110'
+                                                        : isUsed
+                                                            ? 'border-gray-400 opacity-50 cursor-not-allowed'
                                                             : 'border-gray-300 hover:border-gray-400 hover:scale-105'
-                                                } ${color}`}
+                                                    } ${color}`}
                                                 title={isUsed && !isSelected ? 'Color already in use' : `Select ${color.replace('bg-', '').replace('-500', '')}`}
                                             />
                                         );
@@ -569,14 +568,18 @@ const NewPage = ({ darkMode }) => {
                                             {/* Availability indicators */}
                                             {availability.length > 0 && (
                                                 <div className="absolute top-1 left-1 right-1 space-y-1">
-                                                    {availability.map((user, index) => (
-                                                        <div
-                                                            key={index}
-                                                            className={`px-2 py-1 text-xs rounded-full text-white text-center ${user.color || getUserColor(user.name)}`}
-                                                        >
-                                                            {user.name}
-                                                        </div>
-                                                    ))}
+                                                    {availability.map((user, index) => {
+                                                        const color = user.color || getUserColor(user.name);
+                                                        const textColor = color === 'bg-white' ? 'text-gray-900' : 'text-white';
+                                                        return (
+                                                            <div
+                                                                key={index}
+                                                                className={`px-2 py-1 text-xs rounded-full ${textColor} text-center ${color}`}
+                                                            >
+                                                                {user.name}
+                                                            </div>
+                                                        );
+                                                    })}
                                                 </div>
                                             )}
 
