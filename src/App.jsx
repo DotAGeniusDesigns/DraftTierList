@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TierList from './components/TierList';
 import ExportImport from './components/ExportImport';
+import Navbar from './components/Navbar';
+import NewPage from './components/NewPage';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers } from './utils/playerData';
 import { getTeamLogo } from './utils/teamData';
@@ -77,6 +79,9 @@ function App() {
 
     // Reset to default confirmation modal state
     const [showResetConfirm, setShowResetConfirm] = useState(false);
+
+    // Current page state
+    const [currentPage, setCurrentPage] = useState('draft-board');
 
     // Ref for the dropdown container
     const dropdownRef = useRef(null);
@@ -204,6 +209,11 @@ function App() {
         setPlayers(updatedPlayers);
     };
 
+    // Handle page navigation
+    const handlePageChange = (pageId) => {
+        setCurrentPage(pageId);
+    };
+
     // Get position tag styling
     const getPositionTagStyle = (position) => {
         const baseStyle = 'text-xs font-bold px-2 py-1 rounded';
@@ -253,203 +263,243 @@ function App() {
 
     return (
         <div className={`min-h-screen transition-colors duration-200 ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
-            <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-7xl">
-                {/* Header with toggles */}
-                <div className="mb-4 sm:mb-6">
-                    {/* Title */}
-                    <div className="mb-4">
-                        <h1 className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            Fantasy Football 2025 Draft Board
-                        </h1>
-                        <p className={`text-sm sm:text-base mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                            Drag players between tiers, mark as drafted, and track risky picks.
-                        </p>
-                    </div>
+            {/* Navigation Bar */}
+            <Navbar
+                darkMode={darkMode}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+            />
 
-                    {/* Controls - mobile optimized */}
-                    <div className="space-y-3 sm:space-y-0 sm:flex sm:flex-wrap sm:items-center sm:gap-4">
-                        {/* Position Filters Dropdown */}
-                        <div className="relative" ref={dropdownRef}>
-                            <button
-                                onClick={() => setIsPositionDropdownOpen(!isPositionDropdownOpen)}
-                                className={`px-3 py-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 ${darkMode
-                                    ? 'bg-gray-700 border-gray-600 text-white'
-                                    : 'bg-white border-gray-300 text-gray-900'
-                                    }`}
-                            >
-                                <span>{getPositionFilterDisplay()}</span>
-                                <svg className={`w-4 h-4 transition-transform ${isPositionDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-
-                            {/* Dropdown Menu */}
-                            {isPositionDropdownOpen && (
-                                <div className={`absolute top-full left-0 mt-1 w-48 rounded-md shadow-lg z-10 ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'
-                                    }`}>
-                                    <div className="py-1">
-                                        {['QB', 'RB', 'WR', 'TE', 'K', 'DST'].map(position => (
-                                            <label key={position} className={`flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                                                }`}>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={positionFilters.includes(position)}
-                                                    onChange={() => handlePositionFilterChange(position)}
-                                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                                                />
-                                                <span className={getPositionTagStyle(position)}>
-                                                    {position}
-                                                </span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
+            {/* Page Content */}
+            {currentPage === 'draft-board' && (
+                <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-7xl">
+                    {/* Header with toggles */}
+                    <div className="mb-4 sm:mb-6">
+                        {/* Title */}
+                        <div className="mb-4">
+                            <h1 className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                Fantasy Football 2025 Draft Board
+                            </h1>
+                            <p className={`text-sm sm:text-base mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                Drag players between tiers, mark as drafted, and track risky picks.
+                            </p>
                         </div>
 
-                        {/* Toggles container - responsive */}
-                        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                            {/* Export/Import Button */}
-                            <button
-                                onClick={() => setShowExportImport(true)}
-                                className={`px-3 py-1 text-sm border rounded-md transition-colors ${darkMode
-                                    ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
-                                    : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
-                                    }`}
-                            >
-                                📤 Export/Import
-                            </button>
-
-                            {/* Hide Drafted Toggle */}
-                            <div className="flex items-center gap-2 text-sm">
-                                <label className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                                    Hide Drafted
-                                </label>
+                        {/* Controls - mobile optimized */}
+                        <div className="space-y-3 sm:space-y-0 sm:flex sm:flex-wrap sm:items-center sm:gap-4">
+                            {/* Position Filters Dropdown */}
+                            <div className="relative" ref={dropdownRef}>
                                 <button
-                                    onClick={() => setHideDrafted(!hideDrafted)}
-                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${hideDrafted
-                                        ? 'bg-blue-600'
-                                        : darkMode
-                                            ? 'bg-gray-600'
+                                    onClick={() => setIsPositionDropdownOpen(!isPositionDropdownOpen)}
+                                    className={`px-3 py-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 ${darkMode
+                                        ? 'bg-gray-700 border-gray-600 text-white'
+                                        : 'bg-white border-gray-300 text-gray-900'
+                                        }`}
+                                >
+                                    <span>{getPositionFilterDisplay()}</span>
+                                    <svg className={`w-4 h-4 transition-transform ${isPositionDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+
+                                {/* Dropdown Menu */}
+                                {isPositionDropdownOpen && (
+                                    <div className={`absolute top-full left-0 mt-1 w-48 rounded-md shadow-lg z-10 ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'
+                                        }`}>
+                                        <div className="py-1">
+                                            {['QB', 'RB', 'WR', 'TE', 'K', 'DST'].map(position => (
+                                                <label key={position} className={`flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                                                    }`}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={positionFilters.includes(position)}
+                                                        onChange={() => handlePositionFilterChange(position)}
+                                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                                                    />
+                                                    <span className={getPositionTagStyle(position)}>
+                                                        {position}
+                                                    </span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Toggles container - responsive */}
+                            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                                {/* Export/Import Button */}
+                                <button
+                                    onClick={() => setShowExportImport(true)}
+                                    className={`px-3 py-1 text-sm border rounded-md transition-colors ${darkMode
+                                        ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
+                                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                                        }`}
+                                >
+                                    📤 Export/Import
+                                </button>
+
+                                {/* Hide Drafted Toggle */}
+                                <div className="flex items-center gap-2 text-sm">
+                                    <label className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                        Hide Drafted
+                                    </label>
+                                    <button
+                                        onClick={() => setHideDrafted(!hideDrafted)}
+                                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${hideDrafted
+                                            ? 'bg-blue-600'
+                                            : darkMode
+                                                ? 'bg-gray-600'
+                                                : 'bg-gray-300'
+                                            }`}
+                                    >
+                                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${hideDrafted ? 'translate-x-6' : 'translate-x-1'
+                                            }`} />
+                                    </button>
+                                </div>
+
+                                {/* Dark Mode Toggle */}
+                                <div className="flex items-center gap-2">
+                                    <label className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                        Dark Mode
+                                    </label>
+                                    <button
+                                        onClick={() => setDarkMode(!darkMode)}
+                                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${darkMode
+                                            ? 'bg-blue-600'
                                             : 'bg-gray-300'
-                                        }`}
-                                >
-                                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${hideDrafted ? 'translate-x-6' : 'translate-x-1'
-                                        }`} />
-                                </button>
-                            </div>
+                                            }`}
+                                    >
+                                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${darkMode ? 'translate-x-6' : 'translate-x-1'
+                                            }`} />
+                                    </button>
+                                </div>
 
-                            {/* Dark Mode Toggle */}
-                            <div className="flex items-center gap-2">
-                                <label className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                                    Dark Mode
-                                </label>
+                                {/* Reset Drafted Button */}
                                 <button
-                                    onClick={() => setDarkMode(!darkMode)}
-                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${darkMode
-                                        ? 'bg-blue-600'
-                                        : 'bg-gray-300'
+                                    onClick={handleResetDrafted}
+                                    className={`px-3 py-1 text-sm border rounded-md transition-colors whitespace-nowrap ${darkMode
+                                        ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
+                                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
                                         }`}
                                 >
-                                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${darkMode ? 'translate-x-6' : 'translate-x-1'
-                                        }`} />
+                                    🔄 Reset Drafted
+                                </button>
+
+                                {/* Reset to Default Button */}
+                                <button
+                                    onClick={() => setShowResetConfirm(true)}
+                                    className={`px-3 py-1 text-sm border rounded-md transition-colors whitespace-nowrap ${darkMode
+                                        ? 'bg-red-700 border-red-600 text-white hover:bg-red-600'
+                                        : 'bg-red-100 border-red-300 text-red-700 hover:bg-red-200'
+                                        }`}
+                                >
+                                    ⚠️ Reset to Default
                                 </button>
                             </div>
+                        </div>
+                    </div>
 
-                            {/* Reset Drafted Button */}
+                    <TierList
+                        players={filteredPlayers}
+                        allPlayers={players}
+                        onUpdatePlayers={handleUpdatePlayers}
+                        onToggleDraft={handleToggleDraft}
+                        onToggleRisky={handleToggleRisky}
+                        onRemoveTier={handleRemoveTier}
+                        darkMode={darkMode}
+                    />
+
+                    {/* Export/Import Modal */}
+                    {showExportImport && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                            <div className="max-w-md w-full">
+                                <ExportImport
+                                    players={players}
+                                    onImportPlayers={handleImportPlayers}
+                                    darkMode={darkMode}
+                                />
+                                <div className="mt-4 text-center">
+                                    <button
+                                        onClick={() => setShowExportImport(false)}
+                                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
+                                            ? 'bg-gray-600 hover:bg-gray-700 text-white'
+                                            : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
+                                            }`}
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Reset to Default Confirmation Modal */}
+                    {showResetConfirm && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                            <div className={`max-w-md w-full p-6 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+                                <div className="text-center mb-6">
+                                    <div className="text-4xl mb-4">⚠️</div>
+                                    <h3 className={`text-lg font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                        Reset to Default?
+                                    </h3>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                                        This will clear all your custom tier arrangements and draft status,
+                                        then reload the default database order. This action cannot be undone.
+                                    </p>
+                                </div>
+                                <div className="flex gap-3 justify-center">
+                                    <button
+                                        onClick={() => setShowResetConfirm(false)}
+                                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
+                                            ? 'bg-gray-600 hover:bg-gray-700 text-white'
+                                            : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
+                                            }`}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={handleResetToDefault}
+                                        className="px-4 py-2 rounded-md text-sm font-medium bg-red-600 hover:bg-red-700 text-white transition-colors"
+                                    >
+                                        Yes, Reset
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* New Tool Page */}
+            {currentPage === 'new-tool' && (
+                <NewPage darkMode={darkMode} />
+            )}
+
+            {/* Global Modals (available on all pages) */}
+            {/* Export/Import Modal */}
+            {showExportImport && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="max-w-md w-full">
+                        <ExportImport
+                            players={players}
+                            onImportPlayers={handleImportPlayers}
+                            darkMode={darkMode}
+                        />
+                        <div className="mt-4 text-center">
                             <button
-                                onClick={handleResetDrafted}
-                                className={`px-3 py-1 text-sm border rounded-md transition-colors whitespace-nowrap ${darkMode
-                                    ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
-                                    : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                                onClick={() => setShowExportImport(false)}
+                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
+                                    ? 'bg-gray-600 hover:bg-gray-700 text-white'
+                                    : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
                                     }`}
                             >
-                                🔄 Reset Drafted
-                            </button>
-
-                            {/* Reset to Default Button */}
-                            <button
-                                onClick={() => setShowResetConfirm(true)}
-                                className={`px-3 py-1 text-sm border rounded-md transition-colors whitespace-nowrap ${darkMode
-                                    ? 'bg-red-700 border-red-600 text-white hover:bg-red-600'
-                                    : 'bg-red-100 border-red-300 text-red-700 hover:bg-red-200'
-                                    }`}
-                            >
-                                ⚠️ Reset to Default
+                                Close
                             </button>
                         </div>
                     </div>
                 </div>
-
-                <TierList
-                    players={filteredPlayers}
-                    allPlayers={players}
-                    onUpdatePlayers={handleUpdatePlayers}
-                    onToggleDraft={handleToggleDraft}
-                    onToggleRisky={handleToggleRisky}
-                    onRemoveTier={handleRemoveTier}
-                    darkMode={darkMode}
-                />
-
-                {/* Export/Import Modal */}
-                {showExportImport && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                        <div className="max-w-md w-full">
-                            <ExportImport
-                                players={players}
-                                onImportPlayers={handleImportPlayers}
-                                darkMode={darkMode}
-                            />
-                            <div className="mt-4 text-center">
-                                <button
-                                    onClick={() => setShowExportImport(false)}
-                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
-                                        ? 'bg-gray-600 hover:bg-gray-700 text-white'
-                                        : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
-                                        }`}
-                                >
-                                    Close
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Reset to Default Confirmation Modal */}
-                {showResetConfirm && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                        <div className={`max-w-md w-full p-6 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                            <div className="text-center mb-6">
-                                <div className="text-4xl mb-4">⚠️</div>
-                                <h3 className={`text-lg font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                    Reset to Default?
-                                </h3>
-                                <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                                    This will clear all your custom tier arrangements and draft status,
-                                    then reload the default database order. This action cannot be undone.
-                                </p>
-                            </div>
-                            <div className="flex gap-3 justify-center">
-                                <button
-                                    onClick={() => setShowResetConfirm(false)}
-                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
-                                        ? 'bg-gray-600 hover:bg-gray-700 text-white'
-                                        : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
-                                        }`}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleResetToDefault}
-                                    className="px-4 py-2 rounded-md text-sm font-medium bg-red-600 hover:bg-red-700 text-white transition-colors"
-                                >
-                                    Yes, Reset
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
+            )}
         </div>
     );
 }
