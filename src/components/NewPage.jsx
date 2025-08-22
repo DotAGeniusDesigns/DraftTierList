@@ -194,9 +194,10 @@ const NewPage = ({ darkMode }) => {
         });
     };
 
-    // Time options for time slots (2-hour increments from 10am to 8pm)
+    // Time options for time slots (2-hour increments covering full 24-hour period)
     const timeOptions = [
-        '10:00 AM', '12:00 PM', '2:00 PM', '4:00 PM', '6:00 PM', '8:00 PM'
+        '12:00 AM', '2:00 AM', '4:00 AM', '6:00 AM', '8:00 AM', '10:00 AM',
+        '12:00 PM', '2:00 PM', '4:00 PM', '6:00 PM', '8:00 PM', '10:00 PM'
     ];
 
     // Get availability for a specific date and time
