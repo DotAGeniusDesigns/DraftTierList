@@ -5,69 +5,42 @@ const NewPage = ({ darkMode }) => {
     const [timeSlots, setTimeSlots] = useState([]);
     const [userName, setUserName] = useState('');
     const [showNameInput, setShowNameInput] = useState(true);
-    const [isCreating, setIsCreating] = useState(true);
+    const [isCreator, setIsCreator] = useState(true);
     const [shareLink, setShareLink] = useState('');
     const [customTimezone, setCustomTimezone] = useState('');
     const [showTimezoneInput, setShowTimezoneInput] = useState(false);
     const [userColor, setUserColor] = useState('');
     const [showColorInput, setShowColorInput] = useState(false);
+    const [sessionId, setSessionId] = useState('');
+    const [allResponses, setAllResponses] = useState([]);
+    const [showCommissionerView, setShowCommissionerView] = useState(false);
 
         // Check if this is a shared link (has session ID in URL)
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const sessionId = urlParams.get('session');
+        const urlSessionId = urlParams.get('session');
 
-        if (sessionId) {
-            // Load session data from localStorage
-            const sessionData = localStorage.getItem(`draft-session-${sessionId}`);
-            if (sessionData) {
-                try {
-                    const { timeSlots: sessionSlots } = JSON.parse(sessionData);
-                    // Migrate old format (names only) to new format (user objects)
-                    const migratedSlots = sessionSlots.map(slot => ({
-                        ...slot,
-                        available: slot.available.map(item => 
-                            typeof item === 'string' 
-                                ? { name: item, color: getAutoColor(item) }
-                                : item
-                        )
-                    }));
-                    setTimeSlots(migratedSlots);
-                    setIsCreating(false);
-                } catch (error) {
-                    console.error('Error parsing session data:', error);
-                }
+        if (urlSessionId) {
+            setSessionId(urlSessionId);
+            setIsCreator(false);
+            
+            // Load existing responses for this session
+            const existingResponses = JSON.parse(localStorage.getItem(`draft-responses-${urlSessionId}`) || '[]');
+            setAllResponses(existingResponses);
+            
+            // Check if this user has already responded
+            const userResponse = existingResponses.find(r => r.userName === userName);
+            if (userResponse) {
+                setTimeSlots(userResponse.timeSlots);
+                setUserColor(userResponse.userColor);
             }
-
-            // Set up polling to check for updates from other users
-            const pollInterval = setInterval(() => {
-                const currentSessionData = localStorage.getItem(`draft-session-${sessionId}`);
-                if (currentSessionData) {
-                    try {
-                        const { timeSlots: currentSlots, lastUpdated } = JSON.parse(currentSessionData);
-                        // Only update if the data is newer than our current state
-                        if (currentSlots.length !== timeSlots.length || 
-                            JSON.stringify(currentSlots) !== JSON.stringify(timeSlots)) {
-                            const migratedSlots = currentSlots.map(slot => ({
-                                ...slot,
-                                available: slot.available.map(item => 
-                                    typeof item === 'string' 
-                                        ? { name: item, color: getAutoColor(item) }
-                                        : item
-                                )
-                            }));
-                            setTimeSlots(migratedSlots);
-                        }
-                    } catch (error) {
-                        console.error('Error checking for session updates:', error);
-                    }
-                }
-            }, 2000); // Check every 2 seconds
-
-            // Cleanup interval on unmount
-            return () => clearInterval(pollInterval);
+        } else {
+            // This is the creator - generate a new session ID
+            const newSessionId = Math.random().toString(36).substring(2, 8);
+            setSessionId(newSessionId);
+            setIsCreator(true);
         }
-    }, [timeSlots.length]); // Add dependency to prevent infinite loops
+    }, [userName]);
 
     // Get timezone
     const getTimezone = () => {
@@ -178,17 +151,34 @@ const NewPage = ({ darkMode }) => {
         setSelectedDate(newDate);
     };
 
-    // Save current session data to localStorage
-    const saveSessionData = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const sessionId = urlParams.get('session');
-        if (sessionId && timeSlots.length > 0) {
-            localStorage.setItem(`draft-session-${sessionId}`, JSON.stringify({
-                timeSlots,
-                createdBy: userName,
-                lastUpdated: new Date().toISOString()
-            }));
+    // Submit response for this session
+    const submitResponse = () => {
+        if (!userName.trim() || timeSlots.length === 0) {
+            alert('Please set your name and select at least one time slot before submitting.');
+            return;
         }
+
+        const response = {
+            userName,
+            userColor: userColor || getAutoColor(userName),
+            timeSlots,
+            submittedAt: new Date().toISOString(),
+            timezone: getTimezone()
+        };
+
+        // Get existing responses
+        const existingResponses = JSON.parse(localStorage.getItem(`draft-responses-${sessionId}`) || '[]');
+        
+        // Remove any existing response from this user
+        const filteredResponses = existingResponses.filter(r => r.userName !== userName);
+        
+        // Add new response
+        const updatedResponses = [...filteredResponses, response];
+        
+        // Save to localStorage
+        localStorage.setItem(`draft-responses-${sessionId}`, JSON.stringify(updatedResponses));
+        
+        alert('Response submitted successfully! The commissioner will see your availability.');
     };
 
     // Toggle user availability for a specific date and time
@@ -210,39 +200,24 @@ const NewPage = ({ darkMode }) => {
                 timezone: getTimezone(), // Store the creator's timezone
                 available: [{ name: userName, color: userColor || getUserColor(userName) }] // Add user with color
             };
-            setTimeSlots(prevSlots => {
-                const newSlots = [...prevSlots, newSlot];
-                // Save to session after state update
-                setTimeout(saveSessionData, 0);
-                return newSlots;
-            });
+            setTimeSlots(prevSlots => [...prevSlots, newSlot]);
         } else {
             // Toggle existing slot
             const isAvailable = slot.available.some(user => user.name === userName);
             if (isAvailable) {
                 // Remove user from available list
-                setTimeSlots(prevSlots => {
-                    const newSlots = prevSlots.map(s =>
-                        s.id === slot.id
-                            ? { ...s, available: s.available.filter(user => user.name !== userName) }
-                            : s
-                    );
-                    // Save to session after state update
-                    setTimeout(saveSessionData, 0);
-                    return newSlots;
-                });
+                setTimeSlots(prevSlots => prevSlots.map(s =>
+                    s.id === slot.id
+                        ? { ...s, available: s.available.filter(user => user.name !== userName) }
+                        : s
+                ));
             } else {
                 // Add user to available list
-                setTimeSlots(prevSlots => {
-                    const newSlots = prevSlots.map(s =>
-                        s.id === slot.id
-                            ? { ...s, available: [...s.available, { name: userName, color: userColor || getUserColor(userName) }] }
-                            : s
-                    );
-                    // Save to session after state update
-                    setTimeout(saveSessionData, 0);
-                    return newSlots;
-                });
+                setTimeSlots(prevSlots => prevSlots.map(s =>
+                    s.id === slot.id
+                        ? { ...s, available: [...s.available, { name: userName, color: userColor || getUserColor(userName) }] }
+                        : s
+                ));
             }
         }
     };
@@ -250,17 +225,8 @@ const NewPage = ({ darkMode }) => {
     // Generate share link
     const generateShareLink = () => {
         const baseUrl = window.location.origin + window.location.pathname;
-        // Generate a short unique ID for this session
-        const sessionId = Math.random().toString(36).substring(2, 8);
         const link = `${baseUrl}?session=${sessionId}`;
         setShareLink(link);
-
-        // Store the session data locally with the session ID
-        localStorage.setItem(`draft-session-${sessionId}`, JSON.stringify({
-            timeSlots,
-            createdBy: userName,
-            createdAt: new Date().toISOString()
-        }));
 
         // Copy to clipboard
         navigator.clipboard.writeText(link).then(() => {
@@ -445,11 +411,7 @@ const NewPage = ({ darkMode }) => {
                                     }`}
                             />
                             <button
-                                onClick={() => {
-                                    setShowNameInput(false);
-                                    // Save session data when name changes
-                                    setTimeout(saveSessionData, 0);
-                                }}
+                                onClick={() => setShowNameInput(false)}
                                 className={`px-4 py-2 rounded-md font-medium ${darkMode
                                     ? 'bg-blue-600 hover:bg-blue-700 text-white'
                                     : 'bg-blue-500 hover:bg-blue-700 text-white'
@@ -524,11 +486,7 @@ const NewPage = ({ darkMode }) => {
                                         return (
                                             <button
                                                 key={color}
-                                                onClick={() => {
-                                                    setUserColor(color);
-                                                    // Save session data when color changes
-                                                    setTimeout(saveSessionData, 0);
-                                                }}
+                                                onClick={() => setUserColor(color)}
                                                 disabled={isUsed && !isSelected}
                                                 className={`w-12 h-12 rounded-lg border-2 transition-all ${isSelected
                                                     ? 'border-white shadow-lg scale-110'
@@ -544,11 +502,7 @@ const NewPage = ({ darkMode }) => {
                                 </div>
                                 <div className="mt-2 flex gap-2">
                                     <button
-                                        onClick={() => {
-                                            setUserColor('');
-                                            // Save session data when color changes
-                                            setTimeout(saveSessionData, 0);
-                                        }}
+                                        onClick={() => setUserColor('')}
                                         className={`px-3 py-1 text-sm rounded-md ${darkMode
                                             ? 'bg-gray-600 hover:bg-gray-700 text-white'
                                             : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
@@ -679,10 +633,10 @@ const NewPage = ({ darkMode }) => {
 
 
                 {/* Action Buttons */}
-                {isCreating && timeSlots.length > 0 && (
+                {isCreator ? (
                     <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
                         <h3 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            Share with Your League
+                            Commissioner Tools
                         </h3>
                         <div className="flex gap-3">
                             <button
@@ -693,6 +647,20 @@ const NewPage = ({ darkMode }) => {
                                     }`}
                             >
                                 📤 Generate Share Link
+                            </button>
+                            <button
+                                onClick={() => {
+                                    // Load latest responses when opening commissioner view
+                                    const latestResponses = JSON.parse(localStorage.getItem(`draft-responses-${sessionId}`) || '[]');
+                                    setAllResponses(latestResponses);
+                                    setShowCommissionerView(true);
+                                }}
+                                className={`px-4 py-2 rounded-md font-medium ${darkMode
+                                    ? 'bg-green-600 hover:bg-green-700 text-white'
+                                    : 'bg-green-500 hover:bg-green-600 text-white'
+                                    }`}
+                            >
+                                📊 View All Responses
                             </button>
                         </div>
                         {shareLink && (
@@ -706,6 +674,177 @@ const NewPage = ({ darkMode }) => {
                             </div>
                         )}
                     </div>
+                ) : (
+                    <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
+                        <h3 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            Submit Your Availability
+                        </h3>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={submitResponse}
+                                className={`px-4 py-2 rounded-md font-medium ${darkMode
+                                    ? 'bg-green-600 hover:bg-green-700 text-white'
+                                    : 'bg-green-500 hover:bg-green-600 text-white'
+                                    }`}
+                            >
+                                ✅ Submit Response
+                            </button>
+                        </div>
+                        <p className={`text-sm mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                            Click on time slots to show your availability, then submit your response.
+                        </p>
+                    </div>
+                )}
+
+                {/* Commissioner View Modal */}
+                {showCommissionerView && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                        <div className={`w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+                            <div className="p-6">
+                                <div className="flex items-center justify-between mb-6">
+                                    <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                        📊 League Availability Report
+                                    </h2>
+                                    <button
+                                        onClick={() => setShowCommissionerView(false)}
+                                        className={`p-2 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+
+                                {/* Summary Stats */}
+                                <div className={`mb-6 p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                                    <h3 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                        Summary
+                                    </h3>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        <div className="text-center">
+                                            <div className={`text-2xl font-bold ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+                                                {allResponses.length}
+                                            </div>
+                                            <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                                                Total Responses
+                                            </div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className={`text-2xl font-bold ${darkMode ? 'text-green-400' : 'text-green-600'}`}>
+                                                {timeOptions.length}
+                                            </div>
+                                            <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                                                Time Slots Available
+                                            </div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className={`text-2xl font-bold ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}>
+                                                {calendarDays.length}
+                                            </div>
+                                            <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                                                Days Available
+                                            </div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className={`text-2xl font-bold ${darkMode ? 'text-orange-400' : 'text-orange-600'}`}>
+                                                {new Date().toLocaleDateString()}
+                                            </div>
+                                            <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                                                Report Date
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Individual Responses */}
+                                <div className="space-y-4">
+                                    <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                        Individual Responses
+                                    </h3>
+                                    {allResponses.length === 0 ? (
+                                        <p className={`text-center py-8 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                            No responses yet. Share the link with your league!
+                                        </p>
+                                    ) : (
+                                        allResponses.map((response, index) => (
+                                            <div key={index} className={`p-4 rounded-lg border ${darkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
+                                                <div className="flex items-center justify-between mb-3">
+                                                    <div className="flex items-center gap-3">
+                                                        <div 
+                                                            className="w-6 h-6 rounded-full"
+                                                            style={{ backgroundColor: response.userColor }}
+                                                        ></div>
+                                                        <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                                            {response.userName}
+                                                        </h4>
+                                                    </div>
+                                                    <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                                        {new Date(response.submittedAt).toLocaleString()}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div>
+                                                        <h5 className={`font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                                            Selected Time Slots:
+                                                        </h5>
+                                                        <div className="space-y-1">
+                                                            {response.timeSlots.map((slot, slotIndex) => (
+                                                                <div key={slotIndex} className={`text-sm px-2 py-1 rounded ${darkMode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-700'}`}>
+                                                                    {new Date(slot.date).toLocaleDateString('en-US', { 
+                                                                        weekday: 'short', 
+                                                                        month: 'short', 
+                                                                        day: 'numeric' 
+                                                                    })} at {slot.time}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h5 className={`font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                                            Details:
+                                                        </h5>
+                                                        <div className={`text-sm space-y-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                                            <p>Timezone: {response.timezone}</p>
+                                                            <p>Color: {response.userColor}</p>
+                                                            <p>Total Slots: {response.timeSlots.length}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+
+                                {/* Export Button */}
+                                {allResponses.length > 0 && (
+                                    <div className="mt-6 pt-4 border-t border-gray-400">
+                                        <button
+                                            onClick={() => {
+                                                const reportData = {
+                                                    sessionId,
+                                                    generatedAt: new Date().toISOString(),
+                                                    totalResponses: allResponses.length,
+                                                    responses: allResponses
+                                                };
+                                                const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+                                                const url = URL.createObjectURL(blob);
+                                                const a = document.createElement('a');
+                                                a.href = url;
+                                                a.download = `draft-availability-${sessionId}.json`;
+                                                a.click();
+                                                URL.revokeObjectURL(url);
+                                            }}
+                                            className={`px-4 py-2 rounded-md font-medium ${darkMode
+                                                ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                                                : 'bg-blue-500 hover:bg-blue-600 text-white'
+                                                }`}
+                                        >
+                                            📥 Export Report (JSON)
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 )}
 
                 {/* Instructions */}
@@ -714,20 +853,19 @@ const NewPage = ({ darkMode }) => {
                         How to Use
                     </h3>
                     <div className={`text-sm space-y-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                        {isCreating ? (
+                        {isCreator ? (
                             <>
                                 <p>1. Set your name above</p>
-                                <p>2. Click on any time slot to add your availability</p>
-                                <p>3. Generate a share link and send to your league</p>
-                                <p>4. Leaguemates can click the link to see and select available times</p>
-                                <p>5. Times are automatically converted to each user's local timezone</p>
+                                <p>2. Generate a share link and send to your league</p>
+                                <p>3. Use "View All Responses" to see everyone's availability</p>
+                                <p>4. Export the report to analyze the best draft time</p>
                             </>
                         ) : (
                             <>
                                 <p>1. Set your name above</p>
                                 <p>2. Click on any time slot to show your availability</p>
-                                <p>3. See who else is available for each time</p>
-                                <p>4. Times show both original and your local timezone</p>
+                                <p>3. Submit your response when ready</p>
+                                <p>4. The commissioner will see your availability</p>
                             </>
                         )}
                     </div>
