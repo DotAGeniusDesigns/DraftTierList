@@ -227,10 +227,9 @@ const NewPage = ({ darkMode }) => {
     // Get all available colors
     const getAllColors = () => {
         return [
-            'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-pink-500',
-            'bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-emerald-500',
-            'bg-cyan-500', 'bg-indigo-500', 'bg-violet-500', 'bg-rose-500',
-            'bg-gray-700', 'bg-amber-600', 'bg-stone-600', 'bg-white'
+            '#F3C300', '#875692', '#F38400', '#A1CAF1', '#BE0032', '#C2B280', 
+            '#008856', '#E68FAC', '#0067A5', '#604E97', '#F6A600', '#B3446C', 
+            '#8DB600', '#E25822', '#2B3D26', '#882D17'
         ];
     };
 
@@ -424,7 +423,10 @@ const NewPage = ({ darkMode }) => {
                             <div>
                                 <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                                     Your Color: {userColor ? (
-                                        <span className={`inline-block w-6 h-6 rounded-full ${userColor} ml-2`}></span>
+                                        <span 
+                                            className="inline-block w-6 h-6 rounded-full ml-2" 
+                                            style={{ backgroundColor: userColor }}
+                                        ></span>
                                     ) : 'Auto-assigned'}
                                 </h3>
                                 <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -458,12 +460,13 @@ const NewPage = ({ darkMode }) => {
                                                 onClick={() => setUserColor(color)}
                                                 disabled={isUsed && !isSelected}
                                                 className={`w-12 h-12 rounded-lg border-2 transition-all ${isSelected
-                                                        ? 'border-white shadow-lg scale-110'
-                                                        : isUsed
-                                                            ? 'border-gray-400 opacity-50 cursor-not-allowed'
-                                                            : 'border-gray-300 hover:border-gray-400 hover:scale-105'
-                                                    } ${color}`}
-                                                title={isUsed && !isSelected ? 'Color already in use' : `Select ${color.replace('bg-', '').replace('-500', '')}`}
+                                                    ? 'border-white shadow-lg scale-110'
+                                                    : isUsed
+                                                        ? 'border-gray-400 opacity-50 cursor-not-allowed'
+                                                        : 'border-gray-300 hover:border-gray-400 hover:scale-105'
+                                                    }`}
+                                                style={{ backgroundColor: color }}
+                                                title={isUsed && !isSelected ? 'Color already in use' : `Select color ${color}`}
                                             />
                                         );
                                     })}
@@ -570,11 +573,14 @@ const NewPage = ({ darkMode }) => {
                                                 <div className="absolute top-1 left-1 right-1 space-y-1">
                                                     {availability.map((user, index) => {
                                                         const color = user.color || getUserColor(user.name);
-                                                        const textColor = color === 'bg-white' ? 'text-gray-900' : 'text-white';
+                                                        // Determine text color based on background brightness
+                                                        const isLightColor = color === '#F3C300' || color === '#A1CAF1' || color === '#C2B280' || color === '#8DB600';
+                                                        const textColor = isLightColor ? 'text-gray-900' : 'text-white';
                                                         return (
                                                             <div
                                                                 key={index}
-                                                                className={`px-2 py-1 text-xs rounded-full ${textColor} text-center ${color}`}
+                                                                className={`px-2 py-1 text-xs rounded-full ${textColor} text-center`}
+                                                                style={{ backgroundColor: color }}
                                                             >
                                                                 {user.name}
                                                             </div>
