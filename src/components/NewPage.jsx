@@ -227,8 +227,8 @@ const NewPage = ({ darkMode }) => {
     // Get all available colors
     const getAllColors = () => {
         return [
-            '#ffffff', '#f032e6', '#911eb4', '#dcbeff', '#4363d8', '#000075', 
-            '#469990', '#42d4f4', '#bfef45', '#aaffc3', '#ffe119', '#808000', 
+            '#ffffff', '#f032e6', '#911eb4', '#dcbeff', '#4363d8', '#000075',
+            '#469990', '#42d4f4', '#bfef45', '#aaffc3', '#ffe119', '#808000',
             '#9A6324', '#f58231', '#e6194B', '#800000'
         ];
     };
@@ -423,8 +423,8 @@ const NewPage = ({ darkMode }) => {
                             <div>
                                 <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                                     Your Color: {userColor ? (
-                                        <span 
-                                            className="inline-block w-6 h-6 rounded-full ml-2" 
+                                        <span
+                                            className="inline-block w-6 h-6 rounded-full ml-2"
                                             style={{ backgroundColor: userColor }}
                                         ></span>
                                     ) : 'Auto-assigned'}
