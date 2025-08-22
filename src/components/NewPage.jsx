@@ -9,6 +9,8 @@ const NewPage = ({ darkMode }) => {
     const [shareLink, setShareLink] = useState('');
     const [customTimezone, setCustomTimezone] = useState('');
     const [showTimezoneInput, setShowTimezoneInput] = useState(false);
+    const [userColor, setUserColor] = useState('');
+    const [showColorInput, setShowColorInput] = useState(false);
 
     // Check if this is a shared link (has timeSlots in URL)
     useEffect(() => {
@@ -19,7 +21,16 @@ const NewPage = ({ darkMode }) => {
         if (sharedSlots) {
             try {
                 const decodedSlots = JSON.parse(decodeURIComponent(sharedSlots));
-                setTimeSlots(decodedSlots);
+                // Migrate old format (names only) to new format (user objects)
+                const migratedSlots = decodedSlots.map(slot => ({
+                    ...slot,
+                    available: slot.available.map(item => 
+                        typeof item === 'string' 
+                            ? { name: item, color: getAutoColor(item) }
+                            : item
+                    )
+                }));
+                setTimeSlots(migratedSlots);
                 setIsCreating(false);
                 if (sharedUserName) {
                     setUserName(sharedUserName);
@@ -156,24 +167,24 @@ const NewPage = ({ darkMode }) => {
                 date: dateStr,
                 time: time,
                 timezone: getTimezone(), // Store the creator's timezone
-                available: [userName] // Add user immediately
+                available: [{ name: userName, color: userColor || getUserColor(userName) }] // Add user with color
             };
             setTimeSlots(prevSlots => [...prevSlots, newSlot]);
         } else {
             // Toggle existing slot
-            const isAvailable = slot.available.includes(userName);
+            const isAvailable = slot.available.some(user => user.name === userName);
             if (isAvailable) {
                 // Remove user from available list
                 setTimeSlots(prevSlots => prevSlots.map(s =>
                     s.id === slot.id
-                        ? { ...s, available: s.available.filter(name => name !== userName) }
+                        ? { ...s, available: s.available.filter(user => user.name !== userName) }
                         : s
                 ));
             } else {
                 // Add user to available list
                 setTimeSlots(prevSlots => prevSlots.map(s =>
                     s.id === slot.id
-                        ? { ...s, available: [...s.available, userName] }
+                        ? { ...s, available: [...s.available, { name: userName, color: userColor || getUserColor(userName) }] }
                         : s
                 ));
             }
@@ -210,19 +221,56 @@ const NewPage = ({ darkMode }) => {
     // Check if user is available for a specific slot
     const isUserAvailable = (date, time) => {
         const availability = getAvailabilityForSlot(date, time);
-        return availability.includes(userName);
+        return availability.some(user => user.name === userName);
     };
 
-    // Get user color based on name (for consistent color coding)
-    const getUserColor = (name) => {
-        const colors = [
+    // Get all available colors
+    const getAllColors = () => {
+        return [
             'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-pink-500',
             'bg-indigo-500', 'bg-yellow-500', 'bg-red-500', 'bg-teal-500',
             'bg-orange-500', 'bg-cyan-500', 'bg-emerald-500', 'bg-violet-500',
             'bg-rose-500', 'bg-amber-500', 'bg-lime-500', 'bg-sky-500'
         ];
+    };
+
+    // Get colors that are already in use by other users
+    const getUsedColors = () => {
+        const usedColors = new Set();
+        timeSlots.forEach(slot => {
+            slot.available.forEach(user => {
+                if (user.name !== userName) {
+                    usedColors.add(user.color);
+                }
+            });
+        });
+        return usedColors;
+    };
+
+    // Get auto-assigned color for a name
+    const getAutoColor = (name) => {
+        const colors = getAllColors();
         const index = name.charCodeAt(0) % colors.length;
         return colors[index];
+    };
+
+    // Get user color (either selected or auto-assigned)
+    const getUserColor = (name) => {
+        // If this is the current user and they have a selected color, use it
+        if (name === userName && userColor) {
+            return userColor;
+        }
+        
+        // For other users, try to find their color in time slots
+        for (const slot of timeSlots) {
+            const user = slot.available.find(u => u.name === name);
+            if (user && user.color) {
+                return user.color;
+            }
+        }
+        
+        // Fallback to auto-assigned color
+        return getAutoColor(name);
     };
 
     // Get time display for a slot (with timezone conversion)
@@ -369,6 +417,83 @@ const NewPage = ({ darkMode }) => {
                     </div>
                 )}
 
+                {/* Color Selection */}
+                {userName && (
+                    <div className={`mb-6 p-4 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                    Your Color: {userColor ? (
+                                        <span className={`inline-block w-6 h-6 rounded-full ${userColor} ml-2`}></span>
+                                    ) : 'Auto-assigned'}
+                                </h3>
+                                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                    Choose a color to represent your availability
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setShowColorInput(!showColorInput)}
+                                className={`px-3 py-1 text-sm rounded-md ${darkMode
+                                    ? 'bg-gray-600 hover:bg-gray-700 text-white'
+                                    : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                                    }`}
+                            >
+                                {showColorInput ? 'Cancel' : 'Choose Color'}
+                            </button>
+                        </div>
+
+                        {/* Color Picker */}
+                        {showColorInput && (
+                            <div className="mt-3 pt-3 border-t border-gray-400">
+                                <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                                    Select Color:
+                                </label>
+                                <div className="grid grid-cols-4 gap-2">
+                                    {getAllColors().map(color => {
+                                        const isUsed = getUsedColors().has(color);
+                                        const isSelected = userColor === color;
+                                        return (
+                                            <button
+                                                key={color}
+                                                onClick={() => setUserColor(color)}
+                                                disabled={isUsed && !isSelected}
+                                                className={`w-12 h-12 rounded-lg border-2 transition-all ${
+                                                    isSelected 
+                                                        ? 'border-white shadow-lg scale-110' 
+                                                        : isUsed 
+                                                            ? 'border-gray-400 opacity-50 cursor-not-allowed' 
+                                                            : 'border-gray-300 hover:border-gray-400 hover:scale-105'
+                                                } ${color}`}
+                                                title={isUsed && !isSelected ? 'Color already in use' : `Select ${color.replace('bg-', '').replace('-500', '')}`}
+                                            />
+                                        );
+                                    })}
+                                </div>
+                                <div className="mt-2 flex gap-2">
+                                    <button
+                                        onClick={() => setUserColor('')}
+                                        className={`px-3 py-1 text-sm rounded-md ${darkMode
+                                            ? 'bg-gray-600 hover:bg-gray-700 text-white'
+                                            : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                                            }`}
+                                    >
+                                        Reset to Auto
+                                    </button>
+                                    <button
+                                        onClick={() => setShowColorInput(false)}
+                                        className={`px-3 py-1 text-sm rounded-md ${darkMode
+                                            ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                                            : 'bg-blue-500 hover:bg-blue-600 text-white'
+                                            }`}
+                                    >
+                                        Done
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 {/* Calendar */}
                 <div className={`mb-6 rounded-lg overflow-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
                     {/* Calendar Header */}
@@ -444,12 +569,12 @@ const NewPage = ({ darkMode }) => {
                                             {/* Availability indicators */}
                                             {availability.length > 0 && (
                                                 <div className="absolute top-1 left-1 right-1 space-y-1">
-                                                    {availability.map((name, index) => (
+                                                    {availability.map((user, index) => (
                                                         <div
                                                             key={index}
-                                                            className={`px-2 py-1 text-xs rounded-full text-white text-center ${getUserColor(name)}`}
+                                                            className={`px-2 py-1 text-xs rounded-full text-white text-center ${user.color || getUserColor(user.name)}`}
                                                         >
-                                                            {name}
+                                                            {user.name}
                                                         </div>
                                                     ))}
                                                 </div>
