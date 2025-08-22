@@ -227,9 +227,9 @@ const NewPage = ({ darkMode }) => {
     // Get all available colors
     const getAllColors = () => {
         return [
-            '#F3C300', '#875692', '#F38400', '#A1CAF1', '#BE0032', '#C2B280', 
-            '#008856', '#E68FAC', '#0067A5', '#604E97', '#F6A600', '#B3446C', 
-            '#8DB600', '#E25822', '#2B3D26', '#882D17'
+            '#ffffff', '#f032e6', '#911eb4', '#dcbeff', '#4363d8', '#000075', 
+            '#469990', '#42d4f4', '#bfef45', '#aaffc3', '#ffe119', '#808000', 
+            '#9A6324', '#f58231', '#e6194B', '#800000'
         ];
     };
 
@@ -574,7 +574,7 @@ const NewPage = ({ darkMode }) => {
                                                     {availability.map((user, index) => {
                                                         const color = user.color || getUserColor(user.name);
                                                         // Determine text color based on background brightness
-                                                        const isLightColor = color === '#F3C300' || color === '#A1CAF1' || color === '#C2B280' || color === '#8DB600';
+                                                        const isLightColor = color === '#ffffff' || color === '#dcbeff' || color === '#42d4f4' || color === '#bfef45' || color === '#aaffc3' || color === '#ffe119';
                                                         const textColor = isLightColor ? 'text-gray-900' : 'text-white';
                                                         return (
                                                             <div
