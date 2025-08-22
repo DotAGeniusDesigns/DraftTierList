@@ -12,34 +12,62 @@ const NewPage = ({ darkMode }) => {
     const [userColor, setUserColor] = useState('');
     const [showColorInput, setShowColorInput] = useState(false);
 
-    // Check if this is a shared link (has timeSlots in URL)
+        // Check if this is a shared link (has session ID in URL)
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const sharedSlots = urlParams.get('timeSlots');
-        const sharedUserName = urlParams.get('userName');
+        const sessionId = urlParams.get('session');
 
-        if (sharedSlots) {
-            try {
-                const decodedSlots = JSON.parse(decodeURIComponent(sharedSlots));
-                // Migrate old format (names only) to new format (user objects)
-                const migratedSlots = decodedSlots.map(slot => ({
-                    ...slot,
-                    available: slot.available.map(item =>
-                        typeof item === 'string'
-                            ? { name: item, color: getAutoColor(item) }
-                            : item
-                    )
-                }));
-                setTimeSlots(migratedSlots);
-                setIsCreating(false);
-                if (sharedUserName) {
-                    setUserName(sharedUserName);
+        if (sessionId) {
+            // Load session data from localStorage
+            const sessionData = localStorage.getItem(`draft-session-${sessionId}`);
+            if (sessionData) {
+                try {
+                    const { timeSlots: sessionSlots } = JSON.parse(sessionData);
+                    // Migrate old format (names only) to new format (user objects)
+                    const migratedSlots = sessionSlots.map(slot => ({
+                        ...slot,
+                        available: slot.available.map(item => 
+                            typeof item === 'string' 
+                                ? { name: item, color: getAutoColor(item) }
+                                : item
+                        )
+                    }));
+                    setTimeSlots(migratedSlots);
+                    setIsCreating(false);
+                } catch (error) {
+                    console.error('Error parsing session data:', error);
                 }
-            } catch (error) {
-                console.error('Error parsing shared time slots:', error);
             }
+
+            // Set up polling to check for updates from other users
+            const pollInterval = setInterval(() => {
+                const currentSessionData = localStorage.getItem(`draft-session-${sessionId}`);
+                if (currentSessionData) {
+                    try {
+                        const { timeSlots: currentSlots, lastUpdated } = JSON.parse(currentSessionData);
+                        // Only update if the data is newer than our current state
+                        if (currentSlots.length !== timeSlots.length || 
+                            JSON.stringify(currentSlots) !== JSON.stringify(timeSlots)) {
+                            const migratedSlots = currentSlots.map(slot => ({
+                                ...slot,
+                                available: slot.available.map(item => 
+                                    typeof item === 'string' 
+                                        ? { name: item, color: getAutoColor(item) }
+                                        : item
+                                )
+                            }));
+                            setTimeSlots(migratedSlots);
+                        }
+                    } catch (error) {
+                        console.error('Error checking for session updates:', error);
+                    }
+                }
+            }, 2000); // Check every 2 seconds
+
+            // Cleanup interval on unmount
+            return () => clearInterval(pollInterval);
         }
-    }, []);
+    }, [timeSlots.length]); // Add dependency to prevent infinite loops
 
     // Get timezone
     const getTimezone = () => {
@@ -150,6 +178,19 @@ const NewPage = ({ darkMode }) => {
         setSelectedDate(newDate);
     };
 
+    // Save current session data to localStorage
+    const saveSessionData = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session');
+        if (sessionId && timeSlots.length > 0) {
+            localStorage.setItem(`draft-session-${sessionId}`, JSON.stringify({
+                timeSlots,
+                createdBy: userName,
+                lastUpdated: new Date().toISOString()
+            }));
+        }
+    };
+
     // Toggle user availability for a specific date and time
     const toggleAvailability = (date, time) => {
         if (!userName.trim()) {
@@ -169,24 +210,39 @@ const NewPage = ({ darkMode }) => {
                 timezone: getTimezone(), // Store the creator's timezone
                 available: [{ name: userName, color: userColor || getUserColor(userName) }] // Add user with color
             };
-            setTimeSlots(prevSlots => [...prevSlots, newSlot]);
+            setTimeSlots(prevSlots => {
+                const newSlots = [...prevSlots, newSlot];
+                // Save to session after state update
+                setTimeout(saveSessionData, 0);
+                return newSlots;
+            });
         } else {
             // Toggle existing slot
             const isAvailable = slot.available.some(user => user.name === userName);
             if (isAvailable) {
                 // Remove user from available list
-                setTimeSlots(prevSlots => prevSlots.map(s =>
-                    s.id === slot.id
-                        ? { ...s, available: s.available.filter(user => user.name !== userName) }
-                        : s
-                ));
+                setTimeSlots(prevSlots => {
+                    const newSlots = prevSlots.map(s =>
+                        s.id === slot.id
+                            ? { ...s, available: s.available.filter(user => user.name !== userName) }
+                            : s
+                    );
+                    // Save to session after state update
+                    setTimeout(saveSessionData, 0);
+                    return newSlots;
+                });
             } else {
                 // Add user to available list
-                setTimeSlots(prevSlots => prevSlots.map(s =>
-                    s.id === slot.id
-                        ? { ...s, available: [...s.available, { name: userName, color: userColor || getUserColor(userName) }] }
-                        : s
-                ));
+                setTimeSlots(prevSlots => {
+                    const newSlots = prevSlots.map(s =>
+                        s.id === slot.id
+                            ? { ...s, available: [...s.available, { name: userName, color: userColor || getUserColor(userName) }] }
+                            : s
+                    );
+                    // Save to session after state update
+                    setTimeout(saveSessionData, 0);
+                    return newSlots;
+                });
             }
         }
     };
@@ -194,10 +250,17 @@ const NewPage = ({ darkMode }) => {
     // Generate share link
     const generateShareLink = () => {
         const baseUrl = window.location.origin + window.location.pathname;
-        const encodedSlots = encodeURIComponent(JSON.stringify(timeSlots));
-        const encodedUserName = encodeURIComponent(userName);
-        const link = `${baseUrl}?timeSlots=${encodedSlots}&userName=${encodedUserName}`;
+        // Generate a short unique ID for this session
+        const sessionId = Math.random().toString(36).substring(2, 8);
+        const link = `${baseUrl}?session=${sessionId}`;
         setShareLink(link);
+
+        // Store the session data locally with the session ID
+        localStorage.setItem(`draft-session-${sessionId}`, JSON.stringify({
+            timeSlots,
+            createdBy: userName,
+            createdAt: new Date().toISOString()
+        }));
 
         // Copy to clipboard
         navigator.clipboard.writeText(link).then(() => {
@@ -382,10 +445,14 @@ const NewPage = ({ darkMode }) => {
                                     }`}
                             />
                             <button
-                                onClick={() => setShowNameInput(false)}
+                                onClick={() => {
+                                    setShowNameInput(false);
+                                    // Save session data when name changes
+                                    setTimeout(saveSessionData, 0);
+                                }}
                                 className={`px-4 py-2 rounded-md font-medium ${darkMode
                                     ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                                    : 'bg-blue-500 hover:bg-blue-600 text-white'
+                                    : 'bg-blue-500 hover:bg-blue-700 text-white'
                                     }`}
                             >
                                 Save
@@ -457,7 +524,11 @@ const NewPage = ({ darkMode }) => {
                                         return (
                                             <button
                                                 key={color}
-                                                onClick={() => setUserColor(color)}
+                                                onClick={() => {
+                                                    setUserColor(color);
+                                                    // Save session data when color changes
+                                                    setTimeout(saveSessionData, 0);
+                                                }}
                                                 disabled={isUsed && !isSelected}
                                                 className={`w-12 h-12 rounded-lg border-2 transition-all ${isSelected
                                                     ? 'border-white shadow-lg scale-110'
@@ -473,7 +544,11 @@ const NewPage = ({ darkMode }) => {
                                 </div>
                                 <div className="mt-2 flex gap-2">
                                     <button
-                                        onClick={() => setUserColor('')}
+                                        onClick={() => {
+                                            setUserColor('');
+                                            // Save session data when color changes
+                                            setTimeout(saveSessionData, 0);
+                                        }}
                                         className={`px-3 py-1 text-sm rounded-md ${darkMode
                                             ? 'bg-gray-600 hover:bg-gray-700 text-white'
                                             : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
