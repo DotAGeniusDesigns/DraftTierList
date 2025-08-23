@@ -15,12 +15,12 @@ const NewPage = ({ darkMode }) => {
     const [allResponses, setAllResponses] = useState([]);
     const [showCommissionerView, setShowCommissionerView] = useState(false);
 
-        // Check if this is a shared link (has session ID in URL)
+    // Check if this is a shared link (has session ID in URL)
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const urlSessionId = urlParams.get('session');
 
-        if (urlSessionId) {
+                if (urlSessionId) {
             setSessionId(urlSessionId);
             setIsCreator(false);
             
@@ -28,10 +28,29 @@ const NewPage = ({ darkMode }) => {
             const existingResponses = JSON.parse(localStorage.getItem(`draft-responses-${urlSessionId}`) || '[]');
             setAllResponses(existingResponses);
             
+            // Load the commissioner's available time slots
+            const commissionerSlots = localStorage.getItem(`draft-commissioner-slots-${urlSessionId}`);
+            if (commissionerSlots) {
+                try {
+                    const { timeSlots: availableSlots } = JSON.parse(commissionerSlots);
+                    setTimeSlots(availableSlots);
+                } catch (error) {
+                    console.error('Error loading commissioner slots:', error);
+                }
+            }
+            
             // Check if this user has already responded
             const userResponse = existingResponses.find(r => r.userName === userName);
             if (userResponse) {
-                setTimeSlots(userResponse.timeSlots);
+                // Load their previous selections
+                setTimeSlots(prevSlots => 
+                    prevSlots.map(slot => ({
+                        ...slot,
+                        available: userResponse.selectedSlots.some(selectedSlot => 
+                            selectedSlot.date === slot.date && selectedSlot.time === slot.time
+                        ) ? [{ name: userName, color: userResponse.userColor }] : []
+                    }))
+                );
                 setUserColor(userResponse.userColor);
             }
         } else {
@@ -151,6 +170,23 @@ const NewPage = ({ darkMode }) => {
         setSelectedDate(newDate);
     };
 
+        // Save commissioner's available time slots
+    const saveCommissionerSlots = () => {
+        if (timeSlots.length === 0) {
+            alert('Please select at least one time slot before generating the link.');
+            return;
+        }
+
+        // Save the commissioner's selected slots
+        localStorage.setItem(`draft-commissioner-slots-${sessionId}`, JSON.stringify({
+            timeSlots,
+            createdBy: userName,
+            createdAt: new Date().toISOString()
+        }));
+
+        alert('Time slots saved! Now generate and share the link with your league.');
+    };
+
     // Submit response for this session
     const submitResponse = () => {
         if (!userName.trim() || timeSlots.length === 0) {
@@ -161,7 +197,7 @@ const NewPage = ({ darkMode }) => {
         const response = {
             userName,
             userColor: userColor || getAutoColor(userName),
-            timeSlots,
+            selectedSlots: timeSlots, // Rename to be clearer
             submittedAt: new Date().toISOString(),
             timezone: getTimezone()
         };
@@ -636,9 +672,18 @@ const NewPage = ({ darkMode }) => {
                 {isCreator ? (
                     <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
                         <h3 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            Commissioner Tools
+                            Commissioner Setup
                         </h3>
                         <div className="flex gap-3">
+                            <button
+                                onClick={saveCommissionerSlots}
+                                className={`px-4 py-2 rounded-md font-medium ${darkMode
+                                    ? 'bg-green-600 hover:bg-green-700 text-white'
+                                    : 'bg-green-500 hover:bg-green-600 text-white'
+                                    }`}
+                            >
+                                💾 Save Available Time Slots
+                            </button>
                             <button
                                 onClick={generateShareLink}
                                 className={`px-4 py-2 rounded-md font-medium ${darkMode
@@ -656,13 +701,16 @@ const NewPage = ({ darkMode }) => {
                                     setShowCommissionerView(true);
                                 }}
                                 className={`px-4 py-2 rounded-md font-medium ${darkMode
-                                    ? 'bg-green-600 hover:bg-green-700 text-white'
-                                    : 'bg-green-500 hover:bg-green-600 text-white'
+                                    ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                                    : 'bg-purple-500 hover:bg-purple-600 text-white'
                                     }`}
                             >
                                 📊 View All Responses
                             </button>
                         </div>
+                        <p className={`text-sm mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                            First select your available time slots, save them, then generate the share link.
+                        </p>
                         {shareLink && (
                             <div className="mt-3">
                                 <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -677,7 +725,7 @@ const NewPage = ({ darkMode }) => {
                 ) : (
                     <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
                         <h3 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            Submit Your Availability
+                            Select Your Available Times
                         </h3>
                         <div className="flex gap-3">
                             <button
@@ -691,7 +739,7 @@ const NewPage = ({ darkMode }) => {
                             </button>
                         </div>
                         <p className={`text-sm mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                            Click on time slots to show your availability, then submit your response.
+                            Click on the time slots that work for you, then submit your response.
                         </p>
                     </div>
                 )}
@@ -768,7 +816,7 @@ const NewPage = ({ darkMode }) => {
                                             <div key={index} className={`p-4 rounded-lg border ${darkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
                                                 <div className="flex items-center justify-between mb-3">
                                                     <div className="flex items-center gap-3">
-                                                        <div 
+                                                        <div
                                                             className="w-6 h-6 rounded-full"
                                                             style={{ backgroundColor: response.userColor }}
                                                         ></div>
@@ -780,19 +828,19 @@ const NewPage = ({ darkMode }) => {
                                                         {new Date(response.submittedAt).toLocaleString()}
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <div>
                                                         <h5 className={`font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                                                             Selected Time Slots:
                                                         </h5>
                                                         <div className="space-y-1">
-                                                            {response.timeSlots.map((slot, slotIndex) => (
+                                                            {response.selectedSlots.map((slot, slotIndex) => (
                                                                 <div key={slotIndex} className={`text-sm px-2 py-1 rounded ${darkMode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-700'}`}>
-                                                                    {new Date(slot.date).toLocaleDateString('en-US', { 
-                                                                        weekday: 'short', 
-                                                                        month: 'short', 
-                                                                        day: 'numeric' 
+                                                                    {new Date(slot.date).toLocaleDateString('en-US', {
+                                                                        weekday: 'short',
+                                                                        month: 'short',
+                                                                        day: 'numeric'
                                                                     })} at {slot.time}
                                                                 </div>
                                                             ))}
@@ -805,7 +853,7 @@ const NewPage = ({ darkMode }) => {
                                                         <div className={`text-sm space-y-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                                                             <p>Timezone: {response.timezone}</p>
                                                             <p>Color: {response.userColor}</p>
-                                                            <p>Total Slots: {response.timeSlots.length}</p>
+                                                            <p>Total Slots: {response.selectedSlots.length}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -856,14 +904,15 @@ const NewPage = ({ darkMode }) => {
                         {isCreator ? (
                             <>
                                 <p>1. Set your name above</p>
-                                <p>2. Generate a share link and send to your league</p>
-                                <p>3. Use "View All Responses" to see everyone's availability</p>
-                                <p>4. Export the report to analyze the best draft time</p>
+                                <p>2. Click time slots to mark them as available for your league</p>
+                                <p>3. Save your available time slots</p>
+                                <p>4. Generate share link and send to your league</p>
+                                <p>5. Use "View All Responses" to see everyone's selections</p>
                             </>
                         ) : (
                             <>
                                 <p>1. Set your name above</p>
-                                <p>2. Click on any time slot to show your availability</p>
+                                <p>2. Click on time slots that work for you</p>
                                 <p>3. Submit your response when ready</p>
                                 <p>4. The commissioner will see your availability</p>
                             </>
