@@ -20,14 +20,14 @@ const NewPage = ({ darkMode }) => {
         const urlParams = new URLSearchParams(window.location.search);
         const urlSessionId = urlParams.get('session');
 
-                if (urlSessionId) {
+        if (urlSessionId) {
             setSessionId(urlSessionId);
             setIsCreator(false);
-            
+
             // Load existing responses for this session
             const existingResponses = JSON.parse(localStorage.getItem(`draft-responses-${urlSessionId}`) || '[]');
             setAllResponses(existingResponses);
-            
+
             // Load the commissioner's available time slots
             const commissionerSlots = localStorage.getItem(`draft-commissioner-slots-${urlSessionId}`);
             if (commissionerSlots) {
@@ -38,15 +38,15 @@ const NewPage = ({ darkMode }) => {
                     console.error('Error loading commissioner slots:', error);
                 }
             }
-            
+
             // Check if this user has already responded
             const userResponse = existingResponses.find(r => r.userName === userName);
             if (userResponse) {
                 // Load their previous selections
-                setTimeSlots(prevSlots => 
+                setTimeSlots(prevSlots =>
                     prevSlots.map(slot => ({
                         ...slot,
-                        available: userResponse.selectedSlots.some(selectedSlot => 
+                        available: userResponse.selectedSlots.some(selectedSlot =>
                             selectedSlot.date === slot.date && selectedSlot.time === slot.time
                         ) ? [{ name: userName, color: userResponse.userColor }] : []
                     }))
@@ -170,7 +170,7 @@ const NewPage = ({ darkMode }) => {
         setSelectedDate(newDate);
     };
 
-        // Save commissioner's available time slots
+    // Save commissioner's available time slots
     const saveCommissionerSlots = () => {
         if (timeSlots.length === 0) {
             alert('Please select at least one time slot before generating the link.');
@@ -204,16 +204,16 @@ const NewPage = ({ darkMode }) => {
 
         // Get existing responses
         const existingResponses = JSON.parse(localStorage.getItem(`draft-responses-${sessionId}`) || '[]');
-        
+
         // Remove any existing response from this user
         const filteredResponses = existingResponses.filter(r => r.userName !== userName);
-        
+
         // Add new response
         const updatedResponses = [...filteredResponses, response];
-        
+
         // Save to localStorage
         localStorage.setItem(`draft-responses-${sessionId}`, JSON.stringify(updatedResponses));
-        
+
         alert('Response submitted successfully! The commissioner will see your availability.');
     };
 
@@ -377,546 +377,70 @@ const NewPage = ({ darkMode }) => {
         <div className={`min-h-screen transition-colors duration-200 ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
             <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-7xl">
                 {/* Header */}
-                <div className="mb-6">
-                    <h1 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                        Draft Time Scheduler
+                <div className="mb-6 text-center">
+                    <h1 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        🚧 Coming Soon
                     </h1>
-                    <p className={`text-lg ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                        {isCreator ? 'Set available time slots and share with your league' : 'Select from available draft times'}
+                    <p className={`text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                        Draft Time Scheduler
+                    </p>
+                    <p className={`text-lg mt-4 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        We're building something awesome for coordinating your fantasy football draft times.
+                    </p>
+                    <p className={`text-sm mt-2 ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>
+                        Check back soon for the full feature!
                     </p>
                 </div>
 
-                {/* Timezone Display */}
-                <div className={`mb-4 p-3 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
-                    <div className="flex items-center justify-between">
-                        <span className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                            📍 Your Timezone: {getTimezone()} ({getTimezoneAbbr()})
-                        </span>
-                        <button
-                            onClick={() => setShowTimezoneInput(!showTimezoneInput)}
-                            className={`px-3 py-1 text-sm rounded-md ${darkMode
-                                ? 'bg-gray-600 hover:bg-gray-700 text-white'
-                                : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                                }`}
-                        >
-                            {showTimezoneInput ? 'Cancel' : 'Adjust'}
-                        </button>
-                    </div>
-
-                    {/* Timezone Selection */}
-                    {showTimezoneInput && (
-                        <div className="mt-3 pt-3 border-t border-gray-400">
-                            <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                                Select Timezone:
-                            </label>
-                            <select
-                                value={customTimezone}
-                                onChange={(e) => setCustomTimezone(e.target.value)}
-                                className={`w-full px-3 py-2 border rounded-md ${darkMode
-                                    ? 'bg-gray-700 border-gray-600 text-white'
-                                    : 'bg-white border-gray-300 text-gray-900'
-                                    }`}
-                            >
-                                <option value="">Auto-detect (recommended)</option>
-                                {getAvailableTimezones().map(tz => (
-                                    <option key={tz} value={tz}>{tz.replace('_', ' ')}</option>
-                                ))}
-                            </select>
-                            <p className={`text-xs mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                                Changing timezone will affect how times are displayed for you
-                            </p>
+                {/* Coming Soon Content */}
+                <div className={`text-center py-16 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <div className="mb-8">
+                        <div className={`text-8xl mb-4 ${darkMode ? 'text-gray-600' : 'text-gray-300'}`}>
+                            🏈
                         </div>
-                    )}
-                </div>
-
-                {/* User Name Input/Display */}
-                {showNameInput ? (
-                    <div className={`mb-6 p-4 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
-                        <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            {userName ? 'Edit Your Name' : 'Enter Your Name'}
-                        </h3>
-                        <div className="flex gap-2">
-                            <input
-                                type="text"
-                                value={userName}
-                                onChange={(e) => setUserName(e.target.value)}
-                                placeholder="Your name"
-                                className={`flex-1 px-3 py-2 border rounded-md ${darkMode
-                                    ? 'bg-gray-700 border-gray-600 text-white'
-                                    : 'bg-white border-gray-300 text-gray-900'
-                                    }`}
-                            />
-                            <button
-                                onClick={() => setShowNameInput(false)}
-                                className={`px-4 py-2 rounded-md font-medium ${darkMode
-                                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                                    : 'bg-blue-500 hover:bg-blue-700 text-white'
-                                    }`}
-                            >
-                                Save
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    <div className={`mb-6 p-4 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                    Your Name: {userName || 'Not set'}
-                                </h3>
-                                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                    Click on any time slot to show your availability
-                                </p>
-                            </div>
-                            <button
-                                onClick={() => setShowNameInput(true)}
-                                className={`px-3 py-1 text-sm rounded-md ${darkMode
-                                    ? 'bg-gray-600 hover:bg-gray-700 text-white'
-                                    : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                                    }`}
-                            >
-                                {userName ? 'Edit' : 'Set Name'}
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {/* Color Selection */}
-                {userName && (
-                    <div className={`mb-6 p-4 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                    Your Color: {userColor ? (
-                                        <span
-                                            className="inline-block w-6 h-6 rounded-full ml-2"
-                                            style={{ backgroundColor: userColor }}
-                                        ></span>
-                                    ) : 'Auto-assigned'}
-                                </h3>
-                                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                    Choose a color to represent your availability
-                                </p>
-                            </div>
-                            <button
-                                onClick={() => setShowColorInput(!showColorInput)}
-                                className={`px-3 py-1 text-sm rounded-md ${darkMode
-                                    ? 'bg-gray-600 hover:bg-gray-700 text-white'
-                                    : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                                    }`}
-                            >
-                                {showColorInput ? 'Cancel' : 'Choose Color'}
-                            </button>
-                        </div>
-
-                        {/* Color Picker */}
-                        {showColorInput && (
-                            <div className="mt-3 pt-3 border-t border-gray-400">
-                                <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                                    Select Color:
-                                </label>
-                                <div className="grid grid-cols-4 gap-2">
-                                    {getAllColors().map(color => {
-                                        const isUsed = getUsedColors().has(color);
-                                        const isSelected = userColor === color;
-                                        return (
-                                            <button
-                                                key={color}
-                                                onClick={() => setUserColor(color)}
-                                                disabled={isUsed && !isSelected}
-                                                className={`w-12 h-12 rounded-lg border-2 transition-all ${isSelected
-                                                    ? 'border-white shadow-lg scale-110'
-                                                    : isUsed
-                                                        ? 'border-gray-400 opacity-50 cursor-not-allowed'
-                                                        : 'border-gray-300 hover:border-gray-400 hover:scale-105'
-                                                    }`}
-                                                style={{ backgroundColor: color }}
-                                                title={isUsed && !isSelected ? 'Color already in use' : `Select color ${color}`}
-                                            />
-                                        );
-                                    })}
-                                </div>
-                                <div className="mt-2 flex gap-2">
-                                    <button
-                                        onClick={() => setUserColor('')}
-                                        className={`px-3 py-1 text-sm rounded-md ${darkMode
-                                            ? 'bg-gray-600 hover:bg-gray-700 text-white'
-                                            : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                                            }`}
-                                    >
-                                        Reset to Auto
-                                    </button>
-                                    <button
-                                        onClick={() => setShowColorInput(false)}
-                                        className={`px-3 py-1 text-sm rounded-md ${darkMode
-                                            ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                                            : 'bg-blue-500 hover:bg-blue-600 text-white'
-                                            }`}
-                                    >
-                                        Done
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                {/* Calendar */}
-                <div className={`mb-6 rounded-lg overflow-hidden ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                    {/* Calendar Header */}
-                    <div className={`flex items-center justify-between p-4 border-b ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-                        <button
-                            onClick={goToPreviousWeek}
-                            className={`p-3 rounded-lg text-2xl font-bold transition-colors ${darkMode
-                                ? 'bg-gray-700 hover:bg-gray-600 text-white hover:text-blue-300'
-                                : 'bg-gray-200 hover:bg-gray-300 text-gray-700 hover:text-blue-600'
-                                }`}
-                        >
-                            ◀
-                        </button>
-                        <h2 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            {getWeekRange()}
+                        <h2 className={`text-2xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            Fantasy Football Draft Coordination
                         </h2>
-                        <button
-                            onClick={goToNextWeek}
-                            className={`p-3 rounded-lg text-2xl font-bold transition-colors ${darkMode
-                                ? 'bg-gray-700 hover:bg-gray-600 text-white hover:text-blue-300'
-                                : 'bg-gray-200 hover:bg-gray-300 text-gray-700 hover:text-blue-600'
-                                }`}
-                        >
-                            ▶
-                        </button>
-                    </div>
-
-                    {/* Calendar Grid */}
-                    <div className="grid grid-cols-8 gap-px bg-gray-200">
-                        {/* Time column header */}
-                        <div className={`p-3 text-center text-sm font-medium ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-gray-50 text-gray-600'}`}>
-                            Time
-                        </div>
-
-                        {/* Day headers */}
-                        {calendarDays.map(day => (
-                            <div key={day.toDateString()} className={`p-3 text-center text-sm font-medium ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-gray-50 text-gray-600'}`}>
-                                <div className="font-bold">{day.toLocaleDateString('en-US', { weekday: 'short' })}</div>
-                                <div className="text-xs">{day.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
-                            </div>
-                        ))}
-
-                        {/* Time rows */}
-                        {timeOptions.map(time => (
-                            <React.Fragment key={time}>
-                                {/* Time label */}
-                                <div className={`p-3 text-center text-sm font-medium border-r ${darkMode ? 'bg-gray-700 text-gray-300 border-gray-600' : 'bg-gray-100 text-gray-600 border-gray-200'}`}>
-                                    {(() => {
-                                        // If we have a custom timezone selected, convert the time
-                                        if (customTimezone) {
-                                            // Create a mock slot to convert the time
-                                            const mockSlot = { time: time, timezone: 'America/Los_Angeles' }; // Default timezone for original times
-                                            const convertedTime = convertTime(time, 'America/Los_Angeles', customTimezone);
-                                            return convertedTime;
-                                        }
-                                        return time;
-                                    })()}
-                                </div>
-
-                                {/* Day columns for this time */}
-                                {calendarDays.map(day => {
-                                    const availability = getAvailabilityForSlot(day, time);
-                                    const isAvailable = isUserAvailable(day, time);
-                                    const slot = timeSlots.find(s => s.date === day.toDateString() && s.time === time);
-
-                                    return (
-                                        <div
-                                            key={`${day.toDateString()}-${time}`}
-                                            className={`min-h-[120px] p-2 border-r border-b relative cursor-pointer transition-colors ${darkMode ? 'bg-gray-800 border-gray-600 hover:bg-gray-700' : 'bg-white border-gray-200 hover:bg-gray-50'
-                                                }`}
-                                            onClick={() => toggleAvailability(day, time)}
-                                        >
-                                            {/* Availability indicators */}
-                                            {availability.length > 0 && (
-                                                <div className="absolute top-1 left-1 right-1 space-y-1">
-                                                    {availability.map((user, index) => {
-                                                        const color = user.color || getUserColor(user.name);
-                                                        // Determine text color based on background brightness
-                                                        const isLightColor = color === '#ffffff' || color === '#dcbeff' || color === '#42d4f4' || color === '#bfef45' || color === '#aaffc3' || color === '#ffe119';
-                                                        const textColor = isLightColor ? 'text-gray-900' : 'text-white';
-                                                        return (
-                                                            <div
-                                                                key={index}
-                                                                className={`px-2 py-1 text-xs rounded-full ${textColor} text-center`}
-                                                                style={{ backgroundColor: color }}
-                                                            >
-                                                                {user.name}
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </div>
-                                            )}
-
-                                            {/* Click instruction */}
-                                            <div className={`absolute bottom-1 left-1 right-1 text-center text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                                                Click to toggle
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </React.Fragment>
-                        ))}
-                    </div>
-                </div>
-
-
-
-                {/* Action Buttons */}
-                {isCreator ? (
-                    <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
-                        <h3 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            Commissioner Setup
-                        </h3>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={saveCommissionerSlots}
-                                className={`px-4 py-2 rounded-md font-medium ${darkMode
-                                    ? 'bg-green-600 hover:bg-green-700 text-white'
-                                    : 'bg-green-500 hover:bg-green-600 text-white'
-                                    }`}
-                            >
-                                💾 Save Available Time Slots
-                            </button>
-                            <button
-                                onClick={generateShareLink}
-                                className={`px-4 py-2 rounded-md font-medium ${darkMode
-                                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                                    : 'bg-blue-500 hover:bg-blue-600 text-white'
-                                    }`}
-                            >
-                                📤 Generate Share Link
-                            </button>
-                            <button
-                                onClick={() => {
-                                    // Load latest responses when opening commissioner view
-                                    const latestResponses = JSON.parse(localStorage.getItem(`draft-responses-${sessionId}`) || '[]');
-                                    setAllResponses(latestResponses);
-                                    setShowCommissionerView(true);
-                                }}
-                                className={`px-4 py-2 rounded-md font-medium ${darkMode
-                                    ? 'bg-purple-600 hover:bg-purple-700 text-white'
-                                    : 'bg-purple-500 hover:bg-purple-600 text-white'
-                                    }`}
-                            >
-                                📊 View All Responses
-                            </button>
-                        </div>
-                        <p className={`text-sm mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                            First select your available time slots, save them, then generate the share link.
-                        </p>
-                        {shareLink && (
-                            <div className="mt-3">
-                                <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                                    Share this link with your league:
-                                </p>
-                                <div className={`mt-2 p-2 rounded bg-gray-100 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
-                                    <code className="text-sm break-all">{shareLink}</code>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                ) : (
-                    <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
-                        <h3 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            Select Your Available Times
-                        </h3>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={submitResponse}
-                                className={`px-4 py-2 rounded-md font-medium ${darkMode
-                                    ? 'bg-green-600 hover:bg-green-700 text-white'
-                                    : 'bg-green-500 hover:bg-green-600 text-white'
-                                    }`}
-                            >
-                                ✅ Submit Response
-                            </button>
-                        </div>
-                        <p className={`text-sm mt-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                            Click on the time slots that work for you, then submit your response.
+                        <p className="text-lg max-w-2xl mx-auto">
+                            We're building a powerful tool to help commissioners coordinate draft times across multiple timezones. 
+                            League members will be able to easily select their availability from predefined options.
                         </p>
                     </div>
-                )}
-
-                {/* Commissioner View Modal */}
-                {showCommissionerView && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                        <div className={`w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                            <div className="p-6">
-                                <div className="flex items-center justify-between mb-6">
-                                    <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                        📊 League Availability Report
-                                    </h2>
-                                    <button
-                                        onClick={() => setShowCommissionerView(false)}
-                                        className={`p-2 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}
-                                    >
-                                        ✕
-                                    </button>
+                    
+                    <div className={`p-6 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
+                        <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            Planned Features
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left max-w-3xl mx-auto">
+                            <div className="flex items-start gap-3">
+                                <span className="text-green-500 text-xl">✓</span>
+                                <div>
+                                    <h4 className="font-medium">Commissioner Control</h4>
+                                    <p className="text-sm opacity-75">Set available time slots for your league</p>
                                 </div>
-
-                                {/* Summary Stats */}
-                                <div className={`mb-6 p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
-                                    <h3 className={`text-lg font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                        Summary
-                                    </h3>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        <div className="text-center">
-                                            <div className={`text-2xl font-bold ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
-                                                {allResponses.length}
-                                            </div>
-                                            <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                                                Total Responses
-                                            </div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className={`text-2xl font-bold ${darkMode ? 'text-green-400' : 'text-green-600'}`}>
-                                                {timeOptions.length}
-                                            </div>
-                                            <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                                                Time Slots Available
-                                            </div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className={`text-2xl font-bold ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}>
-                                                {calendarDays.length}
-                                            </div>
-                                            <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                                                Days Available
-                                            </div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className={`text-2xl font-bold ${darkMode ? 'text-orange-400' : 'text-orange-600'}`}>
-                                                {new Date().toLocaleDateString()}
-                                            </div>
-                                            <div className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                                                Report Date
-                                            </div>
-                                        </div>
-                                    </div>
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <span className="text-green-500 text-xl">✓</span>
+                                <div>
+                                    <h4 className="font-medium">Multiple Choice Selection</h4>
+                                    <p className="text-sm opacity-75">Members choose from available options</p>
                                 </div>
-
-                                {/* Individual Responses */}
-                                <div className="space-y-4">
-                                    <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                        Individual Responses
-                                    </h3>
-                                    {allResponses.length === 0 ? (
-                                        <p className={`text-center py-8 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                                            No responses yet. Share the link with your league!
-                                        </p>
-                                    ) : (
-                                        allResponses.map((response, index) => (
-                                            <div key={index} className={`p-4 rounded-lg border ${darkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-200 bg-gray-50'}`}>
-                                                <div className="flex items-center justify-between mb-3">
-                                                    <div className="flex items-center gap-3">
-                                                        <div
-                                                            className="w-6 h-6 rounded-full"
-                                                            style={{ backgroundColor: response.userColor }}
-                                                        ></div>
-                                                        <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                                            {response.userName}
-                                                        </h4>
-                                                    </div>
-                                                    <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                                                        {new Date(response.submittedAt).toLocaleString()}
-                                                    </div>
-                                                </div>
-
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                    <div>
-                                                        <h5 className={`font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                                                            Selected Time Slots:
-                                                        </h5>
-                                                        <div className="space-y-1">
-                                                            {response.selectedSlots.map((slot, slotIndex) => (
-                                                                <div key={slotIndex} className={`text-sm px-2 py-1 rounded ${darkMode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-700'}`}>
-                                                                    {new Date(slot.date).toLocaleDateString('en-US', {
-                                                                        weekday: 'short',
-                                                                        month: 'short',
-                                                                        day: 'numeric'
-                                                                    })} at {slot.time}
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <h5 className={`font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                                                            Details:
-                                                        </h5>
-                                                        <div className={`text-sm space-y-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                                            <p>Timezone: {response.timezone}</p>
-                                                            <p>Color: {response.userColor}</p>
-                                                            <p>Total Slots: {response.selectedSlots.length}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <span className="text-green-500 text-xl">✓</span>
+                                <div>
+                                    <h4 className="font-medium">Timezone Support</h4>
+                                    <p className="text-sm opacity-75">Automatic conversion for global leagues</p>
                                 </div>
-
-                                {/* Export Button */}
-                                {allResponses.length > 0 && (
-                                    <div className="mt-6 pt-4 border-t border-gray-400">
-                                        <button
-                                            onClick={() => {
-                                                const reportData = {
-                                                    sessionId,
-                                                    generatedAt: new Date().toISOString(),
-                                                    totalResponses: allResponses.length,
-                                                    responses: allResponses
-                                                };
-                                                const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
-                                                const url = URL.createObjectURL(blob);
-                                                const a = document.createElement('a');
-                                                a.href = url;
-                                                a.download = `draft-availability-${sessionId}.json`;
-                                                a.click();
-                                                URL.revokeObjectURL(url);
-                                            }}
-                                            className={`px-4 py-2 rounded-md font-medium ${darkMode
-                                                ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                                                : 'bg-blue-500 hover:bg-blue-600 text-white'
-                                                }`}
-                                        >
-                                            📥 Export Report (JSON)
-                                        </button>
-                                    </div>
-                                )}
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <span className="text-green-500 text-xl">✓</span>
+                                <div>
+                                    <h4 className="font-medium">Response Reports</h4>
+                                    <p className="text-sm opacity-75">Organized view of all availability</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
-
-                {/* Instructions */}
-                <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
-                    <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                        How to Use
-                    </h3>
-                    <div className={`text-sm space-y-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                        {isCreator ? (
-                            <>
-                                <p>1. Set your name above</p>
-                                <p>2. Click time slots to mark them as available for your league</p>
-                                <p>3. Save your available time slots</p>
-                                <p>4. Generate share link and send to your league</p>
-                                <p>5. Use "View All Responses" to see everyone's selections</p>
-                            </>
-                        ) : (
-                            <>
-                                <p>1. Set your name above</p>
-                                <p>2. Click on time slots that work for you</p>
-                                <p>3. Submit your response when ready</p>
-                                <p>4. The commissioner will see your availability</p>
-                            </>
-                        )}
                     </div>
                 </div>
             </div>
