@@ -75,6 +75,10 @@
         "isRisky": true,
         "riskyReason": "RBBC"
     },
+    "brian-robinson-jr": {
+        "isRisky": true,
+        "riskyReason": "Veteran in new system"
+    },
     "george-pickens": {
         "isRisky": true,
         "riskyReason": "Veteran in new system"
