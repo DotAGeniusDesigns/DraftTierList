@@ -735,7 +735,7 @@ export const playerDatabase = {
         "id": "brian-robinson-jr",
         "name": "Brian Robinson Jr.",
         "position": "RB",
-        "team": "WAS",
+        "team": "SF",
         "photo": "https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/brian_robinson_jr.png",
         "tier": 6,
         "adp": 85.6
@@ -2324,7 +2324,7 @@ export const playerDatabase = {
         "id": "devaughn-vele",
         "name": "Devaughn Vele",
         "position": "WR",
-        "team": "DEN",
+        "team": "NO",
         "photo": "https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/devaughn_vele.png",
         "tier": 10
     },

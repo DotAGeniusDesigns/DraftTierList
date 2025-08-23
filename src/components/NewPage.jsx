@@ -402,11 +402,11 @@ const NewPage = ({ darkMode }) => {
                             Fantasy Football Draft Coordination
                         </h2>
                         <p className="text-lg max-w-2xl mx-auto">
-                            We're building a powerful tool to help commissioners coordinate draft times across multiple timezones. 
+                            We're building a powerful tool to help commissioners coordinate draft times across multiple timezones.
                             League members will be able to easily select their availability from predefined options.
                         </p>
                     </div>
-                    
+
                     <div className={`p-6 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
                         <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                             Planned Features
