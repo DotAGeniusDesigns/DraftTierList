@@ -382,7 +382,7 @@ const NewPage = ({ darkMode }) => {
                         Draft Time Scheduler
                     </h1>
                     <p className={`text-lg ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                        {isCreating ? 'Create time slots and share with your league' : 'View and select available draft times'}
+                        {isCreator ? 'Set available time slots and share with your league' : 'Select from available draft times'}
                     </p>
                 </div>
 
