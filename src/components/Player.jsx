@@ -3,7 +3,9 @@ import { getOlineRank } from '../utils/teamData';
 
 const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, darkMode }) => {
     const [isDragging, setIsDragging] = useState(false);
+    const [isLongPressing, setIsLongPressing] = useState(false);
     const playerRef = useRef(null);
+    const longPressTimerRef = useRef(null);
 
     // Toggle states for the new buttons - initialize from player data
     const [isHandcuff, setIsHandcuff] = useState(player.isHandcuff || false);
@@ -36,6 +38,14 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
         }
     }, [player, isRisky]);
 
+    // Cleanup timer on unmount
+    useEffect(() => {
+        return () => {
+            if (longPressTimerRef.current) {
+                clearTimeout(longPressTimerRef.current);
+            }
+        };
+    }, []);
 
 
     const handleClick = (e) => {
@@ -82,30 +92,34 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
         setIsDragging(false);
     };
 
-    // Touch event handlers for mobile
+    // Touch event handlers for mobile with long-press delay
     const handleTouchStart = (e) => {
         e.preventDefault();
         e.stopPropagation();
 
-        setIsDragging(true);
+        // Start long press timer
+        longPressTimerRef.current = setTimeout(() => {
+            setIsLongPressing(true);
+            setIsDragging(true);
 
-        // Store drag data
-        const dragData = {
-            playerId: player.id,
-            sourceIndex: index,
-            sourceTier: player.tier
-        };
+            // Store drag data
+            const dragData = {
+                playerId: player.id,
+                sourceIndex: index,
+                sourceTier: player.tier
+            };
 
-        // Dispatch custom drag start event
-        const dragStartEvent = new CustomEvent('playerDragStart', {
-            detail: dragData,
-            bubbles: true
-        });
-        document.dispatchEvent(dragStartEvent);
+            // Dispatch custom drag start event
+            const dragStartEvent = new CustomEvent('playerDragStart', {
+                detail: dragData,
+                bubbles: true
+            });
+            document.dispatchEvent(dragStartEvent);
+        }, 1000); // 1 second delay
     };
 
     const handleTouchMove = (e) => {
-        if (!isDragging) return;
+        if (!isDragging || !isLongPressing) return;
 
         // Prevent scrolling during drag
         e.preventDefault();
@@ -130,7 +144,13 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
     };
 
     const handleTouchEnd = (e) => {
-        if (!isDragging) return;
+        // Clear the long press timer if it hasn't fired yet
+        if (longPressTimerRef.current) {
+            clearTimeout(longPressTimerRef.current);
+            longPressTimerRef.current = null;
+        }
+
+        if (!isDragging || !isLongPressing) return;
 
         // Prevent any default behavior
         e.preventDefault();
@@ -153,6 +173,17 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
         });
         document.dispatchEvent(dragEndEvent);
 
+        setIsDragging(false);
+        setIsLongPressing(false);
+    };
+
+    const handleTouchCancel = () => {
+        // Clear the long press timer if touch is cancelled
+        if (longPressTimerRef.current) {
+            clearTimeout(longPressTimerRef.current);
+            longPressTimerRef.current = null;
+        }
+        setIsLongPressing(false);
         setIsDragging(false);
     };
 
@@ -191,9 +222,11 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchCancel}
             className={`
                 relative p-3 sm:p-3 border-b cursor-grab active:cursor-grabbing transition-all duration-200
                 ${isDragging ? 'opacity-50 scale-105 z-50' : ''}
+                ${isLongPressing ? 'ring-2 ring-blue-400 ring-opacity-50' : ''}
                 ${darkMode
                     ? `border-gray-700 ${player.drafted ? 'bg-gray-800 opacity-60' : 'bg-gray-900 hover:bg-gray-800'}`
                     : `border-gray-200 ${player.drafted ? 'bg-gray-100 opacity-60' : 'bg-white hover:bg-gray-50'}`
