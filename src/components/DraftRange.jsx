@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
-const DraftRange = ({ darkMode, setDarkMode }) => {
+const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) => {
     const [leagueSize, setLeagueSize] = useState(12);
     const [pickPosition, setPickPosition] = useState(1);
     const [positionFilter, setPositionFilter] = useState([]);
     const [availablePlayers, setAvailablePlayers] = useState({});
+    const [draftedPlayers, setDraftedPlayers] = useState([]);
 
     // Calculate variance based on round
     const getVariance = (round) => {
@@ -28,23 +29,39 @@ const DraftRange = ({ darkMode, setDarkMode }) => {
         return Math.ceil(pickNumber / leagueSize);
     };
 
+    // Get player's rank from draft board
+    const getPlayerRank = (playerId) => {
+        if (!allPlayers || allPlayers.length === 0) return null;
+        
+        const rankMap = {};
+        allPlayers.forEach((player, index) => {
+            rankMap[player.id] = index + 1;
+        });
+        
+        return rankMap[playerId] || null;
+    };
+
+    // Handle player click to draft/undraft
+    const handlePlayerClick = (player) => {
+        setDraftedPlayers(prev => {
+            const isAlreadyDrafted = prev.find(p => p.id === player.id);
+            if (isAlreadyDrafted) {
+                return prev.filter(p => p.id !== player.id);
+            } else {
+                return [...prev, player];
+            }
+        });
+    };
+
+    // Remove drafted player
+    const handleRemoveDrafted = (playerId) => {
+        setDraftedPlayers(prev => prev.filter(p => p.id !== playerId));
+    };
+
     // Calculate probable available players for each round
     useEffect(() => {
         const calculateAvailablePlayers = () => {
-            const players = [];
-            const playerDatabase = require('../utils/playerDatabase').playerDatabase;
-
-            // Convert to array and sort by ADP
-            Object.values(playerDatabase).forEach(player => {
-                if (player.adp) {
-                    players.push({
-                        ...player,
-                        adp: parseFloat(player.adp)
-                    });
-                }
-            });
-
-            players.sort((a, b) => a.adp - b.adp);
+            if (!allPlayers || allPlayers.length === 0) return;
 
             const available = {};
 
@@ -54,7 +71,7 @@ const DraftRange = ({ darkMode, setDarkMode }) => {
                 const variance = getVariance(round);
 
                 // Find players within ADP range
-                let roundPlayers = players.filter(player => {
+                let roundPlayers = allPlayers.filter(player => {
                     const minADP = Math.max(1, pickNumber - variance);
                     const maxADP = pickNumber + variance;
                     return player.adp >= minADP && player.adp <= maxADP;
@@ -81,7 +98,7 @@ const DraftRange = ({ darkMode, setDarkMode }) => {
         };
 
         calculateAvailablePlayers();
-    }, [leagueSize, pickPosition, positionFilter]);
+    }, [leagueSize, pickPosition, positionFilter, allPlayers]);
 
     const leagueSizeOptions = [8, 10, 12, 14, 16];
     const pickPositionOptions = Array.from({ length: leagueSize }, (_, i) => i + 1);
@@ -201,6 +218,103 @@ const DraftRange = ({ darkMode, setDarkMode }) => {
                     </div>
                 </div>
 
+                {/* Drafted Players Section */}
+                {draftedPlayers.length > 0 && (
+                    <div className={`rounded-lg shadow-md p-6 mb-8 transition-colors duration-200 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className={`text-xl font-bold transition-colors duration-200 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                Your Drafted Team ({draftedPlayers.length} players)
+                            </h2>
+                            <button
+                                onClick={() => setDraftedPlayers([])}
+                                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
+                                    ? 'bg-red-600 hover:bg-red-700 text-white'
+                                    : 'bg-red-100 hover:bg-red-200 text-red-700 border border-red-300'
+                                    }`}
+                            >
+                                Clear All
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                            {draftedPlayers
+                                .sort((a, b) => a.adp - b.adp)
+                                .map((player, index) => (
+                                    <div
+                                        key={player.id}
+                                        className={`rounded-lg p-3 border transition-all duration-200 ${darkMode
+                                            ? 'bg-gray-700 border-gray-600'
+                                            : 'bg-gray-50 border-gray-200'
+                                            }`}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center space-x-3">
+                                                {player.photo && (
+                                                    <img
+                                                        src={player.photo}
+                                                        alt={player.name}
+                                                        className="w-10 h-10 rounded-full object-cover"
+                                                    />
+                                                )}
+                                                <div className="flex items-center space-x-3">
+                                                    <div>
+                                                        <h3 className={`text-sm font-semibold transition-colors duration-200 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                                            {player.name}
+                                                        </h3>
+                                                        <div className="flex items-center space-x-2 mt-1">
+                                                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${player.position === 'QB' ? 'bg-orange-100 text-orange-800' :
+                                                                player.position === 'RB' ? 'bg-red-100 text-red-800' :
+                                                                    player.position === 'WR' ? 'bg-green-100 text-green-800' :
+                                                                        player.position === 'TE' ? 'bg-purple-100 text-purple-800' :
+                                                                            player.position === 'K' ? 'bg-pink-100 text-pink-800' :
+                                                                                'bg-gray-200 text-gray-700'
+                                                                }`}>
+                                                                {player.position}
+                                                            </span>
+                                                            {player.team && (
+                                                                <img
+                                                                    src={`https://a.espncdn.com/i/teamlogos/nfl/500/${player.team.toLowerCase()}.png`}
+                                                                    alt={player.team}
+                                                                    className="w-5 h-5 object-contain"
+                                                                    onError={(e) => {
+                                                                        e.target.style.display = 'none';
+                                                                    }}
+                                                                />
+                                                            )}
+                                                            <span className={`text-xs transition-colors duration-200 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                                                {player.team}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center space-x-3">
+                                                <div className="text-right">
+                                                    <p className={`text-sm font-medium transition-colors duration-200 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+                                                        ADP: {player.adp}
+                                                    </p>
+                                                    {getPlayerRank(player.id) && (
+                                                        <span className={`text-xs font-bold px-2 py-1 rounded transition-colors duration-200 ${darkMode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-700'}`}>
+                                                            #{getPlayerRank(player.id)}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <button
+                                                    onClick={() => handleRemoveDrafted(playerId)}
+                                                    className={`px-2 py-1 rounded text-xs font-medium transition-colors ${darkMode
+                                                        ? 'bg-red-600 hover:bg-red-700 text-white'
+                                                        : 'bg-red-100 hover:bg-red-200 text-red-700 border border-red-300'
+                                                        }`}
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                        </div>
+                    </div>
+                )}
+
                 {/* Results */}
                 <div className="space-y-6">
                     {Object.entries(availablePlayers).map(([round, data]) => (
@@ -221,9 +335,14 @@ const DraftRange = ({ darkMode, setDarkMode }) => {
                                         {data.players.map((player, index) => (
                                             <div
                                                 key={player.id}
-                                                className={`rounded-lg p-4 border hover:shadow-md transition-all duration-200 ${darkMode
+                                                onClick={() => handlePlayerClick(player)}
+                                                className={`rounded-lg p-4 border hover:shadow-md transition-all duration-200 cursor-pointer ${darkMode
                                                     ? 'bg-gray-700 border-gray-600'
-                                                    : 'bg-gray-50 border-gray-200'}`}
+                                                    : 'bg-gray-50 border-gray-200'} ${
+                                                    draftedPlayers.find(p => p.id === player.id) 
+                                                        ? 'ring-2 ring-green-400 bg-green-50 border-green-300' 
+                                                        : ''
+                                                    }`}
                                             >
                                                 <div className="flex items-center space-x-3">
                                                     {player.photo && (
@@ -263,9 +382,16 @@ const DraftRange = ({ darkMode, setDarkMode }) => {
                                                                 {player.team}
                                                             </span>
                                                         </div>
-                                                        <p className={`text-sm font-medium transition-colors duration-200 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
-                                                            ADP: {player.adp}
-                                                        </p>
+                                                        <div className="flex items-center justify-between">
+                                                            <p className={`text-sm font-medium transition-colors duration-200 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+                                                                ADP: {player.adp}
+                                                            </p>
+                                                            {getPlayerRank(player.id) && (
+                                                                <span className={`text-xs font-bold px-2 py-1 rounded transition-colors duration-200 ${darkMode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-700'}`}>
+                                                                    #{getPlayerRank(player.id)}
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
