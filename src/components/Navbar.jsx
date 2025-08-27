@@ -3,7 +3,7 @@ import React from 'react';
 const Navbar = ({ darkMode, currentPage, onPageChange }) => {
     const navItems = [
         { id: 'draft-board', label: 'Draft Board', icon: '📋' },
-        { id: 'new-tool', label: 'Draft Scheduler', icon: '📅' }
+        { id: 'draft-range', label: 'Draft Range', icon: '🎯' }
     ];
 
     return (

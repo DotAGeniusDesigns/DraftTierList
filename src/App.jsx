@@ -3,6 +3,7 @@ import TierList from './components/TierList';
 import ExportImport from './components/ExportImport';
 import Navbar from './components/Navbar';
 import NewPage from './components/NewPage';
+import DraftRange from './components/DraftRange';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers } from './utils/playerData';
 import { getTeamLogo } from './utils/teamData';
@@ -102,6 +103,14 @@ function App() {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [isPositionDropdownOpen]);
+
+    // Handle direct links via URL hash
+    useEffect(() => {
+        const hash = window.location.hash.replace('#', '');
+        if (hash === 'draft-range' || hash === 'draft-board') {
+            setCurrentPage(hash);
+        }
+    }, []);
 
     // Global touch event handler to prevent scrolling during drag
     useEffect(() => {
@@ -212,6 +221,8 @@ function App() {
     // Handle page navigation
     const handlePageChange = (pageId) => {
         setCurrentPage(pageId);
+        // Update URL hash for direct linking
+        window.location.hash = pageId;
     };
 
     // Get position tag styling
@@ -221,7 +232,7 @@ function App() {
             case 'WR':
                 return `${baseStyle} bg-green-100 text-green-800`;
             case 'RB':
-                return `${baseStyle} bg-blue-100 text-blue-800`;
+                return `${baseStyle} bg-red-100 text-red-800`;
             case 'QB':
                 return `${baseStyle} bg-orange-100 text-orange-800`;
             case 'TE':
@@ -469,6 +480,11 @@ function App() {
                         </div>
                     )}
                 </div>
+            )}
+
+            {/* Draft Range Page */}
+            {currentPage === 'draft-range' && (
+                <DraftRange darkMode={darkMode} setDarkMode={setDarkMode} />
             )}
 
             {/* New Tool Page */}
