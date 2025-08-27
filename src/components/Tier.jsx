@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Player from './Player';
 
-const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisky, onRemoveTier, onMovePlayer, startingRank, darkMode }) => {
+const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisky, onRemoveTier, onAddTier, onRenameTier, onMovePlayer, startingRank, darkMode }) => {
     const [isDragOver, setIsDragOver] = useState(false);
     const [dropIndex, setDropIndex] = useState(null);
     const [isTouchDragging, setIsTouchDragging] = useState(false);
+    const [isEditingName, setIsEditingName] = useState(false);
+    const [tierName, setTierName] = useState('');
     const tierRef = useRef(null);
 
     const handleDragOver = (e) => {
@@ -69,6 +71,36 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
             console.error('Error parsing drag data in tier:', error);
         }
         setDropIndex(null);
+    };
+
+    // Load tier name from localStorage
+    useEffect(() => {
+        const tierNames = JSON.parse(localStorage.getItem('fantasy-football-tier-names') || '{}');
+        setTierName(tierNames[tierNumber] || `Tier ${tierNumber}`);
+    }, [tierNumber]);
+
+    // Handler functions
+    const handleRemoveTier = () => {
+        if (onRemoveTier) {
+            onRemoveTier(tierNumber);
+        }
+    };
+
+    const handleEditName = () => {
+        setIsEditingName(true);
+    };
+
+    const handleSaveName = () => {
+        if (tierName.trim() && onRenameTier) {
+            onRenameTier(tierNumber, tierName.trim());
+        }
+        setIsEditingName(false);
+    };
+
+    const handleCancelEdit = () => {
+        const tierNames = JSON.parse(localStorage.getItem('fantasy-football-tier-names') || '{}');
+        setTierName(tierNames[tierNumber] || `Tier ${tierNumber}`);
+        setIsEditingName(false);
     };
 
     // Touch event handlers for mobile
@@ -141,7 +173,52 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
             {/* Clean Tier Header */}
             <div className={`flex items-center justify-between p-3 rounded-t-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-900 text-white'}`}>
                 <div className="flex items-center gap-3">
-                    <h3 className="text-lg font-bold">Tier {tierNumber}</h3>
+                    {isEditingName ? (
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="text"
+                                value={tierName}
+                                onChange={(e) => setTierName(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleSaveName();
+                                    if (e.key === 'Escape') handleCancelEdit();
+                                }}
+                                className={`px-2 py-1 text-lg font-bold rounded ${darkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-gray-900 border-gray-300'} border focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                autoFocus
+                            />
+                            <button
+                                onClick={handleSaveName}
+                                className="p-1 rounded hover:bg-gray-700 text-green-400"
+                                title="Save name"
+                            >
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                            <button
+                                onClick={handleCancelEdit}
+                                className="p-1 rounded hover:bg-gray-700 text-red-400"
+                                title="Cancel edit"
+                            >
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-2">
+                            <h3 className="text-lg font-bold">{tierName}</h3>
+                            <button
+                                onClick={handleEditName}
+                                className="p-1 rounded hover:bg-gray-700 text-gray-400"
+                                title="Edit tier name"
+                            >
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                </svg>
+                            </button>
+                        </div>
+                    )}
                 </div>
                 <div className="flex items-center gap-3">
                     <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-300'}`}>

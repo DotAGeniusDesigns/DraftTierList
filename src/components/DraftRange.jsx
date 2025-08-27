@@ -32,12 +32,12 @@ const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) =>
     // Get player's rank from draft board
     const getPlayerRank = (playerId) => {
         if (!allPlayers || allPlayers.length === 0) return null;
-        
+
         const rankMap = {};
         allPlayers.forEach((player, index) => {
             rankMap[player.id] = index + 1;
         });
-        
+
         return rankMap[playerId] || null;
     };
 
@@ -299,7 +299,7 @@ const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) =>
                                                     )}
                                                 </div>
                                                 <button
-                                                    onClick={() => handleRemoveDrafted(playerId)}
+                                                    onClick={() => handleRemoveDrafted(player.id)}
                                                     className={`px-2 py-1 rounded text-xs font-medium transition-colors ${darkMode
                                                         ? 'bg-red-600 hover:bg-red-700 text-white'
                                                         : 'bg-red-100 hover:bg-red-200 text-red-700 border border-red-300'
@@ -338,9 +338,8 @@ const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) =>
                                                 onClick={() => handlePlayerClick(player)}
                                                 className={`rounded-lg p-4 border hover:shadow-md transition-all duration-200 cursor-pointer ${darkMode
                                                     ? 'bg-gray-700 border-gray-600'
-                                                    : 'bg-gray-50 border-gray-200'} ${
-                                                    draftedPlayers.find(p => p.id === player.id) 
-                                                        ? 'ring-2 ring-green-400 bg-green-50 border-green-300' 
+                                                    : 'bg-gray-50 border-gray-200'} ${draftedPlayers.find(p => p.id === player.id)
+                                                        ? 'ring-2 ring-green-400 bg-green-50 border-green-300'
                                                         : ''
                                                     }`}
                                             >

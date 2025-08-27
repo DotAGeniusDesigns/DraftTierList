@@ -4,9 +4,12 @@ import ExportImport from './components/ExportImport';
 import Navbar from './components/Navbar';
 import NewPage from './components/NewPage';
 import DraftRange from './components/DraftRange';
+import BackupManager from './components/BackupManager';
+import BurgerMenu from './components/BurgerMenu';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers } from './utils/playerData';
 import { getTeamLogo } from './utils/teamData';
+import { createBackup, shouldCreateBackup } from './utils/backupSystem';
 
 function App() {
     // Use localStorage hook to persist player data
@@ -60,6 +63,11 @@ function App() {
         };
 
         mergeNewProperties();
+
+        // Check if we need to create a backup
+        if (shouldCreateBackup()) {
+            createBackup(players, 'automatic');
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Only run once on component mount
 
@@ -77,6 +85,9 @@ function App() {
 
     // Export/Import modal state
     const [showExportImport, setShowExportImport] = useState(false);
+
+    // Backup manager modal state
+    const [showBackupManager, setShowBackupManager] = useState(false);
 
     // Reset to default confirmation modal state
     const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -160,6 +171,9 @@ function App() {
     // Update players (for drag and drop)
     const handleUpdatePlayers = (updatedPlayers) => {
         setPlayers(updatedPlayers);
+
+        // Create backup after any player order changes
+        createBackup(updatedPlayers, 'player reorder');
     };
 
     // Remove an empty tier
@@ -171,6 +185,44 @@ function App() {
                 : player
         );
         setPlayers(updatedPlayers);
+    };
+
+    // Add a new tier
+    const handleAddTier = () => {
+        // Find the highest tier number from both players and localStorage
+        const tierNames = JSON.parse(localStorage.getItem('fantasy-football-tier-names') || '{}');
+        const tiersFromPlayers = players.map(p => p.tier);
+        const tiersFromNames = Object.keys(tierNames).map(Number);
+
+        // Combine both sets and find the maximum
+        const allTiers = [...tiersFromPlayers, ...tiersFromNames];
+        const maxTier = allTiers.length > 0 ? Math.max(...allTiers) : 0;
+        const newTierNumber = maxTier + 1;
+
+        // Create a new tier with a default name
+        const newTierName = `Tier ${newTierNumber}`;
+
+        // Update localStorage with the new tier
+        tierNames[newTierNumber] = newTierName;
+        localStorage.setItem('fantasy-football-tier-names', JSON.stringify(tierNames));
+
+        // Don't move any players - just create an empty tier
+        // This allows users to manually move players as needed
+        // and prevents tiers from disappearing
+
+        // Force a re-render to show the new tier
+        setPlayers([...players]);
+    };
+
+    // Rename a tier
+    const handleRenameTier = (tierNumber, newName) => {
+        // Update localStorage with the new tier name
+        const tierNames = JSON.parse(localStorage.getItem('fantasy-football-tier-names') || '{}');
+        tierNames[tierNumber] = newName;
+        localStorage.setItem('fantasy-football-tier-names', JSON.stringify(tierNames));
+
+        // Force a re-render by updating state
+        setPlayers([...players]);
     };
 
     // Handle position filter checkbox changes
@@ -192,6 +244,12 @@ function App() {
         setShowExportImport(false);
     };
 
+    // Handle restore from backup
+    const handleRestoreFromBackup = (restoredPlayers) => {
+        setPlayers(restoredPlayers);
+        setShowBackupManager(false);
+    };
+
     // Reset all drafted players
     const handleResetDrafted = () => {
         const updatedPlayers = players.map(player => ({
@@ -203,7 +261,10 @@ function App() {
 
     // Reset to default database order
     const handleResetToDefault = () => {
-        // Clear localStorage and reload fresh data
+        // Clear custom tier names and reset to default
+        localStorage.removeItem('fantasy-football-tier-names');
+
+        // Clear player data and reload fresh data
         localStorage.removeItem('fantasy-football-players');
         window.location.reload();
     };
@@ -339,16 +400,7 @@ function App() {
 
                             {/* Toggles container - responsive */}
                             <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                                {/* Export/Import Button */}
-                                <button
-                                    onClick={() => setShowExportImport(true)}
-                                    className={`px-3 py-1 text-sm border rounded-md transition-colors ${darkMode
-                                        ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
-                                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
-                                        }`}
-                                >
-                                    📤 Export/Import
-                                </button>
+
 
                                 {/* Hide Drafted Toggle */}
                                 <div className="flex items-center gap-2 text-sm">
@@ -369,23 +421,6 @@ function App() {
                                     </button>
                                 </div>
 
-                                {/* Dark Mode Toggle */}
-                                <div className="flex items-center gap-2">
-                                    <label className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                                        Dark Mode
-                                    </label>
-                                    <button
-                                        onClick={() => setDarkMode(!darkMode)}
-                                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${darkMode
-                                            ? 'bg-blue-600'
-                                            : 'bg-gray-300'
-                                            }`}
-                                    >
-                                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${darkMode ? 'translate-x-6' : 'translate-x-1'
-                                            }`} />
-                                    </button>
-                                </div>
-
                                 {/* Reset Drafted Button */}
                                 <button
                                     onClick={handleResetDrafted}
@@ -397,16 +432,15 @@ function App() {
                                     🔄 Reset Drafted
                                 </button>
 
-                                {/* Reset to Default Button */}
-                                <button
-                                    onClick={() => setShowResetConfirm(true)}
-                                    className={`px-3 py-1 text-sm border rounded-md transition-colors whitespace-nowrap ${darkMode
-                                        ? 'bg-red-700 border-red-600 text-white hover:bg-red-600'
-                                        : 'bg-red-100 border-red-300 text-red-700 hover:bg-red-200'
-                                        }`}
-                                >
-                                    ⚠️ Reset to Default
-                                </button>
+                                {/* Burger Menu */}
+                                <BurgerMenu
+                                    darkMode={darkMode}
+                                    onAddTier={handleAddTier}
+                                    onShowBackupManager={() => setShowBackupManager(true)}
+                                    onShowExportImport={() => setShowExportImport(true)}
+                                    onShowResetConfirm={() => setShowResetConfirm(true)}
+                                    onToggleDarkMode={() => setDarkMode(!darkMode)}
+                                />
                             </div>
                         </div>
                     </div>
@@ -418,6 +452,8 @@ function App() {
                         onToggleDraft={handleToggleDraft}
                         onToggleRisky={handleToggleRisky}
                         onRemoveTier={handleRemoveTier}
+                        onAddTier={handleAddTier}
+                        onRenameTier={handleRenameTier}
                         darkMode={darkMode}
                     />
 
@@ -443,6 +479,16 @@ function App() {
                                 </div>
                             </div>
                         </div>
+                    )}
+
+                    {/* Backup Manager Modal */}
+                    {showBackupManager && (
+                        <BackupManager
+                            players={players}
+                            onRestorePlayers={handleRestoreFromBackup}
+                            darkMode={darkMode}
+                            onClose={() => setShowBackupManager(false)}
+                        />
                     )}
 
                     {/* Reset to Default Confirmation Modal */}
@@ -484,7 +530,12 @@ function App() {
 
             {/* Draft Range Page */}
             {currentPage === 'draft-range' && (
-                <DraftRange darkMode={darkMode} setDarkMode={setDarkMode} />
+                <DraftRange
+                    darkMode={darkMode}
+                    setDarkMode={setDarkMode}
+                    players={players}
+                    allPlayers={players}
+                />
             )}
 
             {/* New Tool Page */}

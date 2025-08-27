@@ -1,7 +1,7 @@
 import React from 'react';
 import Tier from './Tier';
 
-const TierList = ({ players, allPlayers, onUpdatePlayers, onToggleDraft, onToggleRisky, onRemoveTier, darkMode }) => {
+const TierList = ({ players, allPlayers, onUpdatePlayers, onToggleDraft, onToggleRisky, onRemoveTier, onAddTier, onRenameTier, darkMode }) => {
     // Group players by tier (use allPlayers for ranking calculation)
     const playersByTier = allPlayers.reduce((acc, player) => {
         if (!acc[player.tier]) {
@@ -11,18 +11,23 @@ const TierList = ({ players, allPlayers, onUpdatePlayers, onToggleDraft, onToggl
         return acc;
     }, {});
 
-    // Get all tier numbers and sort them
-    const tierNumbers = Object.keys(playersByTier)
-        .map(Number)
-        .sort((a, b) => a - b);
+    // Get all tier numbers from players and from localStorage tier names
+    const tierNames = JSON.parse(localStorage.getItem('fantasy-football-tier-names') || '{}');
+    const tiersFromNames = Object.keys(tierNames).map(Number);
+    const tiersFromPlayers = Object.keys(playersByTier).map(Number);
+
+    // Combine both sets and remove duplicates
+    const allTierNumbers = [...new Set([...tiersFromNames, ...tiersFromPlayers])];
+    const tierNumbers = allTierNumbers.sort((a, b) => a - b);
 
     // Calculate starting rank for each tier (cumulative) - using allPlayers
     let cumulativeRank = 1;
     const tierRanks = {};
     tierNumbers.forEach(tierNumber => {
         tierRanks[tierNumber] = cumulativeRank;
-        console.log(`Tier ${tierNumber}: startingRank = ${cumulativeRank}, players = ${playersByTier[tierNumber].length}`);
-        cumulativeRank += playersByTier[tierNumber].length;
+        const playerCount = playersByTier[tierNumber] ? playersByTier[tierNumber].length : 0;
+        console.log(`Tier ${tierNumber}: startingRank = ${cumulativeRank}, players = ${playerCount}`);
+        cumulativeRank += playerCount;
     });
 
     // Create a set of filtered player IDs for quick lookup
@@ -63,16 +68,16 @@ const TierList = ({ players, allPlayers, onUpdatePlayers, onToggleDraft, onToggl
         <div className="space-y-8">
             {/* Tiers */}
             {tierNumbers.map(tierNumber => {
-                // Get all players in this tier (unfiltered)
-                const allTierPlayers = playersByTier[tierNumber];
+                // Get all players in this tier (unfiltered) - handle case where tier might not exist yet
+                const allTierPlayers = playersByTier[tierNumber] || [];
 
                 // Filter players in this tier to only show filtered players
                 const tierPlayers = allTierPlayers.filter(player =>
                     filteredPlayerIds.has(player.id)
                 );
 
-                // Only render tier if it has visible players
-                if (tierPlayers.length === 0) return null;
+                // Always render tier even if it has no visible players
+                // This allows empty tiers to be visible and manageable
 
                 return (
                     <Tier
@@ -83,8 +88,10 @@ const TierList = ({ players, allPlayers, onUpdatePlayers, onToggleDraft, onToggl
                         onToggleDraft={onToggleDraft}
                         onToggleRisky={onToggleRisky}
                         onRemoveTier={onRemoveTier}
+                        onAddTier={onAddTier}
+                        onRenameTier={onRenameTier}
                         onMovePlayer={handleMovePlayer}
-                        startingRank={tierRanks[tierNumber]}
+                        startingRank={tierRanks[tierNumber] || 1}
                         darkMode={darkMode}
                     />
                 );
