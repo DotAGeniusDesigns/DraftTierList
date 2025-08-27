@@ -4,6 +4,7 @@ import ExportImport from './components/ExportImport';
 import Navbar from './components/Navbar';
 import NewPage from './components/NewPage';
 import DraftRange from './components/DraftRange';
+
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers } from './utils/playerData';
 import { getTeamLogo } from './utils/teamData';
@@ -56,12 +57,62 @@ function App() {
                 return player;
             });
 
-            setPlayers(updatedPlayers);
+            // Check if player data is corrupted and repair it
+            const repairedPlayers = repairCorruptedPlayerOrder(updatedPlayers);
+            setPlayers(repairedPlayers);
         };
 
         mergeNewProperties();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Only run once on component mount
+
+    // Function to detect and repair corrupted player order
+    const repairCorruptedPlayerOrder = (playerArray) => {
+        // If this is the first load (no previous data), return as-is
+        if (playerArray.length === 0) return playerArray;
+
+        // Check if the order looks corrupted by sampling first few players
+        const firstFewPlayers = playerArray.slice(0, 5);
+        const hasRandomOrder = firstFewPlayers.some((player, index) => {
+            // If we see players with very high ADPs in the first few positions, it's likely corrupted
+            return player.adp && player.adp > 50 && index < 3;
+        });
+
+        if (!hasRandomOrder) {
+            // Order looks fine, return as-is
+            return playerArray;
+        }
+
+        console.log('Detected corrupted player order, repairing...');
+
+        // Group players by tier
+        const playersByTier = {};
+        playerArray.forEach(player => {
+            if (!playersByTier[player.tier]) {
+                playersByTier[player.tier] = [];
+            }
+            playersByTier[player.tier].push(player);
+        });
+
+        // Sort tiers and rebuild array in correct order
+        const sortedTiers = Object.keys(playersByTier)
+            .map(Number)
+            .sort((a, b) => a - b);
+
+        const repairedArray = [];
+        sortedTiers.forEach(tierNumber => {
+            const tierPlayers = playersByTier[tierNumber];
+            // Sort within tier by ADP (or keep existing order if no ADP)
+            tierPlayers.sort((a, b) => {
+                if (a.adp && b.adp) return a.adp - b.adp;
+                return 0;
+            });
+            repairedArray.push(...tierPlayers);
+        });
+
+        console.log('Player order repaired successfully');
+        return repairedArray;
+    };
 
     // Dark mode state
     const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false);
@@ -271,6 +322,8 @@ function App() {
 
         return true;
     });
+
+
 
     return (
         <div className={`min-h-screen transition-colors duration-200 ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
@@ -484,7 +537,7 @@ function App() {
 
             {/* Draft Range Page */}
             {currentPage === 'draft-range' && (
-                <DraftRange darkMode={darkMode} setDarkMode={setDarkMode} />
+                <DraftRange darkMode={darkMode} setDarkMode={setDarkMode} players={filteredPlayers} allPlayers={players} />
             )}
 
             {/* New Tool Page */}

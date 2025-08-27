@@ -31,31 +31,48 @@ const TierList = ({ players, allPlayers, onUpdatePlayers, onToggleDraft, onToggl
     const handleMovePlayer = (playerId, newTier, targetIndex = null) => {
         console.log('Moving player:', playerId, 'to tier:', newTier, 'at index:', targetIndex);
 
-        // Find the player being moved
-        const playerToMove = allPlayers.find(p => p.id === playerId);
+        // Find the player being moved in the current players state (preserves custom order)
+        const playerToMove = players.find(p => p.id === playerId);
         if (!playerToMove) return;
 
-        // Remove the player from the current position
-        let updatedPlayers = allPlayers.filter(p => p.id !== playerId);
+        // Create a copy of the current players array to preserve order
+        let updatedPlayers = [...players];
 
-        // Get players in the target tier
-        const targetTierPlayers = updatedPlayers.filter(p => p.tier === newTier);
+        // Find the current position of the player
+        const currentIndex = updatedPlayers.findIndex(p => p.id === playerId);
+        if (currentIndex === -1) return;
 
-        // If targetIndex is provided, insert at that position
+        // Remove the player from their current position
+        updatedPlayers.splice(currentIndex, 1);
+
+        // Find where to insert the player in the target tier
+        let insertIndex = 0;
+
+        // If targetIndex is provided, calculate the actual insert position
         if (targetIndex !== null && targetIndex !== undefined) {
-            targetTierPlayers.splice(targetIndex, 0, { ...playerToMove, tier: newTier });
+            // Find the first player in the target tier
+            const firstTargetTierIndex = updatedPlayers.findIndex(p => p.tier === newTier);
+            if (firstTargetTierIndex !== -1) {
+                insertIndex = firstTargetTierIndex + targetIndex;
+            } else {
+                // If no players in target tier, insert at the end
+                insertIndex = updatedPlayers.length;
+            }
         } else {
-            // Otherwise, add to the end of the tier
-            targetTierPlayers.push({ ...playerToMove, tier: newTier });
+            // Find the last player in the target tier
+            const lastTargetTierIndex = updatedPlayers.findLastIndex(p => p.tier === newTier);
+            if (lastTargetTierIndex !== -1) {
+                insertIndex = lastTargetTierIndex + 1;
+            } else {
+                // If no players in target tier, insert at the end
+                insertIndex = updatedPlayers.length;
+            }
         }
 
-        // Get all other players (not in target tier)
-        const otherPlayers = updatedPlayers.filter(p => p.tier !== newTier);
+        // Insert the player at the calculated position
+        updatedPlayers.splice(insertIndex, 0, { ...playerToMove, tier: newTier });
 
-        // Combine all players
-        updatedPlayers = [...otherPlayers, ...targetTierPlayers];
-
-        console.log('Updated players:', updatedPlayers);
+        console.log('Updated players (preserving order):', updatedPlayers);
         onUpdatePlayers(updatedPlayers);
     };
 
