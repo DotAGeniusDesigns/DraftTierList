@@ -29,17 +29,7 @@ const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) =>
         return Math.ceil(pickNumber / leagueSize);
     };
 
-    // Get player's rank from draft board
-    const getPlayerRank = (playerId) => {
-        if (!allPlayers || allPlayers.length === 0) return null;
 
-        const rankMap = {};
-        allPlayers.forEach((player, index) => {
-            rankMap[player.id] = index + 1;
-        });
-
-        return rankMap[playerId] || null;
-    };
 
     // Handle player click to draft/undraft
     const handlePlayerClick = (player) => {
@@ -292,11 +282,6 @@ const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) =>
                                                     <p className={`text-sm font-medium transition-colors duration-200 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
                                                         ADP: {player.adp}
                                                     </p>
-                                                    {getPlayerRank(player.id) && (
-                                                        <span className={`text-xs font-bold px-2 py-1 rounded transition-colors duration-200 ${darkMode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-700'}`}>
-                                                            #{getPlayerRank(player.id)}
-                                                        </span>
-                                                    )}
                                                 </div>
                                                 <button
                                                     onClick={() => handleRemoveDrafted(player.id)}
@@ -385,11 +370,6 @@ const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) =>
                                                             <p className={`text-sm font-medium transition-colors duration-200 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
                                                                 ADP: {player.adp}
                                                             </p>
-                                                            {getPlayerRank(player.id) && (
-                                                                <span className={`text-xs font-bold px-2 py-1 rounded transition-colors duration-200 ${darkMode ? 'bg-gray-600 text-gray-200' : 'bg-gray-200 text-gray-700'}`}>
-                                                                    #{getPlayerRank(player.id)}
-                                                                </span>
-                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
