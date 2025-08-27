@@ -251,12 +251,12 @@ const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) =>
                                                             {player.name}
                                                         </h3>
                                                         <div className="flex items-center space-x-2 mt-1">
-                                                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${player.position === 'QB' ? 'bg-orange-100 text-orange-800' :
-                                                                player.position === 'RB' ? 'bg-red-100 text-red-800' :
-                                                                    player.position === 'WR' ? 'bg-green-100 text-green-800' :
-                                                                        player.position === 'TE' ? 'bg-purple-100 text-purple-800' :
-                                                                            player.position === 'K' ? 'bg-pink-100 text-pink-800' :
-                                                                                'bg-gray-200 text-gray-700'
+                                                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${player.position === 'QB' ? (darkMode ? 'bg-orange-900 text-orange-200' : 'bg-orange-100 text-orange-800') :
+                                                                player.position === 'RB' ? (darkMode ? 'bg-red-900 text-red-200' : 'bg-red-100 text-red-800') :
+                                                                    player.position === 'WR' ? (darkMode ? 'bg-green-900 text-green-200' : 'bg-green-100 text-green-800') :
+                                                                        player.position === 'TE' ? (darkMode ? 'bg-purple-900 text-purple-200' : 'bg-purple-100 text-purple-800') :
+                                                                            player.position === 'K' ? (darkMode ? 'bg-pink-900 text-pink-200' : 'bg-pink-100 text-pink-800') :
+                                                                                (darkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-700')
                                                                 }`}>
                                                                 {player.position}
                                                             </span>
@@ -324,7 +324,9 @@ const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) =>
                                                 className={`rounded-lg p-4 border hover:shadow-md transition-all duration-200 cursor-pointer ${darkMode
                                                     ? 'bg-gray-700 border-gray-600'
                                                     : 'bg-gray-50 border-gray-200'} ${draftedPlayers.find(p => p.id === player.id)
-                                                        ? 'ring-2 ring-green-400 bg-green-50 border-green-300'
+                                                        ? darkMode
+                                                            ? 'ring-2 ring-green-400 bg-gray-600 border-green-500'
+                                                            : 'ring-2 ring-green-400 bg-green-50 border-green-300'
                                                         : ''
                                                     }`}
                                             >
@@ -341,12 +343,12 @@ const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) =>
                                                             <h3 className={`font-semibold truncate transition-colors duration-200 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                                                                 {player.name}
                                                             </h3>
-                                                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${player.position === 'QB' ? 'bg-orange-100 text-orange-800' :
-                                                                player.position === 'RB' ? 'bg-red-100 text-red-800' :
-                                                                    player.position === 'WR' ? 'bg-green-100 text-green-800' :
-                                                                        player.position === 'TE' ? 'bg-purple-100 text-purple-800' :
-                                                                            player.position === 'K' ? 'bg-pink-100 text-pink-800' :
-                                                                                'bg-gray-200 text-gray-700'
+                                                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${player.position === 'QB' ? (darkMode ? 'bg-orange-900 text-orange-200' : 'bg-orange-100 text-orange-800') :
+                                                                player.position === 'RB' ? (darkMode ? 'bg-red-900 text-red-200' : 'bg-red-100 text-red-800') :
+                                                                    player.position === 'WR' ? (darkMode ? 'bg-green-900 text-green-200' : 'bg-green-100 text-green-800') :
+                                                                        player.position === 'TE' ? (darkMode ? 'bg-purple-900 text-purple-200' : 'bg-purple-100 text-purple-800') :
+                                                                            player.position === 'K' ? (darkMode ? 'bg-pink-900 text-pink-200' : 'bg-pink-100 text-pink-800') :
+                                                                                (darkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-700')
                                                                 }`}>
                                                                 {player.position}
                                                             </span>
