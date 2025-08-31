@@ -18,6 +18,8 @@ export const initialPlayers = databasePlayers.map(player => ({
     teamLogo: getTeamLogo(player.team),
     // ADP is now included directly in the player database
     adp: player.adp || null,
+    // ECR is now included directly in the player database
+    ecr: player.ecr || null,
     // Merge injured player data if this player is injured
     ...(injuredPlayersData[player.id] || {}),
     // Merge handcuff player data if this player is a handcuff

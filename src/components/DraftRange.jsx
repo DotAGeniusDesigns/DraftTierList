@@ -24,6 +24,17 @@ const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) =>
         }
     };
 
+    // Get the actual pick position within the round (1-12, not the overall pick number)
+    const getPickPositionInRound = (round) => {
+        if (round % 2 === 1) {
+            // Odd rounds: pick order is 1-12
+            return pickPosition;
+        } else {
+            // Even rounds: pick order is reversed 12-1
+            return leagueSize - pickPosition + 1;
+        }
+    };
+
     // Get round from pick number
     const getRound = (pickNumber) => {
         return Math.ceil(pickNumber / leagueSize);
@@ -306,7 +317,7 @@ const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) =>
                         <div key={round} className={`rounded-lg shadow-md overflow-hidden transition-colors duration-200 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
                             <div className={`px-6 py-4 transition-colors duration-200 ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
                                 <h2 className={`text-xl font-bold transition-colors duration-200 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                    Round {round} - Pick {data.pickNumber}
+                                    Round {round} - Pick {data.pickNumber} (Position {pickPosition})
                                 </h2>
                                 <p className={`text-sm transition-colors duration-200 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                                     ADP Range: {Math.max(1, data.pickNumber - data.variance)} - {data.pickNumber + data.variance}

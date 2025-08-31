@@ -331,30 +331,44 @@ const Player = ({ player, index, onToggleDraft, onMovePlayer, onToggleRisky, dar
                     </span>
                 </div>
 
+                {/* ECR - hidden on mobile */}
+                <div className="hidden sm:block w-12 sm:w-16 text-center">
+                    <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'
+                        }`}>
+                        {player.ecr ? (
+                            <>
+                                {player.ecr}
+                                {index !== player.ecr && (
+                                    <span className={`ml-1 ${index < player.ecr
+                                        ? (darkMode ? 'text-red-400' : 'text-red-600') // User ranks higher (reach) - show positive diff
+                                        : (darkMode ? 'text-green-400' : 'text-green-600') // User ranks lower (good value) - show negative diff
+                                        }`}>
+                                        ({index < player.ecr ? '+' : '-'}{Math.abs(index - player.ecr).toFixed(0)})
+                                    </span>
+                                )}
+                            </>
+                        ) : '--'}
+                    </span>
+                </div>
+
                 {/* ADP */}
                 <div className="w-8 sm:w-16 text-center">
                     <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'
                         }`}>
-                        {player.adp ? player.adp.toFixed(1) : '--'}
+                        {player.adp ? (
+                            <>
+                                {player.adp.toFixed(1)}
+                                {Math.abs(index - player.adp) > 0.1 && (
+                                    <span className={`ml-1 ${index < player.adp
+                                        ? (darkMode ? 'text-red-400' : 'text-red-600') // User ranks higher (reach) - show positive diff
+                                        : (darkMode ? 'text-green-400' : 'text-green-600') // User ranks lower (good value) - show negative diff
+                                        }`}>
+                                        ({index < player.adp ? '+' : ''}{Math.abs(index - player.adp).toFixed(1)})
+                                    </span>
+                                )}
+                            </>
+                        ) : '--'}
                     </span>
-                </div>
-
-                {/* RvADP (User Rank vs ADP) */}
-                <div className="w-12 sm:w-20 text-center">
-                    {player.adp ? (
-                        <span className={`text-xs font-medium ${index - player.adp < 0
-                            ? (darkMode ? 'text-red-400' : 'text-red-600') // Reach (user ranks higher)
-                            : index - player.adp > 0
-                                ? (darkMode ? 'text-green-400' : 'text-green-600') // Good value (user ranks lower)
-                                : (darkMode ? 'text-gray-400' : 'text-gray-600') // Even
-                            }`}>
-                            {(index - player.adp) > 0 ? '+' : ''}{(index - player.adp).toFixed(1)}
-                        </span>
-                    ) : (
-                        <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                            --
-                        </span>
-                    )}
                 </div>
 
                 {/* Toggle Buttons - hidden on mobile */}

@@ -24,40 +24,47 @@ function App() {
             // Create a map of database players by ID for quick lookup
             const databaseMap = new Map(databasePlayers.map(p => [p.id, p]));
 
-            // Update existing players with new properties from database
-            const updatedPlayers = currentPlayers.map(player => {
-                const databasePlayer = databaseMap.get(player.id);
-                if (databasePlayer) {
-                    const updatedPlayer = {
-                        ...player,
-                        // Prioritize database values over localStorage for these properties
-                        team: databasePlayer.team, // Always use current team from database
-                        teamLogo: getTeamLogo(databasePlayer.team), // Update team logo when team changes
-                        adp: databasePlayer.adp, // Always use current ADP from database
-                        isInjured: databasePlayer.isInjured,
-                        injuryNote: databasePlayer.injuryNote || player.injuryNote || null,
-                        isHandcuff: databasePlayer.isHandcuff,
-                        isRisky: databasePlayer.isRisky,
-                        riskyReason: databasePlayer.riskyReason || player.riskyReason || null,
-                        // Update bye week and oline rank from current database
-                        byeWeek: databasePlayer.byeWeek,
-                        olineRank: databasePlayer.olineRank
-                    };
-
-                    // Debug: Log if any of the new properties are true
-                    if (databasePlayer.isInjured || databasePlayer.isHandcuff || databasePlayer.isRisky) {
-                        console.log(`🔍 Updated ${player.name}:`, {
+            // Update existing players with new properties from database and remove deleted players
+            const updatedPlayers = currentPlayers
+                .filter(player => {
+                    // Only keep players that still exist in the database
+                    return databaseMap.has(player.id);
+                })
+                .map(player => {
+                    const databasePlayer = databaseMap.get(player.id);
+                    if (databasePlayer) {
+                        const updatedPlayer = {
+                            ...player,
+                            // Prioritize database values over localStorage for these properties
+                            team: databasePlayer.team, // Always use current team from database
+                            photo: databasePlayer.photo, // Always use current photo from database
+                            teamLogo: getTeamLogo(databasePlayer.team), // Update team logo when team changes
+                            adp: databasePlayer.adp, // Always use current ADP from database
+                            ecr: databasePlayer.ecr, // Always use current ECR from database
                             isInjured: databasePlayer.isInjured,
+                            injuryNote: databasePlayer.injuryNote || player.injuryNote || null,
                             isHandcuff: databasePlayer.isHandcuff,
                             isRisky: databasePlayer.isRisky,
-                            riskyReason: databasePlayer.riskyReason
-                        });
-                    }
+                            riskyReason: databasePlayer.riskyReason || player.riskyReason || null,
+                            // Update bye week and oline rank from current database
+                            byeWeek: databasePlayer.byeWeek,
+                            olineRank: databasePlayer.olineRank
+                        };
 
-                    return updatedPlayer;
-                }
-                return player;
-            });
+                        // Debug: Log if any of the new properties are true
+                        if (databasePlayer.isInjured || databasePlayer.isHandcuff || databasePlayer.isRisky) {
+                            console.log(`🔍 Updated ${player.name}:`, {
+                                isInjured: databasePlayer.isInjured,
+                                isHandcuff: databasePlayer.isHandcuff,
+                                isRisky: databasePlayer.isRisky,
+                                riskyReason: databasePlayer.riskyReason
+                            });
+                        }
+
+                        return updatedPlayer;
+                    }
+                    return player;
+                });
 
             setPlayers(updatedPlayers);
         };
