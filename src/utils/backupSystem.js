@@ -21,9 +21,7 @@ export const createBackup = (players, reason = 'automatic') => {
                 // Don't backup database properties that change
                 // Only backup user customizations
             })),
-            playerCount: players.length,
-            firstPlayer: players[0]?.name || 'None',
-            lastPlayer: players[players.length - 1]?.name || 'None'
+            playerCount: players.length
         };
 
         // Get existing backups
@@ -186,9 +184,7 @@ export const saveDraftBoard = (players, name, description = '') => {
                 drafted: player.drafted,
                 risky: player.risky,
             })),
-            playerCount: players.length,
-            firstPlayer: players[0]?.name || 'None',
-            lastPlayer: players[players.length - 1]?.name || 'None'
+            playerCount: players.length
         };
 
         // Get existing draft boards
@@ -288,8 +284,6 @@ export const getDraftBoardSummary = () => {
             description: board.description,
             timestamp: board.timestamp,
             playerCount: board.playerCount,
-            firstPlayer: board.firstPlayer,
-            lastPlayer: board.lastPlayer,
             date: new Date(board.timestamp).toLocaleDateString(),
             time: new Date(board.timestamp).toLocaleTimeString()
         };

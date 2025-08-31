@@ -184,19 +184,9 @@ const BackupManager = ({ players, onRestorePlayers, darkMode, onClose }) => {
                                                             {backup.date} at {backup.time}
                                                         </span>
                                                     </div>
-                                                    <div className="grid grid-cols-3 gap-4 text-sm">
-                                                        <div>
-                                                            <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>Players: </span>
-                                                            <span className="font-medium">{backup.playerCount}</span>
-                                                        </div>
-                                                        <div>
-                                                            <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>First: </span>
-                                                            <span className="font-medium">{backup.firstPlayer}</span>
-                                                        </div>
-                                                        <div>
-                                                            <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>Last: </span>
-                                                            <span className="font-medium">{backup.lastPlayer}</span>
-                                                        </div>
+                                                    <div className="text-sm">
+                                                        <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>Players: </span>
+                                                        <span className="font-medium">{backup.playerCount}</span>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-2">
@@ -286,19 +276,9 @@ const BackupManager = ({ players, onRestorePlayers, darkMode, onClose }) => {
                                                             {board.description}
                                                         </p>
                                                     )}
-                                                    <div className="grid grid-cols-3 gap-4 text-sm">
-                                                        <div>
-                                                            <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>Players: </span>
-                                                            <span className="font-medium">{board.playerCount}</span>
-                                                        </div>
-                                                        <div>
-                                                            <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>First: </span>
-                                                            <span className="font-medium">{board.firstPlayer}</span>
-                                                        </div>
-                                                        <div>
-                                                            <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>Last: </span>
-                                                            <span className="font-medium">{board.lastPlayer}</span>
-                                                        </div>
+                                                    <div className="text-sm">
+                                                        <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>Players: </span>
+                                                        <span className="font-medium">{board.playerCount}</span>
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-2">
