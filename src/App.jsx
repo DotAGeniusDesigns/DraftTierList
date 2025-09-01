@@ -4,6 +4,7 @@ import ExportImport from './components/ExportImport';
 import Navbar from './components/Navbar';
 import NewPage from './components/NewPage';
 import DraftRange from './components/DraftRange';
+import Streamers from './components/Streamers';
 import BackupManager from './components/BackupManager';
 import BurgerMenu from './components/BurgerMenu';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -125,7 +126,7 @@ function App() {
     // Handle direct links via URL hash
     useEffect(() => {
         const hash = window.location.hash.replace('#', '');
-        if (hash === 'draft-range' || hash === 'draft-board') {
+        if (hash === 'draft-range' || hash === 'draft-board' || hash === 'streamers') {
             setCurrentPage(hash);
         }
     }, []);
@@ -543,6 +544,11 @@ function App() {
                     players={players}
                     allPlayers={players}
                 />
+            )}
+
+            {/* Streamers Page */}
+            {currentPage === 'streamers' && (
+                <Streamers darkMode={darkMode} />
             )}
 
             {/* New Tool Page */}
