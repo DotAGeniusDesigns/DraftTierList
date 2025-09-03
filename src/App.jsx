@@ -348,6 +348,7 @@ function App() {
                 darkMode={darkMode}
                 currentPage={currentPage}
                 onPageChange={handlePageChange}
+                onToggleDarkMode={() => setDarkMode(!darkMode)}
             />
 
             {/* Page Content */}
@@ -447,7 +448,7 @@ function App() {
                                     onShowBackupManager={() => setShowBackupManager(true)}
                                     onShowExportImport={() => setShowExportImport(true)}
                                     onShowResetConfirm={() => setShowResetConfirm(true)}
-                                    onToggleDarkMode={() => setDarkMode(!darkMode)}
+
                                 />
                             </div>
                         </div>
@@ -540,7 +541,6 @@ function App() {
             {currentPage === 'draft-range' && (
                 <DraftRange
                     darkMode={darkMode}
-                    setDarkMode={setDarkMode}
                     players={players}
                     allPlayers={players}
                 />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) => {
+const DraftRange = ({ darkMode, players = [], allPlayers = [] }) => {
     const [leagueSize, setLeagueSize] = useState(12);
     const [pickPosition, setPickPosition] = useState(1);
     const [positionFilter, setPositionFilter] = useState([]);
@@ -112,22 +112,7 @@ const DraftRange = ({ darkMode, setDarkMode, players = [], allPlayers = [] }) =>
                     <h1 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         Draft Range Calculator
                     </h1>
-                    {/* Dark Mode Toggle */}
-                    <div className="flex items-center gap-2">
-                        <label className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            Dark Mode
-                        </label>
-                        <button
-                            onClick={() => setDarkMode(!darkMode)}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${darkMode
-                                ? 'bg-blue-600'
-                                : 'bg-gray-300'
-                                }`}
-                        >
-                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${darkMode ? 'translate-x-6' : 'translate-x-1'
-                                }`} />
-                        </button>
-                    </div>
+                    <div></div> {/* Spacer for centering */}
                 </div>
 
                 {/* Controls */}

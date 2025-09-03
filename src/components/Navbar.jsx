@@ -1,9 +1,10 @@
 import React from 'react';
 
-const Navbar = ({ darkMode, currentPage, onPageChange }) => {
+const Navbar = ({ darkMode, currentPage, onPageChange, onToggleDarkMode }) => {
     const navItems = [
         { id: 'draft-board', label: 'Draft Board', icon: '📋' },
-        { id: 'draft-range', label: 'Draft Range', icon: '🎯' }
+        { id: 'draft-range', label: 'Draft Range', icon: '🎯' },
+        { id: 'streamers', label: 'Streamers', icon: '⚡' }
     ];
 
     return (
@@ -36,6 +37,18 @@ const Navbar = ({ darkMode, currentPage, onPageChange }) => {
                                 {item.label}
                             </button>
                         ))}
+
+                        {/* Dark Mode Toggle */}
+                        <button
+                            onClick={onToggleDarkMode}
+                            className={`ml-4 p-2 rounded-md transition-colors ${darkMode
+                                ? 'text-yellow-400 hover:bg-gray-700'
+                                : 'text-gray-600 hover:bg-gray-100'
+                                }`}
+                            title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                        >
+                            {darkMode ? '☀️' : '🌙'}
+                        </button>
                     </div>
                 </div>
             </div>

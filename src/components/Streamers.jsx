@@ -1,9 +1,19 @@
 import React from 'react';
 import { getStreamersForWeek } from '../utils/streamersDatabase';
+import { getTeamLogo, getTeamData } from '../utils/teamData';
+import { getOffenseRanking, getDefenseRanking } from '../utils/powerRankings';
+import { playerDatabase } from '../utils/playerDatabase';
 
 const Streamers = ({ darkMode }) => {
     // Get streaming data for Week 1 from the database
     const streamingData = getStreamersForWeek(1);
+
+    // Helper function to get player photo
+    const getPlayerPhoto = (playerName) => {
+        const playerKey = playerName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
+        const player = playerDatabase[playerKey];
+        return player ? player.photo : null;
+    };
 
     const getPositionColor = (position) => {
         switch (position) {
@@ -18,7 +28,7 @@ const Streamers = ({ darkMode }) => {
     };
 
     const renderPlayerCard = (player, position) => {
-        const baseCardClasses = `p-4 rounded-lg border transition-all duration-200 ${darkMode
+        const baseCardClasses = `p-3 rounded-lg border transition-all duration-200 w-80 mx-auto ${darkMode
             ? 'bg-gray-800 border-gray-700 hover:border-gray-600'
             : 'bg-white border-gray-200 hover:border-gray-300'
             }`;
@@ -29,14 +39,19 @@ const Streamers = ({ darkMode }) => {
                     <div key={player.name} className={baseCardClasses}>
                         <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center space-x-3">
-                                <img src={player.teamLogo} alt={player.team} className="w-8 h-8" />
-                                <div>
-                                    <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                        {player.name}
-                                    </h3>
-                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                        {player.team} • {player.homeAway}
-                                    </p>
+                                <img src={getTeamLogo(player.team)} alt={player.team} className="w-8 h-8" />
+                                <div className="flex items-center space-x-2">
+                                    {getPlayerPhoto(player.name) && (
+                                        <img src={getPlayerPhoto(player.name)} alt={player.name} className="w-8 h-8 rounded-full" />
+                                    )}
+                                    <div>
+                                        <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                            {player.name}
+                                        </h3>
+                                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                            {player.team} • {player.homeAway}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             <div className="text-right">
@@ -46,38 +61,39 @@ const Streamers = ({ darkMode }) => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 mb-3">
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>vs</p>
+                        {/* Section Break - Opponent Stats */}
+                        <div className={`border-t mb-3 ${darkMode ? 'border-gray-600' : 'border-gray-300'}`}></div>
+
+                        {/* Opponent's Negative Stats */}
+                        <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                            <div className="text-center mb-2">
+                                <p className={`text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>vs</p>
                                 <div className="flex items-center justify-center space-x-2">
-                                    <img src={player.opponentLogo} alt={player.opponent} className="w-6 h-6" />
+                                    <img src={getTeamLogo(player.opponent)} alt={player.opponent} className="w-6 h-6" />
                                     <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponent}</span>
                                 </div>
                             </div>
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Weather</p>
-                                <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.weather}</p>
+                            <div className="space-y-2">
+                                <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
+                                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Fantasy Points Per Game Allowed</p>
+                                    <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentFantasyPointsAllowed}</p>
+                                </div>
+                                <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
+                                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>TDs Allowed</p>
+                                    <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentPassTDsAllowed}</p>
+                                </div>
+                                <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
+                                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Pass Yds Allowed</p>
+                                    <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentPassYardsAllowed}</p>
+                                </div>
+                                <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
+                                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>QB Rush Yds Allowed</p>
+                                    <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentQBRushYardsAllowed}</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-2 mb-3">
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Pass Def Rank</p>
-                                <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>#{player.opponentPassDefRank}</p>
-                            </div>
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>TDs Allowed</p>
-                                <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentPassTDsAllowed}</p>
-                            </div>
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Yards Allowed</p>
-                                <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentPassYardsAllowed}</p>
-                            </div>
-                        </div>
 
-                        <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {player.reason}
-                        </p>
                     </div>
                 );
 
@@ -86,7 +102,7 @@ const Streamers = ({ darkMode }) => {
                     <div key={player.name} className={baseCardClasses}>
                         <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center space-x-3">
-                                <img src={player.teamLogo} alt={player.team} className="w-8 h-8" />
+                                <img src={getTeamLogo(player.team)} alt={player.team} className="w-8 h-8" />
                                 <div>
                                     <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                                         {player.name}
@@ -107,7 +123,7 @@ const Streamers = ({ darkMode }) => {
                             <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
                                 <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>vs</p>
                                 <div className="flex items-center justify-center space-x-2">
-                                    <img src={player.opponentLogo} alt={player.opponent} className="w-6 h-6" />
+                                    <img src={getTeamLogo(player.opponent)} alt={player.opponent} className="w-6 h-6" />
                                     <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponent}</span>
                                 </div>
                             </div>
@@ -132,9 +148,7 @@ const Streamers = ({ darkMode }) => {
                             </div>
                         </div>
 
-                        <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {player.reason}
-                        </p>
+
                     </div>
                 );
 
@@ -143,7 +157,7 @@ const Streamers = ({ darkMode }) => {
                     <div key={player.name} className={baseCardClasses}>
                         <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center space-x-3">
-                                <img src={player.teamLogo} alt={player.team} className="w-8 h-8" />
+                                <img src={getTeamLogo(player.team)} alt={player.team} className="w-8 h-8" />
                                 <div>
                                     <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                                         {player.name}
@@ -164,7 +178,7 @@ const Streamers = ({ darkMode }) => {
                             <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
                                 <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>vs</p>
                                 <div className="flex items-center justify-center space-x-2">
-                                    <img src={player.opponentLogo} alt={player.opponent} className="w-6 h-6" />
+                                    <img src={getTeamLogo(player.opponent)} alt={player.opponent} className="w-6 h-6" />
                                     <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponent}</span>
                                 </div>
                             </div>
@@ -189,9 +203,7 @@ const Streamers = ({ darkMode }) => {
                             </div>
                         </div>
 
-                        <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {player.reason}
-                        </p>
+
                     </div>
                 );
 
@@ -200,14 +212,19 @@ const Streamers = ({ darkMode }) => {
                     <div key={player.name} className={baseCardClasses}>
                         <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center space-x-3">
-                                <img src={player.teamLogo} alt={player.team} className="w-8 h-8" />
-                                <div>
-                                    <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                        {player.name}
-                                    </h3>
-                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                        {player.team}
-                                    </p>
+                                <img src={getTeamLogo(player.team)} alt={player.team} className="w-8 h-8" />
+                                <div className="flex items-center space-x-2">
+                                    {getPlayerPhoto(player.name) && (
+                                        <img src={getPlayerPhoto(player.name)} alt={player.name} className="w-8 h-8 rounded-full" />
+                                    )}
+                                    <div>
+                                        <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                            {player.name}
+                                        </h3>
+                                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                            {player.team} • {player.homeAway}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             <div className="text-right">
@@ -217,34 +234,35 @@ const Streamers = ({ darkMode }) => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 mb-3">
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>vs</p>
+                        {/* Section Break - Opponent Stats */}
+                        <div className={`border-t mb-3 ${darkMode ? 'border-gray-600' : 'border-gray-300'}`}></div>
+
+                        {/* Opponent's Negative Stats */}
+                        <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                            <div className="text-center mb-2">
+                                <p className={`text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>vs</p>
                                 <div className="flex items-center justify-center space-x-2">
-                                    <img src={player.opponentLogo} alt={player.opponent} className="w-6 h-6" />
+                                    <img src={getTeamLogo(player.opponent)} alt={player.opponent} className="w-6 h-6" />
                                     <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponent}</span>
                                 </div>
                             </div>
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>LB Coverage</p>
-                                <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.linebackerCoverage}</p>
+                            <div className="space-y-2">
+                                <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
+                                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Fantasy Points Per Game Allowed</p>
+                                    <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentFantasyPointsAllowed}</p>
+                                </div>
+                                <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
+                                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Rec Yds Allowed</p>
+                                    <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentRecYardsAllowed}</p>
+                                </div>
+                                <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
+                                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Rec TDs Allowed</p>
+                                    <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentRecTDsAllowed}</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2 mb-3">
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>TE Def Rank</p>
-                                <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>#{player.opponentTEDefRank}</p>
-                            </div>
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Red Zone D</p>
-                                <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.redZoneDefense}</p>
-                            </div>
-                        </div>
 
-                        <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {player.reason}
-                        </p>
                     </div>
                 );
 
@@ -253,7 +271,7 @@ const Streamers = ({ darkMode }) => {
                     <div key={player.name} className={baseCardClasses}>
                         <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center space-x-3">
-                                <img src={player.teamLogo} alt={player.team} className="w-8 h-8" />
+                                <img src={getTeamLogo(player.team)} alt={player.team} className="w-8 h-8" />
                                 <div>
                                     <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                                         {player.name}
@@ -270,38 +288,39 @@ const Streamers = ({ darkMode }) => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 mb-3">
+                        {/* DST's Positive Stats */}
+                        <div className="space-y-2 mb-3">
                             <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>vs</p>
+                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Fantasy Points Per Game</p>
+                                <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.fantasyPointsPerGame}</p>
+                            </div>
+                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>NFL Defense Rank</p>
+                                <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>#{getDefenseRanking(player.team)}</p>
+                            </div>
+                        </div>
+
+                        {/* Section Break - Opponent Stats */}
+                        <div className={`border-t mb-3 ${darkMode ? 'border-gray-600' : 'border-gray-300'}`}></div>
+
+                        {/* Opponent's Negative Stats */}
+                        <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                            <div className="text-center mb-2">
+                                <p className={`text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>vs</p>
                                 <div className="flex items-center justify-center space-x-2">
-                                    <img src={player.opponentLogo} alt={player.opponent} className="w-6 h-6" />
+                                    <img src={getTeamLogo(player.opponent)} alt={player.opponent} className="w-6 h-6" />
                                     <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponent}</span>
                                 </div>
                             </div>
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Weather</p>
-                                <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.weather}</p>
+                            <div className="space-y-2">
+                                <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
+                                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>NFL Offense Rank</p>
+                                    <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>#{getOffenseRanking(player.opponent)}</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-2 mb-3">
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Offense Rank</p>
-                                <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>#{player.opponentOffenseRank}</p>
-                            </div>
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Turnovers</p>
-                                <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.turnoversForced}</p>
-                            </div>
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Sacks</p>
-                                <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.sacks}</p>
-                            </div>
-                        </div>
 
-                        <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {player.reason}
-                        </p>
                     </div>
                 );
 
@@ -310,14 +329,19 @@ const Streamers = ({ darkMode }) => {
                     <div key={player.name} className={baseCardClasses}>
                         <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center space-x-3">
-                                <img src={player.teamLogo} alt={player.team} className="w-8 h-8" />
-                                <div>
-                                    <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                        {player.name}
-                                    </h3>
-                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                        {player.team}
-                                    </p>
+                                <img src={getTeamLogo(player.team)} alt={player.team} className="w-8 h-8" />
+                                <div className="flex items-center space-x-2">
+                                    {getPlayerPhoto(player.name) && (
+                                        <img src={getPlayerPhoto(player.name)} alt={player.name} className="w-8 h-8 rounded-full" />
+                                    )}
+                                    <div>
+                                        <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                                            {player.name}
+                                        </h3>
+                                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                            {player.team} • {player.homeAway}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             <div className="text-right">
@@ -327,34 +351,35 @@ const Streamers = ({ darkMode }) => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 mb-3">
+                        {/* Kicker's Positive Stats */}
+                        <div className="space-y-2 mb-3">
                             <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>vs</p>
+                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Fantasy Points Per Game</p>
+                                <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.fantasyPointsPerGame}</p>
+                            </div>
+                        </div>
+
+                        {/* Section Break - Opponent Stats */}
+                        <div className={`border-t mb-3 ${darkMode ? 'border-gray-600' : 'border-gray-300'}`}></div>
+
+                        {/* Opponent's Negative Stats */}
+                        <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+                            <div className="text-center mb-2">
+                                <p className={`text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>vs</p>
                                 <div className="flex items-center justify-center space-x-2">
-                                    <img src={player.opponentLogo} alt={player.opponent} className="w-6 h-6" />
+                                    <img src={getTeamLogo(player.opponent)} alt={player.opponent} className="w-6 h-6" />
                                     <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponent}</span>
                                 </div>
                             </div>
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Weather</p>
-                                <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.weather}</p>
+                            <div className="space-y-2">
+                                <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
+                                    <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>NFL Defense Rank</p>
+                                    <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>#{getDefenseRanking(player.opponent)}</p>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2 mb-3">
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Defense Rank</p>
-                                <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>#{player.opponentDefenseRank}</p>
-                            </div>
-                            <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
-                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>FG Attempts</p>
-                                <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.fieldGoalAttemptsAllowed}</p>
-                            </div>
-                        </div>
 
-                        <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {player.reason}
-                        </p>
                     </div>
                 );
 
@@ -365,7 +390,7 @@ const Streamers = ({ darkMode }) => {
 
     return (
         <div className={`min-h-screen transition-colors duration-200 ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-8">
                 {/* Header */}
                 <div className="text-center mb-8">
                     <h1 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -382,7 +407,7 @@ const Streamers = ({ darkMode }) => {
                         <h2 className={`text-2xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                             {position} Streamers
                         </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 lg:gap-8 max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
                             {players.map(player => renderPlayerCard(player, position))}
                         </div>
                     </div>

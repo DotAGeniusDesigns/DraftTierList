@@ -5,8 +5,7 @@ const BurgerMenu = ({
     onAddTier,
     onShowBackupManager,
     onShowExportImport,
-    onShowResetConfirm,
-    onToggleDarkMode
+    onShowResetConfirm
 }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -70,12 +69,7 @@ const BurgerMenu = ({
                             SETTINGS
                         </div>
 
-                        <button
-                            onClick={() => handleMenuItemClick(onToggleDarkMode)}
-                            className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-700'}`}
-                        >
-                            {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-                        </button>
+
 
                         <button
                             onClick={() => handleMenuItemClick(onShowResetConfirm)}
