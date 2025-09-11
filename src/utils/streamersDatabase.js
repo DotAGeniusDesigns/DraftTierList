@@ -1,141 +1,175 @@
 // Streamers database with weekly streaming options
 export const streamersDatabase = {
-    week1: {
-        QB: [
-            {
-                name: "Bryce Young",
-                team: "CAR",
-                opponent: "JAX",
-                opponentFantasyPointsAllowed: 20.1,
-                opponentPassTDsAllowed: 1.7,
-                opponentPassYardsAllowed: 269.5,
-                opponentQBRushYardsAllowed: 24.6,
-                homeAway: "Away",
-                streamingRank: 1
-            },
-            {
-                name: "Trevor Lawrence",
-                team: "JAX",
-                opponent: "CAR",
-                opponentFantasyPointsAllowed: 20.5,
-                opponentPassTDsAllowed: 2.1,
-                opponentPassYardsAllowed: 236.0,
-                opponentQBRushYardsAllowed: 23.2,
-                homeAway: "Home",
-                streamingRank: 2
-            },
-            {
-                name: "Michael Penix Jr.",
-                team: "ATL",
-                opponent: "TB",
-                opponentFantasyPointsAllowed: 19.8,
-                opponentPassTDsAllowed: 1.6,
-                opponentPassYardsAllowed: 232.2,
-                opponentQBRushYardsAllowed: 29.1,
-                homeAway: "Home",
-                streamingRank: 3
-            }
-        ],
-        TE: [
-            {
-                name: "Brenton Strange",
-                team: "JAX",
-                opponent: "CAR",
-                opponentFantasyPointsAllowed: 10.0,
-                opponentRecYardsAllowed: 54.1,
-                opponentRecTDsAllowed: 0.6,
-                homeAway: "Home",
-                streamingRank: 1
-            },
-            {
-                name: "Hunter Henry",
-                team: "NE",
-                opponent: "LV",
-                opponentFantasyPointsAllowed: 9.5,
-                opponentRecYardsAllowed: 64.5,
-                opponentRecTDsAllowed: 0.5,
-                homeAway: "Home",
-                streamingRank: 2
-            },
-            {
-                name: "Dalton Schultz",
-                team: "HOU",
-                opponent: "LAR",
-                opponentFantasyPointsAllowed: 9.4,
-                opponentRecYardsAllowed: 64.8,
-                opponentRecTDsAllowed: 0.4,
-                homeAway: "Away",
-                streamingRank: 3
-            }
-        ],
-        DST: [
-            {
-                name: "Arizona Cardinals",
-                team: "ARI",
-                opponent: "NO",
-                fantasyPointsPerGame: 5.9,
-                homeAway: "Away",
-                streamingRank: 1
-            },
-            {
-                name: "Washington Commanders",
-                team: "WAS",
-                opponent: "NYG",
-                fantasyPointsPerGame: 5.3,
-                homeAway: "Home",
-                streamingRank: 2
-            },
-            {
-                name: "Minnesota Vikings",
-                team: "MIN",
-                opponent: "CHI",
-                fantasyPointsPerGame: 9.5,
-                homeAway: "Away",
-                streamingRank: 3
-            }
-        ],
-        K: [
-            {
-                name: "Chase McLaughlin",
-                team: "TB",
-                opponent: "ATL",
-                fantasyPointsPerGame: 9.6,
-                homeAway: "Away",
-                streamingRank: 1
-            },
-            {
-                name: "Jake Elliott",
-                team: "PHI",
-                opponent: "DAL",
-                fantasyPointsPerGame: 8.3,
-                homeAway: "Home",
-                streamingRank: 2
-            },
-            {
-                name: "Cam Little",
-                team: "JAX",
-                opponent: "CAR",
-                fantasyPointsPerGame: 7.4,
-                homeAway: "Home",
-                streamingRank: 3
-            }
-        ]
-    }
+    QB: [
+        {
+            name: "Michael Penix Jr.",
+            team: "ATL",
+            opponent: "MIN",
+            lastWeekPassYards: 298,
+            lastWeekPassTDs: 1,
+            lastWeekRushYards: 21,
+            lastWeekRushTDs: 1,
+            seasonAvgPassYards: 298.0,
+            seasonAvgPassTDs: 1.0,
+            seasonAvgRushYards: 21.0,
+            seasonAvgRushTDs: 1.0,
+            opponentFantasyPointsAllowed: 15.2,
+            opponentPassTDsAllowed: 1.0,
+            opponentPassYardsAllowed: 198.0,
+            opponentQBRushYardsAllowed: 58.0,
+            homeAway: "Away",
+            streamingRank: 1
+        },
+        {
+            name: "Geno Smith",
+            team: "LV",
+            opponent: "LAC",
+            lastWeekPassYards: 362,
+            lastWeekPassTDs: 1,
+            lastWeekRushYards: 10,
+            lastWeekRushTDs: 0,
+            seasonAvgPassYards: 362.0,
+            seasonAvgPassTDs: 1.0,
+            seasonAvgRushYards: 10.0,
+            seasonAvgRushTDs: 0.0,
+            opponentFantasyPointsAllowed: 16.0,
+            opponentPassTDsAllowed: 1.0,
+            opponentPassYardsAllowed: 249.0,
+            opponentQBRushYardsAllowed: 57.0,
+            homeAway: "Home",
+            streamingRank: 2
+        },
+        {
+            name: "Aaron Rodgers",
+            team: "PIT",
+            opponent: "SEA",
+            lastWeekPassYards: 244,
+            lastWeekPassTDs: 4,
+            lastWeekRushYards: -1,
+            lastWeekRushTDs: 0,
+            seasonAvgPassYards: 244.0,
+            seasonAvgPassTDs: 4.0,
+            seasonAvgRushYards: -1.0,
+            seasonAvgRushTDs: 0.0,
+            opponentFantasyPointsAllowed: 18.0,
+            opponentPassTDsAllowed: 2.0,
+            opponentPassYardsAllowed: 265.0,
+            opponentQBRushYardsAllowed: 17.0,
+            homeAway: "Home",
+            streamingRank: 3
+        }
+    ],
+    TE: [
+        {
+            name: "Jonnu Smith",
+            team: "PIT",
+            opponent: "SEA",
+            lastWeekTargets: 6,
+            lastWeekReceptions: 5,
+            lastWeekYards: 15,
+            lastWeekTDs: 1,
+            seasonAvgTargets: 6.0,
+            seasonAvgReceptions: 5.0,
+            seasonAvgYards: 15.0,
+            seasonAvgTDs: 1.0,
+            opponentFantasyPointsAllowed: 16.4,
+            opponentRecYardsAllowed: 44.0,
+            opponentRecTDsAllowed: 2.0,
+            homeAway: "Home",
+            streamingRank: 1
+        },
+        {
+            name: "Harold Fannin Jr.",
+            team: "CLE",
+            opponent: "BAL",
+            lastWeekTargets: 9,
+            lastWeekReceptions: 7,
+            lastWeekYards: 63,
+            lastWeekTDs: 0,
+            seasonAvgTargets: 9.0,
+            seasonAvgReceptions: 7.0,
+            seasonAvgYards: 63.0,
+            seasonAvgTDs: 0.0,
+            opponentFantasyPointsAllowed: 15.7,
+            opponentRecYardsAllowed: 97.0,
+            opponentRecTDsAllowed: 1.0,
+            homeAway: "Away",
+            streamingRank: 2
+        },
+        {
+            name: "Brenton Strange",
+            team: "JAX",
+            opponent: "CIN",
+            lastWeekTargets: 4,
+            lastWeekReceptions: 4,
+            lastWeekYards: 59,
+            lastWeekTDs: 0,
+            seasonAvgTargets: 4.0,
+            seasonAvgReceptions: 4.0,
+            seasonAvgYards: 59.0,
+            seasonAvgTDs: 0.0,
+            opponentFantasyPointsAllowed: 10.3,
+            opponentRecYardsAllowed: 100.0,
+            opponentRecTDsAllowed: 0.0,
+            homeAway: "Away",
+            streamingRank: 3
+        }
+    ],
+    DST: [
+        {
+            name: "Arizona Cardinals",
+            team: "ARI",
+            opponent: "CAR",
+            fantasyPointsPerGame: 5.0,
+            homeAway: "Home",
+            streamingRank: 1
+        },
+        {
+            name: "New England Patriots",
+            team: "NE",
+            opponent: "MIA",
+            fantasyPointsPerGame: 7.0,
+            homeAway: "Away",
+            streamingRank: 2
+        },
+        {
+            name: "Dallas Cowboys",
+            team: "DAL",
+            opponent: "NYG",
+            fantasyPointsPerGame: 1.0,
+            homeAway: "Home",
+            streamingRank: 3
+        }
+    ],
+    K: [
+        {
+            name: "Tyler Loop",
+            team: "BAL",
+            opponent: "CLE",
+            fantasyPointsPerGame: 13.0,
+            homeAway: "Home",
+            streamingRank: 1
+        },
+        {
+            name: "Cam Little",
+            team: "JAX",
+            opponent: "CIN",
+            fantasyPointsPerGame: 15.0,
+            homeAway: "Away",
+            streamingRank: 2
+        },
+        {
+            name: "Matt Prater",
+            team: "BUF",
+            opponent: "NYJ",
+            fantasyPointsPerGame: 12.0,
+            homeAway: "Away",
+            streamingRank: 3
+        }
+    ]
 };
 
-// Helper function to get streamers for a specific week
-export const getStreamersForWeek = (week) => {
-    const weekKey = `week${week}`;
-    return streamersDatabase[weekKey] || null;
-};
-
-// Helper function to get all available weeks
-export const getAvailableWeeks = () => {
-    return Object.keys(streamersDatabase).map(key => parseInt(key.replace('week', '')));
-};
-
-// Helper function to get streamers for a specific position and week
-export const getStreamersForPosition = (week, position) => {
-    const weekData = getStreamersForWeek(week);
-    return weekData ? weekData[position] || [] : [];
+// Helper function to get streamers for a specific position
+export const getStreamersForPosition = (position) => {
+    return streamersDatabase[position] || [];
 };

@@ -1,18 +1,18 @@
 import React from 'react';
-import { getStreamersForWeek } from '../utils/streamersDatabase';
+import { streamersDatabase } from '../utils/streamersDatabase';
 import { getTeamLogo, getTeamData } from '../utils/teamData';
 import { getOffenseRanking, getDefenseRanking } from '../utils/powerRankings';
 import { playerDatabase } from '../utils/playerDatabase';
 
 const Streamers = ({ darkMode }) => {
     // Get streaming data for Week 1 from the database
-    const streamingData = getStreamersForWeek(1);
+    const streamingData = streamersDatabase;
 
     // Helper function to get player photo
     const getPlayerPhoto = (playerName) => {
         const playerKey = playerName.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
         const player = playerDatabase[playerKey];
-        return player ? player.photo : null;
+        return player ? player.photo : 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg';
     };
 
     const getPositionColor = (position) => {
@@ -41,9 +41,7 @@ const Streamers = ({ darkMode }) => {
                             <div className="flex items-center space-x-3">
                                 <img src={getTeamLogo(player.team)} alt={player.team} className="w-8 h-8" />
                                 <div className="flex items-center space-x-2">
-                                    {getPlayerPhoto(player.name) && (
-                                        <img src={getPlayerPhoto(player.name)} alt={player.name} className="w-8 h-8 rounded-full" />
-                                    )}
+                                    <img src={getPlayerPhoto(player.name)} alt={player.name} className="w-8 h-8 rounded-full" />
                                     <div>
                                         <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                                             {player.name}
@@ -58,6 +56,73 @@ const Streamers = ({ darkMode }) => {
                                 <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getPositionColor(position)}`}>
                                     #{player.streamingRank}
                                 </span>
+                            </div>
+                        </div>
+
+                        {/* QB's Stats - Last Week vs Season Average */}
+                        <div className="space-y-2 mb-3">
+                            {/* Pass Yards */}
+                            <div className={`p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                                <p className={`text-xs text-center mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Pass Yards</p>
+                                <div className="flex justify-between">
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Last Week</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.lastWeekPassYards !== undefined ? player.lastWeekPassYards : '--'}</p>
+                                    </div>
+                                    <div className={`w-px ${darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Season Avg</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.seasonAvgPassYards !== undefined ? player.seasonAvgPassYards : '--'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Pass TDs */}
+                            <div className={`p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                                <p className={`text-xs text-center mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Pass TDs</p>
+                                <div className="flex justify-between">
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Last Week</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.lastWeekPassTDs !== undefined ? player.lastWeekPassTDs : '--'}</p>
+                                    </div>
+                                    <div className={`w-px ${darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Season Avg</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.seasonAvgPassTDs !== undefined ? player.seasonAvgPassTDs : '--'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Rush Yards */}
+                            <div className={`p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                                <p className={`text-xs text-center mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Rush Yards</p>
+                                <div className="flex justify-between">
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Last Week</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.lastWeekRushYards !== undefined ? player.lastWeekRushYards : '--'}</p>
+                                    </div>
+                                    <div className={`w-px ${darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Season Avg</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.seasonAvgRushYards !== undefined ? player.seasonAvgRushYards : '--'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Rush TDs */}
+                            <div className={`p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                                <p className={`text-xs text-center mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Rush TDs</p>
+                                <div className="flex justify-between">
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Last Week</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.lastWeekRushTDs !== undefined ? player.lastWeekRushTDs : '--'}</p>
+                                    </div>
+                                    <div className={`w-px ${darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Season Avg</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.seasonAvgRushTDs !== undefined ? player.seasonAvgRushTDs : '--'}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -214,9 +279,7 @@ const Streamers = ({ darkMode }) => {
                             <div className="flex items-center space-x-3">
                                 <img src={getTeamLogo(player.team)} alt={player.team} className="w-8 h-8" />
                                 <div className="flex items-center space-x-2">
-                                    {getPlayerPhoto(player.name) && (
-                                        <img src={getPlayerPhoto(player.name)} alt={player.name} className="w-8 h-8 rounded-full" />
-                                    )}
+                                    <img src={getPlayerPhoto(player.name)} alt={player.name} className="w-8 h-8 rounded-full" />
                                     <div>
                                         <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                                             {player.name}
@@ -231,6 +294,73 @@ const Streamers = ({ darkMode }) => {
                                 <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getPositionColor(position)}`}>
                                     #{player.streamingRank}
                                 </span>
+                            </div>
+                        </div>
+
+                        {/* TE's Stats - Last Week vs Season Average */}
+                        <div className="space-y-2 mb-3">
+                            {/* Targets */}
+                            <div className={`p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                                <p className={`text-xs text-center mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Targets</p>
+                                <div className="flex justify-between">
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Last Week</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.lastWeekTargets !== undefined ? player.lastWeekTargets : '--'}</p>
+                                    </div>
+                                    <div className={`w-px ${darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Season Avg</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.seasonAvgTargets !== undefined ? player.seasonAvgTargets : '--'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Receptions */}
+                            <div className={`p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                                <p className={`text-xs text-center mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Receptions</p>
+                                <div className="flex justify-between">
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Last Week</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.lastWeekReceptions !== undefined ? player.lastWeekReceptions : '--'}</p>
+                                    </div>
+                                    <div className={`w-px ${darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Season Avg</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.seasonAvgReceptions !== undefined ? player.seasonAvgReceptions : '--'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Yards */}
+                            <div className={`p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                                <p className={`text-xs text-center mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Yards</p>
+                                <div className="flex justify-between">
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Last Week</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.lastWeekYards !== undefined ? player.lastWeekYards : '--'}</p>
+                                    </div>
+                                    <div className={`w-px ${darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Season Avg</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.seasonAvgYards !== undefined ? player.seasonAvgYards : '--'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* TDs */}
+                            <div className={`p-2 rounded ${darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                                <p className={`text-xs text-center mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>TDs</p>
+                                <div className="flex justify-between">
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Last Week</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.lastWeekTDs !== undefined ? player.lastWeekTDs : '--'}</p>
+                                    </div>
+                                    <div className={`w-px ${darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
+                                    <div className="text-center flex-1">
+                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Season Avg</p>
+                                        <p className={`text-sm font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.seasonAvgTDs !== undefined ? player.seasonAvgTDs : '--'}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -331,9 +461,7 @@ const Streamers = ({ darkMode }) => {
                             <div className="flex items-center space-x-3">
                                 <img src={getTeamLogo(player.team)} alt={player.team} className="w-8 h-8" />
                                 <div className="flex items-center space-x-2">
-                                    {getPlayerPhoto(player.name) && (
-                                        <img src={getPlayerPhoto(player.name)} alt={player.name} className="w-8 h-8 rounded-full" />
-                                    )}
+                                    <img src={getPlayerPhoto(player.name)} alt={player.name} className="w-8 h-8 rounded-full" />
                                     <div>
                                         <h3 className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                                             {player.name}
@@ -394,10 +522,10 @@ const Streamers = ({ darkMode }) => {
                 {/* Header */}
                 <div className="text-center mb-8">
                     <h1 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                        Week 1 Streamers
+                        Week 2 Streamers
                     </h1>
                     <p className={`text-lg ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                        Find the best streaming options for Week 1
+                        Find the best streaming options for Week 2
                     </p>
                 </div>
 

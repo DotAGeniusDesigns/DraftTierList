@@ -4,7 +4,8 @@ const Navbar = ({ darkMode, currentPage, onPageChange, onToggleDarkMode }) => {
     const navItems = [
         { id: 'draft-board', label: 'Draft Board', icon: '📋' },
         { id: 'draft-range', label: 'Draft Range', icon: '🎯' },
-        { id: 'streamers', label: 'Streamers', icon: '⚡' }
+        { id: 'streamers', label: 'Streamers', icon: '⚡' },
+        { id: 'interesting-players', label: 'Interesting Players', icon: '⭐' }
     ];
 
     return (

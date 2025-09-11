@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import NewPage from './components/NewPage';
 import DraftRange from './components/DraftRange';
 import Streamers from './components/Streamers';
+import InterestingPlayers from './components/InterestingPlayers';
 import BackupManager from './components/BackupManager';
 import BurgerMenu from './components/BurgerMenu';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -549,6 +550,11 @@ function App() {
             {/* Streamers Page */}
             {currentPage === 'streamers' && (
                 <Streamers darkMode={darkMode} />
+            )}
+
+            {/* Interesting Players Page */}
+            {currentPage === 'interesting-players' && (
+                <InterestingPlayers darkMode={darkMode} />
             )}
 
             {/* New Tool Page */}
