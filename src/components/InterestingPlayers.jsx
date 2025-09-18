@@ -2,22 +2,20 @@ import React from 'react';
 import { getTeamLogo } from '../utils/teamData';
 
 const InterestingPlayers = ({ darkMode }) => {
-    // TODO: Uncomment this section when ready to build out the Interesting Players feature
-    /*
     const interestingPlayers = [
         {
-            id: "jamarr-chase",
-            name: "Ja'Marr Chase",
+            id: "romeo-doubs",
+            name: "Romeo Doubs",
             position: "WR",
-            team: "CIN",
-            photo: "https://wp.theringer.com/wp-content/uploads/fantasy-football/2025/players/ja_marr_chase.png",
+            team: "GB",
+            photo: "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg",
             stats: {
-                fppg: 18.2,
-                lastWeek: 24.1,
-                seasonHigh: 32.4,
-                targets: 8.5
+                fppg: 12.8,
+                lastWeek: 18.4,
+                seasonHigh: 24.2,
+                targets: 6.2
             },
-            notes: "Consistent WR1 with high target share. Great floor and ceiling combination for waiver wire."
+            notes: "Jayden Reed confirmed out at least 6 weeks, Packers offense very strong"
         }
     ];
 
@@ -93,7 +91,6 @@ const InterestingPlayers = ({ darkMode }) => {
             </div>
         );
     };
-    */
 
     return (
         <div className={`min-h-screen transition-colors duration-200 ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
@@ -108,22 +105,9 @@ const InterestingPlayers = ({ darkMode }) => {
                     </p>
                 </div>
 
-                {/* Coming Soon Content */}
-                <div className={`text-center py-16 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                    <div className="mb-6">
-                        <h2 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                            🚧 Coming Soon
-                        </h2>
-                        <p className={`text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                            Waiver Wire Watch
-                        </p>
-                        <p className={`text-lg mt-4 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                            We're building something awesome for tracking interesting players and waiver wire targets.
-                        </p>
-                        <p className={`text-sm mt-2 ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>
-                            Check back soon for the full feature!
-                        </p>
-                    </div>
+                {/* Players Grid */}
+                <div className="flex flex-wrap justify-center gap-4 sm:gap-6 lg:gap-8 max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {interestingPlayers.map(player => renderPlayerCard(player))}
                 </div>
             </div>
         </div>
