@@ -144,7 +144,7 @@ const Streamers = ({ darkMode }) => {
                                     <p className={`text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentFantasyPointsAllowed}</p>
                                 </div>
                                 <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
-                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Average TDs Allowed</p>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Average Pass TDs Allowed</p>
                                     <p className={`text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentPassTDsAllowed}</p>
                                 </div>
                                 <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
