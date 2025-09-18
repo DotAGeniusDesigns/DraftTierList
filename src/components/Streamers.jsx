@@ -140,19 +140,19 @@ const Streamers = ({ darkMode }) => {
                             </div>
                             <div className="space-y-2">
                                 <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
-                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Fantasy Points Per Game Allowed</p>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Average Fantasy Points Allowed</p>
                                     <p className={`text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentFantasyPointsAllowed}</p>
                                 </div>
                                 <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
-                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>TDs Allowed</p>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Average TDs Allowed</p>
                                     <p className={`text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentPassTDsAllowed}</p>
                                 </div>
                                 <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
-                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Pass Yds Allowed</p>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Average Pass Yds Allowed</p>
                                     <p className={`text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentPassYardsAllowed}</p>
                                 </div>
                                 <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
-                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>QB Rush Yds Allowed</p>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Average QB Rush Yds Allowed</p>
                                     <p className={`text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentQBRushYardsAllowed}</p>
                                 </div>
                             </div>
@@ -378,15 +378,15 @@ const Streamers = ({ darkMode }) => {
                             </div>
                             <div className="space-y-2">
                                 <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
-                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Fantasy Points Per Game Allowed</p>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Average Fantasy Points Allowed</p>
                                     <p className={`text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentFantasyPointsAllowed}</p>
                                 </div>
                                 <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
-                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Rec Yds Allowed</p>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Average Rec Yds Allowed</p>
                                     <p className={`text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentRecYardsAllowed}</p>
                                 </div>
                                 <div className={`text-center p-2 rounded ${darkMode ? 'bg-gray-600' : 'bg-white'}`}>
-                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Rec TDs Allowed</p>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Average Rec TDs Allowed</p>
                                     <p className={`text-base font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{player.opponentRecTDsAllowed}</p>
                                 </div>
                             </div>
