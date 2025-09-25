@@ -53,9 +53,14 @@ const Streamers = ({ darkMode }) => {
                                 </div>
                             </div>
                             <div className="text-right">
-                                <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${getPositionColor(position)}`}>
-                                    #{player.streamingRank}
-                                </span>
+                                <div className="flex flex-col items-end space-y-1">
+                                    <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${getPositionColor(position)}`}>
+                                        #{player.streamingRank}
+                                    </span>
+                                    <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                        {player.yahooOwnership}% owned
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -178,9 +183,14 @@ const Streamers = ({ darkMode }) => {
                                 </div>
                             </div>
                             <div className="text-right">
-                                <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${getPositionColor(position)}`}>
-                                    #{player.streamingRank}
-                                </span>
+                                <div className="flex flex-col items-end space-y-1">
+                                    <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${getPositionColor(position)}`}>
+                                        #{player.streamingRank}
+                                    </span>
+                                    <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                        {player.yahooOwnership}% owned
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -233,9 +243,14 @@ const Streamers = ({ darkMode }) => {
                                 </div>
                             </div>
                             <div className="text-right">
-                                <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${getPositionColor(position)}`}>
-                                    #{player.streamingRank}
-                                </span>
+                                <div className="flex flex-col items-end space-y-1">
+                                    <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${getPositionColor(position)}`}>
+                                        #{player.streamingRank}
+                                    </span>
+                                    <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                        {player.yahooOwnership}% owned
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -291,9 +306,14 @@ const Streamers = ({ darkMode }) => {
                                 </div>
                             </div>
                             <div className="text-right">
-                                <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${getPositionColor(position)}`}>
-                                    #{player.streamingRank}
-                                </span>
+                                <div className="flex flex-col items-end space-y-1">
+                                    <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${getPositionColor(position)}`}>
+                                        #{player.streamingRank}
+                                    </span>
+                                    <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                        {player.yahooOwnership}% owned
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -412,9 +432,14 @@ const Streamers = ({ darkMode }) => {
                                 </div>
                             </div>
                             <div className="text-right">
-                                <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${getPositionColor(position)}`}>
-                                    #{player.streamingRank}
-                                </span>
+                                <div className="flex flex-col items-end space-y-1">
+                                    <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${getPositionColor(position)}`}>
+                                        #{player.streamingRank}
+                                    </span>
+                                    <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                        {player.yahooOwnership}% owned
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -473,9 +498,14 @@ const Streamers = ({ darkMode }) => {
                                 </div>
                             </div>
                             <div className="text-right">
-                                <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${getPositionColor(position)}`}>
-                                    #{player.streamingRank}
-                                </span>
+                                <div className="flex flex-col items-end space-y-1">
+                                    <span className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium ${getPositionColor(position)}`}>
+                                        #{player.streamingRank}
+                                    </span>
+                                    <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                        {player.yahooOwnership}% owned
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -522,10 +552,10 @@ const Streamers = ({ darkMode }) => {
                 {/* Header */}
                 <div className="text-center mb-8">
                     <h1 className={`text-5xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                        Week 3 Streamers
+                        Week 4 Streamers
                     </h1>
                     <p className={`text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                        Find the best streaming options for Week 3
+                        Find the best streaming options for Week 4
                     </p>
                 </div>
 
