@@ -2,26 +2,6 @@
 export const streamersDatabase = {
     QB: [
         {
-            name: "Tyrod Taylor",
-            team: "NYJ",
-            opponent: "MIA",
-            lastWeekPassYards: 197,
-            lastWeekPassTDs: 2,
-            lastWeekRushYards: 48,
-            lastWeekRushTDs: 0,
-            seasonAvgPassYards: 202.4,
-            seasonAvgPassTDs: 2.4,
-            seasonAvgRushYards: 55.2,
-            seasonAvgRushTDs: 0.0,
-            opponentFantasyPointsAllowed: 26.3,
-            opponentPassTDsAllowed: 2.0,
-            opponentPassYardsAllowed: 238.3,
-            opponentQBRushYardsAllowed: 27.3,
-            homeAway: "Away",
-            streamingRank: 1,
-            yahooOwnership: 1
-        },
-        {
             name: "Geno Smith",
             team: "LV",
             opponent: "CHI",
@@ -38,7 +18,7 @@ export const streamersDatabase = {
             opponentPassYardsAllowed: 256.3,
             opponentQBRushYardsAllowed: 10.3,
             homeAway: "Home",
-            streamingRank: 2,
+            streamingRank: 1,
             yahooOwnership: 44
         },
         {
@@ -58,8 +38,28 @@ export const streamersDatabase = {
             opponentPassYardsAllowed: 260.3,
             opponentQBRushYardsAllowed: 31.0,
             homeAway: "Away",
-            streamingRank: 3,
+            streamingRank: 2,
             yahooOwnership: 7
+        },
+        {
+            name: "Michael Penix Jr.",
+            team: "ATL",
+            opponent: "WAS",
+            lastWeekPassYards: 172,
+            lastWeekPassTDs: 0,
+            lastWeekRushYards: 9,
+            lastWeekRushTDs: 0,
+            seasonAvgPassYards: 201.67,
+            seasonAvgPassTDs: 0.33,
+            seasonAvgRushYards: 9.67,
+            seasonAvgRushTDs: 0.33,
+            opponentFantasyPointsAllowed: 19.4,
+            opponentPassTDsAllowed: 1.67,
+            opponentPassYardsAllowed: 249.67,
+            opponentQBRushYardsAllowed: 20.33,
+            homeAway: "Home",
+            streamingRank: 3,
+            yahooOwnership: 15
         }
     ],
     TE: [
