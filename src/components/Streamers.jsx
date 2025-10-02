@@ -552,10 +552,10 @@ const Streamers = ({ darkMode }) => {
                 {/* Header */}
                 <div className="text-center mb-8">
                     <h1 className={`text-5xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                        Week 4 Streamers
+                        Week 5 Streamers
                     </h1>
                     <p className={`text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                        Find the best streaming options for Week 4
+                        Find the best streaming options for Week 5
                     </p>
                 </div>
 
