@@ -91,4 +91,7 @@ jspm_packages/
 .fusebox/
 
 # DynamoDB Local files
-.dynamodb/ 
+.dynamodb/
+
+# Generated Sleeper photo lookup (rebuild with scripts/buildPhotoMapFromSleeper.js)
+scripts/playerPhotoMap.json 

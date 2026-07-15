@@ -2,9 +2,7 @@
  * Generates src/utils/playerDatabase.js from scripts/rawTierList2026.txt.
  *
  * The raw file is a human-editable list of the default draft board. This script
- * turns each line into a player record, reusing existing player headshots from
- * the previous database whenever a name matches so returning players keep their
- * photos. Run it with:  node scripts/generatePlayerDatabase.js
+ * turns each line into a player record, loading headshots from scripts/playerPhotoMap.json (normalized name lookup). Run it with:  node scripts/generatePlayerDatabase.js
  */
 const fs = require('fs');
 const path = require('path');
@@ -12,6 +10,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const RAW_FILE = path.join(__dirname, 'rawTierList2026.txt');
 const DB_FILE = path.join(ROOT, 'src', 'utils', 'playerDatabase.js');
+const PHOTO_MAP_FILE = path.join(__dirname, 'playerPhotoMap.json');
 
 const PLACEHOLDER_PHOTO =
     'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg';
@@ -30,20 +29,14 @@ function normalizeName(name) {
         .trim();
 }
 
-function loadExistingPhotos() {
-    const photos = {};
-    if (!fs.existsSync(DB_FILE)) return photos;
-    const text = fs.readFileSync(DB_FILE, 'utf8');
-    // Match both quoted ("name":) and unquoted (name:) styles, capturing only
-    // photos that are real string literals (placeholders use a variable and are
-    // intentionally skipped).
-    const re = /(?:"?name"?):\s*"([^"]+)"[\s\S]*?(?:"?photo"?):\s*"([^"]+)"/g;
-    let match;
-    while ((match = re.exec(text)) !== null) {
-        const key = normalizeName(match[1]);
-        if (key && !photos[key]) photos[key] = match[2];
+function loadPhotoMap() {
+    if (!fs.existsSync(PHOTO_MAP_FILE)) return {};
+    const raw = JSON.parse(fs.readFileSync(PHOTO_MAP_FILE, 'utf8'));
+    const map = {};
+    for (const [key, url] of Object.entries(raw)) {
+        if (typeof url === 'string' && url) map[normalizeName(key)] = url;
     }
-    return photos;
+    return map;
 }
 
 function slugify(name) {
@@ -97,7 +90,7 @@ function parseRaw(text) {
     return players;
 }
 
-function buildRecords(players, existingPhotos) {
+function buildRecords(players, photoMap) {
     const usedIds = new Set();
     const records = [];
 
@@ -121,8 +114,8 @@ function buildRecords(players, existingPhotos) {
         if (p.position === 'DST') {
             photoExpr = 'dstLogo(' + JSON.stringify(p.team.toLowerCase()) + ')';
         } else {
-            const reused = existingPhotos[normalizeName(p.name)];
-            photoExpr = reused ? JSON.stringify(reused) : 'PLACEHOLDER_PHOTO';
+            const mapped = photoMap[normalizeName(p.name)];
+            photoExpr = mapped ? JSON.stringify(mapped) : 'PLACEHOLDER_PHOTO';
         }
 
         const record = {
@@ -188,18 +181,22 @@ function serialize(records) {
 
 function main() {
     const raw = fs.readFileSync(RAW_FILE, 'utf8');
-    const existingPhotos = loadExistingPhotos();
+    const photoMap = loadPhotoMap();
     const players = parseRaw(raw);
-    const records = buildRecords(players, existingPhotos);
+    const records = buildRecords(players, photoMap);
     const output = serialize(records);
     fs.writeFileSync(DB_FILE, output, 'utf8');
 
-    const reusedCount = records.filter(
+    const withPhotoCount = records.filter(
         (r) => r.photoExpr !== 'PLACEHOLDER_PHOTO' && r.position !== 'DST'
+    ).length;
+    const placeholderCount = records.filter(
+        (r) => r.photoExpr === 'PLACEHOLDER_PHOTO' && r.position !== 'DST'
     ).length;
 
     console.log('Players written: ' + records.length);
-    console.log('Photos reused:   ' + reusedCount);
+    console.log('Photos from map: ' + withPhotoCount);
+    console.log('Placeholders:    ' + placeholderCount);
     console.log('Tiers:           ' + new Set(records.map((r) => r.tier)).size);
 }
 
