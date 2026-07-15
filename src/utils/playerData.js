@@ -1,31 +1,12 @@
 import { getByeWeek, getOlineRank, getTeamLogo } from './teamData';
 import { getAllPlayers } from './playerDatabase';
-import injuredPlayersData from './injuredPlayers.json';
-import handcuffPlayersData from './handcuffPlayers.json';
-import riskyPlayersData from './riskyPlayers.json';
 
-// Get all players from the local database
-const databasePlayers = getAllPlayers();
-
-
-
-// Initial player data structure using local database
-export const initialPlayers = databasePlayers.map(player => ({
+export const initialPlayers = getAllPlayers().map(player => ({
     ...player,
     drafted: false,
     byeWeek: getByeWeek(player.team),
     olineRank: getOlineRank(player.team),
     teamLogo: getTeamLogo(player.team),
-    // ADP is now included directly in the player database
-    adp: player.adp || null,
-    // ECR is now included directly in the player database
-    ecr: player.ecr || null,
-    // Merge injured player data if this player is injured
-    ...(injuredPlayersData[player.id] || {}),
-    // Merge handcuff player data if this player is a handcuff
-    ...(handcuffPlayersData[player.id] || {}),
-    // Merge risky player data if this player is risky
-    ...(riskyPlayersData[player.id] || {})
 }));
 
 // Helper function to get tier color
@@ -38,7 +19,11 @@ export const getTierColor = (tier) => {
         5: 'bg-tier-5',
         6: 'bg-tier-6',
         7: 'bg-tier-7',
-        8: 'bg-tier-8'
+        8: 'bg-tier-8',
+        9: 'bg-tier-9',
+        10: 'bg-tier-10',
+        11: 'bg-tier-11',
+        12: 'bg-tier-12',
     };
     return colors[tier] || 'bg-gray-500';
 };
@@ -53,7 +38,11 @@ export const getTierTextColor = (tier) => {
         5: 'text-white',
         6: 'text-white',
         7: 'text-white',
-        8: 'text-white'
+        8: 'text-white',
+        9: 'text-white',
+        10: 'text-white',
+        11: 'text-white',
+        12: 'text-white'
     };
     return colors[tier] || 'text-white';
 }; 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 // Custom hook for localStorage with error handling
 export const useLocalStorage = (key, initialValue) => {
@@ -13,17 +13,20 @@ export const useLocalStorage = (key, initialValue) => {
         }
     });
 
-    // Return a wrapped version of useState's setter function that persists the new value to localStorage
-    const setValue = (value) => {
-        try {
-            // Allow value to be a function so we have the same API as useState
-            const valueToStore = value instanceof Function ? value(storedValue) : value;
-            setStoredValue(valueToStore);
-            window.localStorage.setItem(key, JSON.stringify(valueToStore));
-        } catch (error) {
-            console.error(`Error setting localStorage key "${key}":`, error);
-        }
-    };
+    // Stable setter (same API as useState) that persists to localStorage.
+    // Using the functional updater form keeps the identity stable across
+    // renders so consumers can memoize handlers without stale-closure bugs.
+    const setValue = useCallback((value) => {
+        setStoredValue(prev => {
+            const valueToStore = value instanceof Function ? value(prev) : value;
+            try {
+                window.localStorage.setItem(key, JSON.stringify(valueToStore));
+            } catch (error) {
+                console.error(`Error setting localStorage key "${key}":`, error);
+            }
+            return valueToStore;
+        });
+    }, [key]);
 
     // Sync with localStorage changes from other tabs/windows
     useEffect(() => {

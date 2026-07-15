@@ -17,7 +17,9 @@ export const createBackup = (players, reason = 'automatic') => {
                 id: player.id,
                 tier: player.tier,
                 drafted: player.drafted,
-                risky: player.risky,
+                isRisky: player.isRisky,
+                isInjured: player.isInjured,
+                isHandcuff: player.isHandcuff,
                 // Don't backup database properties that change
                 // Only backup user customizations
             })),
@@ -42,7 +44,6 @@ export const createBackup = (players, reason = 'automatic') => {
         // Save back to localStorage
         localStorage.setItem(BACKUP_KEY, JSON.stringify(existingBackups));
 
-        console.log(`Backup created: ${reason} at ${timestamp}`);
         return true;
     } catch (error) {
         console.error('Failed to create backup:', error);
@@ -83,10 +84,12 @@ export const restoreFromBackup = (backup, currentPlayers) => {
             if (currentPlayer) {
                 // Restore user customizations but keep current database data
                 return {
-                    ...currentPlayer, // Keep all current database properties
-                    tier: backupPlayer.tier, // Restore user's custom tier
-                    drafted: backupPlayer.drafted, // Restore draft status
-                    risky: backupPlayer.risky, // Restore risky status
+                    ...currentPlayer,
+                    tier: backupPlayer.tier,
+                    drafted: backupPlayer.drafted,
+                    isRisky: backupPlayer.isRisky,
+                    isInjured: backupPlayer.isInjured,
+                    isHandcuff: backupPlayer.isHandcuff,
                 };
             }
             // If player no longer exists in database, skip them
@@ -182,7 +185,9 @@ export const saveDraftBoard = (players, name, description = '') => {
                 id: player.id,
                 tier: player.tier,
                 drafted: player.drafted,
-                risky: player.risky,
+                isRisky: player.isRisky,
+                isInjured: player.isInjured,
+                isHandcuff: player.isHandcuff,
             })),
             playerCount: players.length
         };
@@ -196,7 +201,6 @@ export const saveDraftBoard = (players, name, description = '') => {
         // Save back to localStorage
         localStorage.setItem(DRAFT_BOARDS_KEY, JSON.stringify(existingBoards));
 
-        console.log(`Draft board saved: ${name} at ${timestamp}`);
         return true;
     } catch (error) {
         console.error('Failed to save draft board:', error);
@@ -238,10 +242,12 @@ export const loadDraftBoard = (boardId, currentPlayers) => {
             if (currentPlayer) {
                 // Load user customizations but keep current database data
                 return {
-                    ...currentPlayer, // Keep all current database properties
-                    tier: boardPlayer.tier, // Load user's custom tier
-                    drafted: boardPlayer.drafted, // Load draft status
-                    risky: boardPlayer.risky, // Load risky status
+                    ...currentPlayer,
+                    tier: boardPlayer.tier,
+                    drafted: boardPlayer.drafted,
+                    isRisky: boardPlayer.isRisky,
+                    isInjured: boardPlayer.isInjured,
+                    isHandcuff: boardPlayer.isHandcuff,
                 };
             }
             // If player no longer exists in database, skip them

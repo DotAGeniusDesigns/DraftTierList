@@ -62,9 +62,10 @@ code {
 }
 
 /* HTML5 drag and drop styles */
-[draggable="true"] {
-  cursor: grab;
-}
+  [draggable="true"] {
+    cursor: grab;
+    touch-action: pan-y;
+  }
 
 [draggable="true"]:active {
   cursor: grabbing;
@@ -82,7 +83,7 @@ code {
   [draggable="true"] {
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    touch-action: none; /* Prevent scrolling on draggable elements */
+    touch-action: pan-y;
   }
 
   /* Prevent text selection on mobile */

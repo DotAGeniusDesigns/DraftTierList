@@ -1,39 +1,76 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Player from './Player';
+import { getTierDisplayName, TIER_NAMES_UPDATED_EVENT } from '../utils/tierNames';
 
-const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisky, onRemoveTier, onAddTier, onRenameTier, onMovePlayer, startingRank, darkMode }) => {
+const Tier = ({
+    tierNumber,
+    players,
+    allTierPlayers,
+    onToggleDraft,
+    onToggleRisky,
+    onToggleInjured,
+    onToggleHandcuff,
+    onRemoveTier,
+    onRenameTier,
+    onMovePlayer,
+    startingRank,
+    darkMode,
+    tierNamesVersion = 0,
+}) => {
     const [isDragOver, setIsDragOver] = useState(false);
     const [dropIndex, setDropIndex] = useState(null);
     const [isTouchDragging, setIsTouchDragging] = useState(false);
     const [isEditingName, setIsEditingName] = useState(false);
-    const [tierName, setTierName] = useState('');
+    const [tierName, setTierName] = useState(() => getTierDisplayName(tierNumber));
     const tierRef = useRef(null);
+    const dropIndexRef = useRef(null);
+
+    useEffect(() => {
+        dropIndexRef.current = dropIndex;
+    }, [dropIndex]);
+
+    const rankByPlayerId = useMemo(() => {
+        const map = new Map();
+        allTierPlayers.forEach((player, index) => {
+            map.set(player.id, startingRank + index);
+        });
+        return map;
+    }, [allTierPlayers, startingRank]);
+
+    const resolveDropIndex = (y, containerHeight) => {
+        const headerHeight = 48;
+        const padding = 12;
+        const availableHeight = Math.max(containerHeight - headerHeight, 1);
+        const rowCount = Math.max(players.length, 1);
+        const dynamicDropZoneHeight = availableHeight / rowCount;
+        const adjustedY = y - padding;
+        const newIndex = Math.max(0, Math.floor(adjustedY / dynamicDropZoneHeight));
+        return Math.min(newIndex, players.length);
+    };
+
+    const finalizeDrop = (playerId, sourceTier, index) => {
+        let finalDropIndex = index !== null ? index : 0;
+
+        if (sourceTier === tierNumber) {
+            const draggedPlayerIndex = players.findIndex(p => p.id === playerId);
+            if (draggedPlayerIndex !== -1 && finalDropIndex > draggedPlayerIndex) {
+                finalDropIndex -= 1;
+            }
+        }
+
+        if (playerId) {
+            onMovePlayer?.(playerId, tierNumber, finalDropIndex);
+        }
+    };
 
     const handleDragOver = (e) => {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
         setIsDragOver(true);
 
-        // Calculate drop position based on mouse position, accounting for scroll
         const rect = e.currentTarget.getBoundingClientRect();
-        // Use pageY to get position relative to document, then calculate relative to container
-        const y = e.pageY - rect.top - window.pageYOffset;
-
-        // Calculate dynamic drop zone height based on actual container height
-        const containerHeight = rect.height;
-        const headerHeight = 48; // Approximate header height (p-3 = 12px top + 12px bottom + ~24px content)
-        const availableHeight = containerHeight - headerHeight;
-        const dynamicDropZoneHeight = availableHeight / players.length;
-
-        const padding = 12; // Padding of the container
-
-        // Calculate which position the drop would be at
-        const adjustedY = y - padding;
-        const newIndex = Math.max(0, Math.floor(adjustedY / dynamicDropZoneHeight));
-
-        // Simply use the calculated index without adjustment here
-        // The adjustment will be handled in the drop function
-        setDropIndex(Math.min(newIndex, players.length));
+        const y = e.clientY - rect.top;
+        setDropIndex(resolveDropIndex(y, rect.height));
     };
 
     const handleDragLeave = (e) => {
@@ -50,45 +87,22 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
 
         try {
             const { playerId, sourceTier } = JSON.parse(dragData);
-
-            let finalDropIndex = dropIndex !== null ? dropIndex : 0;
-
-            // Adjust for same-tier dragging
-            if (sourceTier === tierNumber) {
-                const draggedPlayerIndex = players.findIndex(p => p.id === playerId);
-                if (draggedPlayerIndex !== -1 && finalDropIndex > draggedPlayerIndex) {
-                    // When dragging down within the same tier, we need to account for 
-                    // the fact that the dragged item will be removed first
-                    finalDropIndex = finalDropIndex - 1;
-                }
-            }
-
-            console.log('Drop in tier:', playerId, 'to tier', tierNumber, 'at index:', finalDropIndex);
-            if (playerId) {
-                onMovePlayer && onMovePlayer(playerId, tierNumber, finalDropIndex);
-            }
+            finalizeDrop(playerId, sourceTier, dropIndex);
         } catch (error) {
             console.error('Error parsing drag data in tier:', error);
         }
         setDropIndex(null);
     };
 
-    // Load tier name from localStorage
     useEffect(() => {
-        const tierNames = JSON.parse(localStorage.getItem('fantasy-football-tier-names') || '{}');
-        setTierName(tierNames[tierNumber] || `Tier ${tierNumber}`);
+        setTierName(getTierDisplayName(tierNumber));
+    }, [tierNumber, tierNamesVersion]);
+
+    useEffect(() => {
+        const refreshName = () => setTierName(getTierDisplayName(tierNumber));
+        window.addEventListener(TIER_NAMES_UPDATED_EVENT, refreshName);
+        return () => window.removeEventListener(TIER_NAMES_UPDATED_EVENT, refreshName);
     }, [tierNumber]);
-
-    // Handler functions
-    const handleRemoveTier = () => {
-        if (onRemoveTier) {
-            onRemoveTier(tierNumber);
-        }
-    };
-
-    const handleEditName = () => {
-        setIsEditingName(true);
-    };
 
     const handleSaveName = () => {
         if (tierName.trim() && onRenameTier) {
@@ -98,12 +112,10 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
     };
 
     const handleCancelEdit = () => {
-        const tierNames = JSON.parse(localStorage.getItem('fantasy-football-tier-names') || '{}');
-        setTierName(tierNames[tierNumber] || `Tier ${tierNumber}`);
+        setTierName(getTierDisplayName(tierNumber));
         setIsEditingName(false);
     };
 
-    // Touch event handlers for mobile
     useEffect(() => {
         const handleTouchDragMove = (e) => {
             if (!isTouchDragging) return;
@@ -113,19 +125,11 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
             if (!rect) return;
 
             const y = touch.clientY - rect.top;
-            const containerHeight = rect.height;
-            const headerHeight = 48;
-            const availableHeight = containerHeight - headerHeight;
-            const dynamicDropZoneHeight = availableHeight / players.length;
-            const padding = 12;
-
-            const adjustedY = y - padding;
-            const newIndex = Math.max(0, Math.floor(adjustedY / dynamicDropZoneHeight));
-            setDropIndex(Math.min(newIndex, players.length));
+            setDropIndex(resolveDropIndex(y, rect.height));
             setIsDragOver(true);
         };
 
-        const handleTouchDragStart = (e) => {
+        const handleTouchDragStart = () => {
             setIsTouchDragging(true);
         };
 
@@ -134,43 +138,26 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
 
             const touch = e.detail;
             const { playerId, sourceTier } = touch.dragData;
-
-            let finalDropIndex = dropIndex !== null ? dropIndex : 0;
-
-            // Adjust for same-tier dragging
-            if (sourceTier === tierNumber) {
-                const draggedPlayerIndex = players.findIndex(p => p.id === playerId);
-                if (draggedPlayerIndex !== -1 && finalDropIndex > draggedPlayerIndex) {
-                    finalDropIndex = finalDropIndex - 1;
-                }
-            }
-
-            console.log('Touch drop in tier:', playerId, 'to tier', tierNumber, 'at index:', finalDropIndex);
-            if (playerId) {
-                onMovePlayer && onMovePlayer(playerId, tierNumber, finalDropIndex);
-            }
+            finalizeDrop(playerId, sourceTier, dropIndexRef.current);
 
             setIsTouchDragging(false);
             setIsDragOver(false);
             setDropIndex(null);
         };
 
-        // Add event listeners
         document.addEventListener('playerDragStart', handleTouchDragStart);
         document.addEventListener('playerDragMove', handleTouchDragMove);
         document.addEventListener('playerDragEnd', handleTouchDragEnd);
 
-        // Cleanup
         return () => {
             document.removeEventListener('playerDragStart', handleTouchDragStart);
             document.removeEventListener('playerDragMove', handleTouchDragMove);
             document.removeEventListener('playerDragEnd', handleTouchDragEnd);
         };
-    }, [isTouchDragging, dropIndex, players, tierNumber, onMovePlayer]);
+    }, [isTouchDragging, players, tierNumber, onMovePlayer]);
 
     return (
         <div className="mb-6">
-            {/* Clean Tier Header */}
             <div className={`flex items-center justify-between p-3 rounded-t-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-900 text-white'}`}>
                 <div className="flex items-center gap-3">
                     {isEditingName ? (
@@ -186,20 +173,12 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
                                 className={`px-2 py-1 text-lg font-bold rounded ${darkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-gray-900 border-gray-300'} border focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                 autoFocus
                             />
-                            <button
-                                onClick={handleSaveName}
-                                className="p-1 rounded hover:bg-gray-700 text-green-400"
-                                title="Save name"
-                            >
+                            <button onClick={handleSaveName} className="p-1 rounded hover:bg-gray-700 text-green-400" title="Save name">
                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                 </svg>
                             </button>
-                            <button
-                                onClick={handleCancelEdit}
-                                className="p-1 rounded hover:bg-gray-700 text-red-400"
-                                title="Cancel edit"
-                            >
+                            <button onClick={handleCancelEdit} className="p-1 rounded hover:bg-gray-700 text-red-400" title="Cancel edit">
                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                                 </svg>
@@ -208,11 +187,7 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
                     ) : (
                         <div className="flex items-center gap-2">
                             <h3 className="text-lg font-bold">{tierName}</h3>
-                            <button
-                                onClick={handleEditName}
-                                className="p-1 rounded hover:bg-gray-700 text-gray-400"
-                                title="Edit tier name"
-                            >
+                            <button onClick={() => setIsEditingName(true)} className="p-1 rounded hover:bg-gray-700 text-gray-400" title="Edit tier name">
                                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                                 </svg>
@@ -222,9 +197,12 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
                 </div>
                 <div className="flex items-center gap-3">
                     <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-300'}`}>
-                        {players.length} player{players.length !== 1 ? 's' : ''}
+                        {allTierPlayers.length} player{allTierPlayers.length !== 1 ? 's' : ''}
+                        {players.length !== allTierPlayers.length && (
+                            <span className="opacity-75"> ({players.length} shown)</span>
+                        )}
                     </span>
-                    {players.length === 0 && (
+                    {allTierPlayers.length === 0 && (
                         <button
                             onClick={() => onRemoveTier(tierNumber)}
                             className={`p-1 rounded transition-colors ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-800'}`}
@@ -238,7 +216,6 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
                 </div>
             </div>
 
-            {/* Clean Tier Content */}
             <div
                 ref={tierRef}
                 onDragOver={handleDragOver}
@@ -250,16 +227,12 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
                     }`}
             >
                 {players.length === 0 ? (
-                    <div className={`flex items-center justify-center h-16 border-b ${darkMode ? 'text-gray-500 border-gray-700' : 'text-gray-400 border-gray-200'
-                        }`}>
-                        <div className="text-center">
-                            <p className="text-sm">Drop players here</p>
-                        </div>
+                    <div className={`flex items-center justify-center h-16 border-b ${darkMode ? 'text-gray-500 border-gray-700' : 'text-gray-400 border-gray-200'}`}>
+                        <p className="text-sm">Drop players here</p>
                     </div>
                 ) : (
                     <div className="relative">
-                        {/* Mobile Column Headers */}
-                        <div className={`sm:hidden flex items-center p-3 border-b text-xs font-semibold ${darkMode
+                        <div className={`sm:hidden flex items-center p-3 border-b text-xs font-semibold sticky top-0 z-10 ${darkMode
                             ? 'border-gray-700 bg-gray-800 text-gray-300'
                             : 'border-gray-200 bg-gray-50 text-gray-600'
                             }`}>
@@ -269,11 +242,9 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
                             <div className="w-10 text-center">POS</div>
                             <div className="w-10 text-center">TM</div>
                             <div className="w-8 text-center">ADP</div>
-                            <div className="w-12 text-center">RvADP</div>
                         </div>
 
-                        {/* Desktop Column Headers */}
-                        <div className={`hidden sm:flex items-center p-3 pl-1 border-b text-xs font-semibold ${darkMode
+                        <div className={`hidden sm:flex items-center p-3 pl-1 border-b text-xs font-semibold sticky top-0 z-10 ${darkMode
                             ? 'border-gray-700 bg-gray-800 text-gray-300'
                             : 'border-gray-200 bg-gray-50 text-gray-600'
                             }`}>
@@ -289,30 +260,23 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
                             <div className="w-20 sm:w-24 text-center mx-1 sm:mx-2">NOTES</div>
                         </div>
 
-                        {/* Players List */}
-                        {players.map((player, index) => {
-                            // Calculate the correct index based on player's position in the full tier
-                            const playerIndexInFullTier = allTierPlayers.findIndex(p => p.id === player.id);
-                            const correctIndex = startingRank + playerIndexInFullTier;
-
-                            return (
-                                <div key={player.id} className="relative">
-                                    {/* Drop indicator */}
-                                    {isDragOver && dropIndex === index && (
-                                        <div className="absolute -top-1 left-0 right-0 h-0.5 bg-blue-500 z-10"></div>
-                                    )}
-                                    <Player
-                                        player={player}
-                                        index={correctIndex}
-                                        onToggleDraft={onToggleDraft}
-                                        onToggleRisky={onToggleRisky}
-                                        onMovePlayer={onMovePlayer}
-                                        darkMode={darkMode}
-                                    />
-                                </div>
-                            );
-                        })}
-                        {/* Drop indicator at the end */}
+                        {players.map((player, index) => (
+                            <div key={player.id} className="relative">
+                                {isDragOver && dropIndex === index && (
+                                    <div className="absolute -top-1 left-0 right-0 h-0.5 bg-blue-500 z-10"></div>
+                                )}
+                                <Player
+                                    player={player}
+                                    index={rankByPlayerId.get(player.id) ?? startingRank + index}
+                                    onToggleDraft={onToggleDraft}
+                                    onToggleRisky={onToggleRisky}
+                                    onToggleInjured={onToggleInjured}
+                                    onToggleHandcuff={onToggleHandcuff}
+                                    onMovePlayer={onMovePlayer}
+                                    darkMode={darkMode}
+                                />
+                            </div>
+                        ))}
                         {isDragOver && dropIndex === players.length && (
                             <div className="h-0.5 bg-blue-500"></div>
                         )}
@@ -323,4 +287,4 @@ const Tier = ({ tierNumber, players, allTierPlayers, onToggleDraft, onToggleRisk
     );
 };
 
-export default Tier; 
+export default React.memo(Tier);

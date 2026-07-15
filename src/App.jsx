@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import TierList from './components/TierList';
 import ExportImport from './components/ExportImport';
 import Navbar from './components/Navbar';
@@ -12,6 +12,8 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers } from './utils/playerData';
 import { getTeamLogo } from './utils/teamData';
 import { createBackup, shouldCreateBackup } from './utils/backupSystem';
+import { getPositionFilterTagClass } from './utils/playerStyles';
+import { saveTierName, clearTierNames, getTierNames } from './utils/tierNames';
 
 function App() {
     // Use localStorage hook to persist player data
@@ -37,38 +39,34 @@ function App() {
                     if (databasePlayer) {
                         const updatedPlayer = {
                             ...player,
-                            // Prioritize database values over localStorage for these properties
-                            team: databasePlayer.team, // Always use current team from database
-                            photo: databasePlayer.photo, // Always use current photo from database
-                            teamLogo: getTeamLogo(databasePlayer.team), // Update team logo when team changes
-                            adp: databasePlayer.adp, // Always use current ADP from database
-                            ecr: databasePlayer.ecr, // Always use current ECR from database
-                            isInjured: databasePlayer.isInjured,
-                            injuryNote: databasePlayer.injuryNote || player.injuryNote || null,
-                            isHandcuff: databasePlayer.isHandcuff,
-                            isRisky: databasePlayer.isRisky,
-                            riskyReason: databasePlayer.riskyReason || player.riskyReason || null,
-                            // Update bye week and oline rank from current database
+                            team: databasePlayer.team,
+                            photo: databasePlayer.photo,
+                            teamLogo: getTeamLogo(databasePlayer.team),
+                            adp: databasePlayer.adp,
+                            ecr: databasePlayer.ecr,
                             byeWeek: databasePlayer.byeWeek,
-                            olineRank: databasePlayer.olineRank
+                            olineRank: databasePlayer.olineRank,
+                            // User-controlled flags stay on the saved board
+                            drafted: player.drafted,
+                            tier: player.tier,
+                            isInjured: player.isInjured,
+                            isHandcuff: player.isHandcuff,
+                            isRisky: player.isRisky,
+                            injuryNote: player.injuryNote || databasePlayer.injuryNote || null,
+                            riskyReason: player.riskyReason || databasePlayer.riskyReason || null,
                         };
-
-                        // Debug: Log if any of the new properties are true
-                        if (databasePlayer.isInjured || databasePlayer.isHandcuff || databasePlayer.isRisky) {
-                            console.log(`🔍 Updated ${player.name}:`, {
-                                isInjured: databasePlayer.isInjured,
-                                isHandcuff: databasePlayer.isHandcuff,
-                                isRisky: databasePlayer.isRisky,
-                                riskyReason: databasePlayer.riskyReason
-                            });
-                        }
 
                         return updatedPlayer;
                     }
                     return player;
                 });
 
-            setPlayers(updatedPlayers);
+            // Append any players that are new to the database so a returning
+            // user (with a saved board from a prior season) still sees them.
+            const storedIds = new Set(currentPlayers.map(p => p.id));
+            const newPlayers = databasePlayers.filter(p => !storedIds.has(p.id));
+
+            setPlayers([...updatedPlayers, ...newPlayers]);
         };
 
         mergeNewProperties();
@@ -104,6 +102,9 @@ function App() {
     // Current page state
     const [currentPage, setCurrentPage] = useState('draft-board');
 
+    // Bumps when tier names change so TierList re-reads localStorage
+    const [tierNamesVersion, setTierNamesVersion] = useState(0);
+
     // Ref for the dropdown container
     const dropdownRef = useRef(null);
 
@@ -127,115 +128,84 @@ function App() {
     // Handle direct links via URL hash
     useEffect(() => {
         const hash = window.location.hash.replace('#', '');
-        if (hash === 'draft-range' || hash === 'draft-board' || hash === 'streamers') {
+        if (hash === 'draft-range' || hash === 'draft-board' || hash === 'streamers' || hash === 'interesting-players') {
             setCurrentPage(hash);
         }
     }, []);
 
-    // Global touch event handler to prevent scrolling during drag
+    // Keep tier name labels in sync across all tier headers
     useEffect(() => {
-        let isDragging = false;
-
-        const handleGlobalTouchStart = (e) => {
-            // Check if the touch target is a draggable element
-            const target = e.target.closest('[draggable="true"]');
-            if (target) {
-                isDragging = true;
-            }
-        };
-
-        const handleGlobalTouchMove = (e) => {
-            if (isDragging) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        };
-
-        const handleGlobalTouchEnd = () => {
-            isDragging = false;
-        };
-
-        // Add global touch event listeners
-        document.addEventListener('touchstart', handleGlobalTouchStart, { passive: false });
-        document.addEventListener('touchmove', handleGlobalTouchMove, { passive: false });
-        document.addEventListener('touchend', handleGlobalTouchEnd, { passive: false });
-
-        return () => {
-            document.removeEventListener('touchstart', handleGlobalTouchStart);
-            document.removeEventListener('touchmove', handleGlobalTouchMove);
-            document.removeEventListener('touchend', handleGlobalTouchEnd);
-        };
+        const handleTierNamesUpdated = () => setTierNamesVersion(v => v + 1);
+        window.addEventListener('tier-names-updated', handleTierNamesUpdated);
+        return () => window.removeEventListener('tier-names-updated', handleTierNamesUpdated);
     }, []);
 
     // Toggle draft status for a player
-    const handleToggleDraft = (playerId) => {
-        const updatedPlayers = players.map(player =>
+    const handleToggleDraft = useCallback((playerId) => {
+        setPlayers(prev => prev.map(player =>
             player.id === playerId
                 ? { ...player, drafted: !player.drafted }
                 : player
-        );
-        setPlayers(updatedPlayers);
-    };
+        ));
+    }, [setPlayers]);
 
-    // Update players (for drag and drop)
-    const handleUpdatePlayers = (updatedPlayers) => {
-        setPlayers(updatedPlayers);
+    // Move a player to another tier / position (drag and drop)
+    const handleMovePlayer = useCallback((playerId, newTier, targetIndex = null) => {
+        setPlayers(prev => {
+            const playerToMove = prev.find(p => p.id === playerId);
+            if (!playerToMove) return prev;
 
-        // Create backup after any player order changes
-        createBackup(updatedPlayers, 'player reorder');
-    };
+            const without = prev.filter(p => p.id !== playerId);
+            const targetTierPlayers = without.filter(p => p.tier === newTier);
+            const moved = { ...playerToMove, tier: newTier };
+
+            if (targetIndex !== null && targetIndex !== undefined) {
+                targetTierPlayers.splice(targetIndex, 0, moved);
+            } else {
+                targetTierPlayers.push(moved);
+            }
+
+            const otherPlayers = without.filter(p => p.tier !== newTier);
+            const updated = [...otherPlayers, ...targetTierPlayers];
+
+            createBackup(updated, 'player reorder');
+            return updated;
+        });
+    }, [setPlayers]);
 
     // Remove an empty tier
-    const handleRemoveTier = (tierNumber) => {
+    const handleRemoveTier = useCallback((tierNumber) => {
         // Move all players from the tier to tier 1
-        const updatedPlayers = players.map(player =>
+        setPlayers(prev => prev.map(player =>
             player.tier === tierNumber
                 ? { ...player, tier: 1 }
                 : player
-        );
-        setPlayers(updatedPlayers);
-    };
+        ));
+    }, [setPlayers]);
 
     // Add a new tier
-    const handleAddTier = () => {
-        // Find the highest tier number from both players and localStorage
-        const tierNames = JSON.parse(localStorage.getItem('fantasy-football-tier-names') || '{}');
-        const tiersFromPlayers = players.map(p => p.tier);
-        const tiersFromNames = Object.keys(tierNames).map(Number);
+    const handleAddTier = useCallback(() => {
+        setPlayers(prev => {
+            const tierNames = getTierNames();
+            const tiersFromPlayers = prev.map(p => p.tier);
+            const tiersFromNames = Object.keys(tierNames).map(Number);
+            const allTiers = [...tiersFromPlayers, ...tiersFromNames];
+            const maxTier = allTiers.length > 0 ? Math.max(...allTiers) : 0;
+            const newTierNumber = maxTier + 1;
 
-        // Combine both sets and find the maximum
-        const allTiers = [...tiersFromPlayers, ...tiersFromNames];
-        const maxTier = allTiers.length > 0 ? Math.max(...allTiers) : 0;
-        const newTierNumber = maxTier + 1;
-
-        // Create a new tier with a default name
-        const newTierName = `Tier ${newTierNumber}`;
-
-        // Update localStorage with the new tier
-        tierNames[newTierNumber] = newTierName;
-        localStorage.setItem('fantasy-football-tier-names', JSON.stringify(tierNames));
-
-        // Don't move any players - just create an empty tier
-        // This allows users to manually move players as needed
-        // and prevents tiers from disappearing
-
-        // Force a re-render to show the new tier
-        setPlayers([...players]);
-    };
+            saveTierName(newTierNumber, `Tier ${newTierNumber}`);
+            return [...prev];
+        });
+    }, [setPlayers]);
 
     // Rename a tier
-    const handleRenameTier = (tierNumber, newName) => {
-        // Update localStorage with the new tier name
-        const tierNames = JSON.parse(localStorage.getItem('fantasy-football-tier-names') || '{}');
-        tierNames[tierNumber] = newName;
-        localStorage.setItem('fantasy-football-tier-names', JSON.stringify(tierNames));
-
-        // Force a re-render by updating state
-        setPlayers([...players]);
-    };
+    const handleRenameTier = useCallback((tierNumber, newName) => {
+        saveTierName(tierNumber, newName);
+        setPlayers(prev => [...prev]);
+    }, [setPlayers]);
 
     // Handle position filter checkbox changes
-    const handlePositionFilterChange = (position) => {
+    const handlePositionFilterChange = useCallback((position) => {
         setPositionFilters(prev => {
             if (prev.includes(position)) {
                 // Remove position if already selected
@@ -245,7 +215,7 @@ function App() {
                 return [...prev, position];
             }
         });
-    };
+    }, [setPositionFilters]);
 
     // Handle importing players
     const handleImportPlayers = (importedPlayers) => {
@@ -260,33 +230,44 @@ function App() {
     };
 
     // Reset all drafted players
-    const handleResetDrafted = () => {
-        const updatedPlayers = players.map(player => ({
+    const handleResetDrafted = useCallback(() => {
+        setPlayers(prev => prev.map(player => ({
             ...player,
             drafted: false
-        }));
-        setPlayers(updatedPlayers);
-    };
+        })));
+    }, [setPlayers]);
 
     // Reset to default database order
     const handleResetToDefault = () => {
-        // Clear custom tier names and reset to default
-        localStorage.removeItem('fantasy-football-tier-names');
-
-        // Clear player data and reload fresh data
+        clearTierNames();
         localStorage.removeItem('fantasy-football-players');
         window.location.reload();
     };
 
     // Toggle risky status for a player
-    const handleToggleRisky = (playerId, isRisky) => {
-        const updatedPlayers = players.map(player =>
+    const handleToggleRisky = useCallback((playerId, isRisky) => {
+        setPlayers(prev => prev.map(player =>
             player.id === playerId
                 ? { ...player, isRisky }
                 : player
-        );
-        setPlayers(updatedPlayers);
-    };
+        ));
+    }, [setPlayers]);
+
+    const handleToggleInjured = useCallback((playerId, isInjured) => {
+        setPlayers(prev => prev.map(player =>
+            player.id === playerId
+                ? { ...player, isInjured }
+                : player
+        ));
+    }, [setPlayers]);
+
+    const handleToggleHandcuff = useCallback((playerId, isHandcuff) => {
+        setPlayers(prev => prev.map(player =>
+            player.id === playerId
+                ? { ...player, isHandcuff }
+                : player
+        ));
+    }, [setPlayers]);
 
     // Handle page navigation
     const handlePageChange = (pageId) => {
@@ -296,25 +277,7 @@ function App() {
     };
 
     // Get position tag styling
-    const getPositionTagStyle = (position) => {
-        const baseStyle = 'text-xs font-bold px-2 py-1 rounded';
-        switch (position) {
-            case 'WR':
-                return `${baseStyle} bg-green-100 text-green-800`;
-            case 'RB':
-                return `${baseStyle} bg-red-100 text-red-800`;
-            case 'QB':
-                return `${baseStyle} bg-orange-100 text-orange-800`;
-            case 'TE':
-                return `${baseStyle} bg-purple-100 text-purple-800`;
-            case 'DST':
-                return `${baseStyle} bg-gray-200 text-gray-700`;
-            case 'K':
-                return `${baseStyle} bg-pink-100 text-pink-800`;
-            default:
-                return `${baseStyle} bg-gray-200 text-gray-700`;
-        }
-    };
+    const getPositionTagStyle = getPositionFilterTagClass;
 
     // Get display text for dropdown
     const getPositionFilterDisplay = () => {
@@ -327,20 +290,20 @@ function App() {
         }
     };
 
-    // Filter players based on hide drafted setting and position filters
-    const filteredPlayers = players.filter(player => {
-        // First filter by draft status
-        if (hideDrafted && player.drafted) {
-            return false;
-        }
-
-        // Then filter by position (if any positions are selected)
-        if (positionFilters.length > 0 && !positionFilters.includes(player.position)) {
-            return false;
-        }
-
+    const filteredPlayers = useMemo(() => players.filter(player => {
+        if (hideDrafted && player.drafted) return false;
+        if (positionFilters.length > 0 && !positionFilters.includes(player.position)) return false;
         return true;
-    });
+    }), [players, hideDrafted, positionFilters]);
+
+    const draftStats = useMemo(() => {
+        const drafted = players.filter(p => p.drafted).length;
+        return {
+            total: players.length,
+            drafted,
+            available: players.length - drafted,
+        };
+    }, [players]);
 
     return (
         <div className={`min-h-screen transition-colors duration-200 ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
@@ -360,11 +323,22 @@ function App() {
                         {/* Title */}
                         <div className="mb-4">
                             <h1 className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                Fantasy Football 2025 Draft Board
+                                Fantasy Football 2026 Draft Board
                             </h1>
                             <p className={`text-sm sm:text-base mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                                 Drag players between tiers, mark as drafted, and track risky picks.
                             </p>
+                            <div className={`mt-3 flex flex-wrap gap-2 sm:gap-3 text-xs sm:text-sm`}>
+                                <span className={`px-3 py-1 rounded-full ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-700 border border-gray-200'}`}>
+                                    {draftStats.total} total
+                                </span>
+                                <span className={`px-3 py-1 rounded-full ${darkMode ? 'bg-green-900/40 text-green-300' : 'bg-green-50 text-green-700 border border-green-200'}`}>
+                                    {draftStats.available} available
+                                </span>
+                                <span className={`px-3 py-1 rounded-full ${darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-100 text-gray-600 border border-gray-200'}`}>
+                                    {draftStats.drafted} drafted
+                                </span>
+                            </div>
                         </div>
 
                         {/* Controls - mobile optimized */}
@@ -458,38 +432,16 @@ function App() {
                     <TierList
                         players={filteredPlayers}
                         allPlayers={players}
-                        onUpdatePlayers={handleUpdatePlayers}
+                        onMovePlayer={handleMovePlayer}
                         onToggleDraft={handleToggleDraft}
                         onToggleRisky={handleToggleRisky}
+                        onToggleInjured={handleToggleInjured}
+                        onToggleHandcuff={handleToggleHandcuff}
                         onRemoveTier={handleRemoveTier}
-                        onAddTier={handleAddTier}
                         onRenameTier={handleRenameTier}
                         darkMode={darkMode}
+                        tierNamesVersion={tierNamesVersion}
                     />
-
-                    {/* Export/Import Modal */}
-                    {showExportImport && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                            <div className="max-w-md w-full">
-                                <ExportImport
-                                    players={players}
-                                    onImportPlayers={handleImportPlayers}
-                                    darkMode={darkMode}
-                                />
-                                <div className="mt-4 text-center">
-                                    <button
-                                        onClick={() => setShowExportImport(false)}
-                                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
-                                            ? 'bg-gray-600 hover:bg-gray-700 text-white'
-                                            : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
-                                            }`}
-                                    >
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
 
                     {/* Backup Manager Modal */}
                     {showBackupManager && (

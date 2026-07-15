@@ -1,83 +1,58 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Tier from './Tier';
+import { getTierNames } from '../utils/tierNames';
 
-const TierList = ({ players, allPlayers, onUpdatePlayers, onToggleDraft, onToggleRisky, onRemoveTier, onAddTier, onRenameTier, darkMode }) => {
-    // Group players by tier (use allPlayers for ranking calculation)
-    const playersByTier = allPlayers.reduce((acc, player) => {
-        if (!acc[player.tier]) {
-            acc[player.tier] = [];
-        }
-        acc[player.tier].push(player);
-        return acc;
-    }, {});
+const TierList = ({
+    players,
+    allPlayers,
+    onMovePlayer,
+    onToggleDraft,
+    onToggleRisky,
+    onToggleInjured,
+    onToggleHandcuff,
+    onRemoveTier,
+    onRenameTier,
+    darkMode,
+    tierNamesVersion = 0,
+}) => {
+    const { playersByTier, tierNumbers, tierRanks, filteredPlayerIds } = useMemo(() => {
+        const grouped = allPlayers.reduce((acc, player) => {
+            if (!acc[player.tier]) {
+                acc[player.tier] = [];
+            }
+            acc[player.tier].push(player);
+            return acc;
+        }, {});
 
-    // Get all tier numbers from players and from localStorage tier names
-    const tierNames = JSON.parse(localStorage.getItem('fantasy-football-tier-names') || '{}');
-    const tiersFromNames = Object.keys(tierNames).map(Number);
-    const tiersFromPlayers = Object.keys(playersByTier).map(Number);
+        const tierNames = getTierNames();
+        const tiersFromNames = Object.keys(tierNames).map(Number);
+        const tiersFromPlayers = Object.keys(grouped).map(Number);
+        const allTierNumbers = [...new Set([...tiersFromNames, ...tiersFromPlayers])];
+        const sortedTiers = allTierNumbers.sort((a, b) => a - b);
 
-    // Combine both sets and remove duplicates
-    const allTierNumbers = [...new Set([...tiersFromNames, ...tiersFromPlayers])];
-    const tierNumbers = allTierNumbers.sort((a, b) => a - b);
+        let cumulativeRank = 1;
+        const ranks = {};
+        sortedTiers.forEach(tierNumber => {
+            ranks[tierNumber] = cumulativeRank;
+            const playerCount = grouped[tierNumber] ? grouped[tierNumber].length : 0;
+            cumulativeRank += playerCount;
+        });
 
-    // Calculate starting rank for each tier (cumulative) - using allPlayers
-    let cumulativeRank = 1;
-    const tierRanks = {};
-    tierNumbers.forEach(tierNumber => {
-        tierRanks[tierNumber] = cumulativeRank;
-        const playerCount = playersByTier[tierNumber] ? playersByTier[tierNumber].length : 0;
-        console.log(`Tier ${tierNumber}: startingRank = ${cumulativeRank}, players = ${playerCount}`);
-        cumulativeRank += playerCount;
-    });
-
-    // Create a set of filtered player IDs for quick lookup
-    const filteredPlayerIds = new Set(players.map(p => p.id));
-
-    const handleMovePlayer = (playerId, newTier, targetIndex = null) => {
-        console.log('Moving player:', playerId, 'to tier:', newTier, 'at index:', targetIndex);
-
-        // Find the player being moved
-        const playerToMove = allPlayers.find(p => p.id === playerId);
-        if (!playerToMove) return;
-
-        // Remove the player from the current position
-        let updatedPlayers = allPlayers.filter(p => p.id !== playerId);
-
-        // Get players in the target tier
-        const targetTierPlayers = updatedPlayers.filter(p => p.tier === newTier);
-
-        // If targetIndex is provided, insert at that position
-        if (targetIndex !== null && targetIndex !== undefined) {
-            targetTierPlayers.splice(targetIndex, 0, { ...playerToMove, tier: newTier });
-        } else {
-            // Otherwise, add to the end of the tier
-            targetTierPlayers.push({ ...playerToMove, tier: newTier });
-        }
-
-        // Get all other players (not in target tier)
-        const otherPlayers = updatedPlayers.filter(p => p.tier !== newTier);
-
-        // Combine all players
-        updatedPlayers = [...otherPlayers, ...targetTierPlayers];
-
-        console.log('Updated players:', updatedPlayers);
-        onUpdatePlayers(updatedPlayers);
-    };
+        return {
+            playersByTier: grouped,
+            tierNumbers: sortedTiers,
+            tierRanks: ranks,
+            filteredPlayerIds: new Set(players.map(p => p.id)),
+        };
+    }, [allPlayers, players, tierNamesVersion]);
 
     return (
         <div className="space-y-8">
-            {/* Tiers */}
             {tierNumbers.map(tierNumber => {
-                // Get all players in this tier (unfiltered) - handle case where tier might not exist yet
                 const allTierPlayers = playersByTier[tierNumber] || [];
-
-                // Filter players in this tier to only show filtered players
                 const tierPlayers = allTierPlayers.filter(player =>
                     filteredPlayerIds.has(player.id)
                 );
-
-                // Always render tier even if it has no visible players
-                // This allows empty tiers to be visible and manageable
 
                 return (
                     <Tier
@@ -87,12 +62,14 @@ const TierList = ({ players, allPlayers, onUpdatePlayers, onToggleDraft, onToggl
                         allTierPlayers={allTierPlayers}
                         onToggleDraft={onToggleDraft}
                         onToggleRisky={onToggleRisky}
+                        onToggleInjured={onToggleInjured}
+                        onToggleHandcuff={onToggleHandcuff}
                         onRemoveTier={onRemoveTier}
-                        onAddTier={onAddTier}
                         onRenameTier={onRenameTier}
-                        onMovePlayer={handleMovePlayer}
+                        onMovePlayer={onMovePlayer}
                         startingRank={tierRanks[tierNumber] || 1}
                         darkMode={darkMode}
+                        tierNamesVersion={tierNamesVersion}
                     />
                 );
             })}
@@ -100,4 +77,4 @@ const TierList = ({ players, allPlayers, onUpdatePlayers, onToggleDraft, onToggl
     );
 };
 
-export default TierList; 
+export default TierList;

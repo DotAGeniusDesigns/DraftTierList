@@ -1,90 +1,93 @@
-// Team data structure with logos, bye weeks, and other information
+// Team data structure with logos, bye weeks, and other information.
+// Bye weeks reflect the 2026 NFL season.
+// O-line ranks (1 = best, 32 = worst) from USA Today, June 30 2026:
+// https://www.usatoday.com/story/sports/nfl/2026/06/30/nfl-offensive-line-rankings-2026/90450145007/
 export const teamData = {
     'ARI': {
         name: 'Arizona Cardinals',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/ari.png',
-        byeWeek: 13,
+        byeWeek: 14,
         conference: 'NFC',
         division: 'West',
         primaryColor: '#97233F',
-        olineRank: 16
+        olineRank: 25
     },
     'ATL': {
         name: 'Atlanta Falcons',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/atl.png',
-        byeWeek: 5,
+        byeWeek: 11,
         conference: 'NFC',
         division: 'South',
         primaryColor: '#A71930',
-        olineRank: 8
+        olineRank: 10
     },
     'BAL': {
         name: 'Baltimore Ravens',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/bal.png',
-        byeWeek: 14,
+        byeWeek: 13,
         conference: 'AFC',
         division: 'North',
         primaryColor: '#241773',
-        olineRank: 17
+        olineRank: 19
     },
     'BUF': {
         name: 'Buffalo Bills',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/buf.png',
-        byeWeek: 13,
+        byeWeek: 7,
         conference: 'AFC',
         division: 'East',
         primaryColor: '#00338D',
-        olineRank: 3
+        olineRank: 4
     },
     'CAR': {
         name: 'Carolina Panthers',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/car.png',
-        byeWeek: 7,
+        byeWeek: 5,
         conference: 'NFC',
         division: 'South',
         primaryColor: '#0085CA',
-        olineRank: 11
+        olineRank: 14
     },
     'CHI': {
         name: 'Chicago Bears',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/chi.png',
-        byeWeek: 13,
+        byeWeek: 10,
         conference: 'NFC',
         division: 'North',
         primaryColor: '#0B162A',
-        olineRank: 5
+        olineRank: 7
     },
     'CIN': {
         name: 'Cincinnati Bengals',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/cin.png',
-        byeWeek: 10,
+        byeWeek: 6,
         conference: 'AFC',
         division: 'North',
         primaryColor: '#FB4F14',
-        olineRank: 31
+        olineRank: 30
     },
     'CLE': {
         name: 'Cleveland Browns',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/cle.png',
-        byeWeek: 5,
+        byeWeek: 11,
         conference: 'AFC',
         division: 'North',
         primaryColor: '#311D00',
-        olineRank: 27
+        olineRank: 29
     },
     'DAL': {
         name: 'Dallas Cowboys',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/dal.png',
-        byeWeek: 10,
+        byeWeek: 14,
         conference: 'NFC',
         division: 'East',
         primaryColor: '#003594',
-        olineRank: 23
+        olineRank: 20
     },
     'DEN': {
         name: 'Denver Broncos',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/den.png',
-        byeWeek: 9,
+        byeWeek: 10,
         conference: 'AFC',
         division: 'West',
         primaryColor: '#FB4F14',
@@ -93,83 +96,83 @@ export const teamData = {
     'DET': {
         name: 'Detroit Lions',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/det.png',
-        byeWeek: 8,
+        byeWeek: 6,
         conference: 'NFC',
         division: 'North',
         primaryColor: '#0076B6',
-        olineRank: 13
+        olineRank: 6
     },
     'GB': {
         name: 'Green Bay Packers',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/gb.png',
-        byeWeek: 6,
+        byeWeek: 11,
         conference: 'NFC',
         division: 'North',
         primaryColor: '#203731',
-        olineRank: 14
+        olineRank: 26
     },
     'HOU': {
         name: 'Houston Texans',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/hou.png',
-        byeWeek: 7,
+        byeWeek: 8,
         conference: 'AFC',
         division: 'South',
         primaryColor: '#03202F',
-        olineRank: 32
+        olineRank: 24
     },
     'IND': {
         name: 'Indianapolis Colts',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/ind.png',
-        byeWeek: 11,
+        byeWeek: 13,
         conference: 'AFC',
         division: 'South',
         primaryColor: '#002C5F',
-        olineRank: 5
+        olineRank: 8
     },
     'JAX': {
         name: 'Jacksonville Jaguars',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/jax.png',
-        byeWeek: 12,
+        byeWeek: 7,
         conference: 'AFC',
         division: 'South',
         primaryColor: '#006778',
-        olineRank: 26
+        olineRank: 28
     },
     'JAC': {
         name: 'Jacksonville Jaguars',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/jax.png',
-        byeWeek: 12,
+        byeWeek: 7,
         conference: 'AFC',
         division: 'South',
         primaryColor: '#006778',
-        olineRank: 26
+        olineRank: 28
     },
     'KC': {
         name: 'Kansas City Chiefs',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/kc.png',
-        byeWeek: 10,
+        byeWeek: 5,
         conference: 'AFC',
         division: 'West',
         primaryColor: '#E31837',
-        olineRank: 20
+        olineRank: 11
     },
     'LAC': {
         name: 'Los Angeles Chargers',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/lac.png',
-        byeWeek: 5,
+        byeWeek: 7,
         conference: 'AFC',
         division: 'West',
         primaryColor: '#0080C6',
-        olineRank: 10
+        olineRank: 12
     },
     'LAR': {
         name: 'Los Angeles Rams',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/lar.png',
-        byeWeek: 12,
+        byeWeek: 11,
         conference: 'NFC',
         division: 'West',
         primaryColor: '#003594',
-        olineRank: 15
+        olineRank: 3
     },
     'LV': {
         name: 'Las Vegas Raiders',
@@ -178,66 +181,66 @@ export const teamData = {
         conference: 'AFC',
         division: 'West',
         primaryColor: '#000000',
-        olineRank: 18
+        olineRank: 16
     },
     'MIA': {
         name: 'Miami Dolphins',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/mia.png',
-        byeWeek: 11,
+        byeWeek: 6,
         conference: 'AFC',
         division: 'East',
         primaryColor: '#008E97',
-        olineRank: 25
+        olineRank: 32
     },
     'MIN': {
         name: 'Minnesota Vikings',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/min.png',
-        byeWeek: 13,
+        byeWeek: 6,
         conference: 'NFC',
         division: 'North',
         primaryColor: '#4F2683',
-        olineRank: 7
+        olineRank: 17
     },
     'NE': {
         name: 'New England Patriots',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/ne.png',
-        byeWeek: 14,
+        byeWeek: 11,
         conference: 'AFC',
         division: 'East',
         primaryColor: '#002244',
-        olineRank: 28
+        olineRank: 22
     },
     'NO': {
         name: 'New Orleans Saints',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/no.png',
-        byeWeek: 12,
+        byeWeek: 8,
         conference: 'NFC',
         division: 'South',
         primaryColor: '#D3BC8D',
-        olineRank: 22
+        olineRank: 9
     },
     'NYG': {
         name: 'New York Giants',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png',
-        byeWeek: 13,
+        byeWeek: 8,
         conference: 'NFC',
         division: 'East',
         primaryColor: '#0B2265',
-        olineRank: 29
+        olineRank: 18
     },
     'NYJ': {
         name: 'New York Jets',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png',
-        byeWeek: 7,
+        byeWeek: 13,
         conference: 'AFC',
         division: 'East',
         primaryColor: '#125740',
-        olineRank: 9
+        olineRank: 15
     },
     'PHI': {
         name: 'Philadelphia Eagles',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/phi.png',
-        byeWeek: 9,
+        byeWeek: 10,
         conference: 'NFC',
         division: 'East',
         primaryColor: '#004C54',
@@ -246,11 +249,11 @@ export const teamData = {
     'PIT': {
         name: 'Pittsburgh Steelers',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/pit.png',
-        byeWeek: 6,
+        byeWeek: 9,
         conference: 'AFC',
         division: 'North',
         primaryColor: '#FFB612',
-        olineRank: 21
+        olineRank: 23
     },
     'SEA': {
         name: 'Seattle Seahawks',
@@ -259,43 +262,52 @@ export const teamData = {
         conference: 'NFC',
         division: 'West',
         primaryColor: '#002244',
-        olineRank: 30
+        olineRank: 21
     },
     'SF': {
         name: 'San Francisco 49ers',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/sf.png',
-        byeWeek: 9,
+        byeWeek: 8,
         conference: 'NFC',
         division: 'West',
         primaryColor: '#AA0000',
-        olineRank: 12
+        olineRank: 13
     },
     'TB': {
         name: 'Tampa Bay Buccaneers',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/tb.png',
-        byeWeek: 5,
+        byeWeek: 10,
         conference: 'NFC',
         division: 'South',
         primaryColor: '#D50A0A',
-        olineRank: 6
+        olineRank: 5
     },
     'TEN': {
         name: 'Tennessee Titans',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/ten.png',
-        byeWeek: 7,
+        byeWeek: 9,
         conference: 'AFC',
         division: 'South',
         primaryColor: '#0C2340',
-        olineRank: 24
+        olineRank: 31
     },
     'WAS': {
         name: 'Washington Commanders',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/was.png',
-        byeWeek: 14,
+        byeWeek: 7,
         conference: 'NFC',
         division: 'East',
         primaryColor: '#5A1414',
-        olineRank: 19
+        olineRank: 27
+    },
+    'FA': {
+        name: 'Free Agent',
+        logo: null,
+        byeWeek: null,
+        conference: null,
+        division: null,
+        primaryColor: '#9CA3AF',
+        olineRank: null
     }
 };
 
@@ -328,4 +340,4 @@ export const getAllTeams = () => {
         abbreviation: abbr,
         ...teamData[abbr]
     }));
-}; 
+};

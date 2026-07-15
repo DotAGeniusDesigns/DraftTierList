@@ -15,6 +15,10 @@ module.exports = {
                 'tier-6': '#8b5cf6',
                 'tier-7': '#ec4899',
                 'tier-8': '#6b7280',
+                'tier-9': '#14b8a6',
+                'tier-10': '#a855f7',
+                'tier-11': '#f43f5e',
+                'tier-12': '#64748b',
             }
         },
     },
