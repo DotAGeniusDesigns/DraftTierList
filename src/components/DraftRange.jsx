@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const DraftRange = ({ darkMode, players = [], allPlayers = [] }) => {
+const DraftRange = ({ darkMode, allPlayers = [] }) => {
     const [leagueSize, setLeagueSize] = useState(12);
     const [pickPosition, setPickPosition] = useState(1);
     const [positionFilter, setPositionFilter] = useState([]);
@@ -12,35 +12,6 @@ const DraftRange = ({ darkMode, players = [], allPlayers = [] }) => {
         if (round <= 2) return 2;
         return 2 + (round - 2); // Increment by 1 each round after round 2
     };
-
-    // Calculate pick number for each round (snake draft)
-    const getPickNumber = (round) => {
-        if (round % 2 === 1) {
-            // Odd rounds (1, 3, 5, 7, 9, 11, 13, 15): pick order is 1-12
-            return (round - 1) * leagueSize + pickPosition;
-        } else {
-            // Even rounds (2, 4, 6, 8, 10, 12, 14): pick order is reversed 12-1
-            return (round - 1) * leagueSize + (leagueSize - pickPosition + 1);
-        }
-    };
-
-    // Get the actual pick position within the round (1-12, not the overall pick number)
-    const getPickPositionInRound = (round) => {
-        if (round % 2 === 1) {
-            // Odd rounds: pick order is 1-12
-            return pickPosition;
-        } else {
-            // Even rounds: pick order is reversed 12-1
-            return leagueSize - pickPosition + 1;
-        }
-    };
-
-    // Get round from pick number
-    const getRound = (pickNumber) => {
-        return Math.ceil(pickNumber / leagueSize);
-    };
-
-
 
     // Handle player click to draft/undraft
     const handlePlayerClick = (player) => {
@@ -61,6 +32,13 @@ const DraftRange = ({ darkMode, players = [], allPlayers = [] }) => {
 
     // Calculate probable available players for each round
     useEffect(() => {
+        const pickNumberForRound = (round) => {
+            if (round % 2 === 1) {
+                return (round - 1) * leagueSize + pickPosition;
+            }
+            return (round - 1) * leagueSize + (leagueSize - pickPosition + 1);
+        };
+
         const calculateAvailablePlayers = () => {
             if (!allPlayers || allPlayers.length === 0) return;
 
@@ -68,7 +46,7 @@ const DraftRange = ({ darkMode, players = [], allPlayers = [] }) => {
 
             // Calculate for first 15 rounds (or adjust as needed)
             for (let round = 1; round <= 15; round++) {
-                const pickNumber = getPickNumber(round);
+                const pickNumber = pickNumberForRound(round);
                 const variance = getVariance(round);
 
                 // Find players within ADP range

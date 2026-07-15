@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import Player from './Player';
 import { getTierDisplayName, TIER_NAMES_UPDATED_EVENT } from '../utils/tierNames';
 
@@ -37,7 +37,7 @@ const Tier = ({
         return map;
     }, [allTierPlayers, startingRank]);
 
-    const resolveDropIndex = (y, containerHeight) => {
+    const resolveDropIndex = useCallback((y, containerHeight) => {
         const headerHeight = 48;
         const padding = 12;
         const availableHeight = Math.max(containerHeight - headerHeight, 1);
@@ -46,9 +46,9 @@ const Tier = ({
         const adjustedY = y - padding;
         const newIndex = Math.max(0, Math.floor(adjustedY / dynamicDropZoneHeight));
         return Math.min(newIndex, players.length);
-    };
+    }, [players.length]);
 
-    const finalizeDrop = (playerId, sourceTier, index) => {
+    const finalizeDrop = useCallback((playerId, sourceTier, index) => {
         let finalDropIndex = index !== null ? index : 0;
 
         if (sourceTier === tierNumber) {
@@ -61,7 +61,7 @@ const Tier = ({
         if (playerId) {
             onMovePlayer?.(playerId, tierNumber, finalDropIndex);
         }
-    };
+    }, [players, tierNumber, onMovePlayer]);
 
     const handleDragOver = (e) => {
         e.preventDefault();
@@ -154,7 +154,7 @@ const Tier = ({
             document.removeEventListener('playerDragMove', handleTouchDragMove);
             document.removeEventListener('playerDragEnd', handleTouchDragEnd);
         };
-    }, [isTouchDragging, players, tierNumber, onMovePlayer]);
+    }, [isTouchDragging, finalizeDrop, resolveDropIndex]);
 
     return (
         <div className="mb-6">

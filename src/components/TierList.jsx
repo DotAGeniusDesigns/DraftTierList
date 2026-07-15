@@ -15,6 +15,11 @@ const TierList = ({
     darkMode,
     tierNamesVersion = 0,
 }) => {
+    const tierNames = useMemo(() => {
+        void tierNamesVersion;
+        return getTierNames();
+    }, [tierNamesVersion]);
+
     const { playersByTier, tierNumbers, tierRanks, filteredPlayerIds } = useMemo(() => {
         const grouped = allPlayers.reduce((acc, player) => {
             if (!acc[player.tier]) {
@@ -24,7 +29,6 @@ const TierList = ({
             return acc;
         }, {});
 
-        const tierNames = getTierNames();
         const tiersFromNames = Object.keys(tierNames).map(Number);
         const tiersFromPlayers = Object.keys(grouped).map(Number);
         const allTierNumbers = [...new Set([...tiersFromNames, ...tiersFromPlayers])];
@@ -44,7 +48,7 @@ const TierList = ({
             tierRanks: ranks,
             filteredPlayerIds: new Set(players.map(p => p.id)),
         };
-    }, [allPlayers, players, tierNamesVersion]);
+    }, [allPlayers, players, tierNames]);
 
     return (
         <div className="space-y-8">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { streamersDatabase } from '../utils/streamersDatabase';
-import { getTeamLogo, getTeamData } from '../utils/teamData';
+import { getTeamLogo } from '../utils/teamData';
 import { getOffenseRanking, getDefenseRanking } from '../utils/powerRankings';
 import { playerDatabase } from '../utils/playerDatabase';
 

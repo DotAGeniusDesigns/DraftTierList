@@ -494,7 +494,6 @@ function App() {
             {currentPage === 'draft-range' && (
                 <DraftRange
                     darkMode={darkMode}
-                    players={players}
                     allPlayers={players}
                 />
             )}

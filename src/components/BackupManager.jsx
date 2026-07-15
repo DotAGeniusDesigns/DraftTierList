@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     getBackupSummary, getBackup, restoreFromBackup, deleteBackup, clearAllBackups,
-    getDraftBoardSummary, getDraftBoard, loadDraftBoard, deleteDraftBoard, saveDraftBoard
+    getDraftBoardSummary, loadDraftBoard, deleteDraftBoard, saveDraftBoard
 } from '../utils/backupSystem';
 
 const BackupManager = ({ players, onRestorePlayers, darkMode, onClose }) => {
