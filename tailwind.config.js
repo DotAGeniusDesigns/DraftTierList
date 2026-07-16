@@ -6,6 +6,10 @@ module.exports = {
     ],
     theme: {
         extend: {
+            fontFamily: {
+                sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+                display: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+            },
             colors: {
                 'tier-1': '#ef4444',
                 'tier-2': '#f97316',
@@ -19,8 +23,17 @@ module.exports = {
                 'tier-10': '#a855f7',
                 'tier-11': '#f43f5e',
                 'tier-12': '#64748b',
-            }
+            },
+            boxShadow: {
+                card: '0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06)',
+                'card-dark': '0 4px 24px rgba(0, 0, 0, 0.35)',
+                glow: '0 0 20px rgba(16, 185, 129, 0.25)',
+            },
+            backgroundImage: {
+                'app-light': 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(16, 185, 129, 0.12), transparent), linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)',
+                'app-dark': 'radial-gradient(ellipse 70% 45% at 50% -10%, rgba(16, 185, 129, 0.08), transparent), linear-gradient(180deg, #0c1017 0%, #0f172a 100%)',
+            },
         },
     },
     plugins: [],
-} 
+};

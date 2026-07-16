@@ -14,6 +14,7 @@ const TierList = ({
     onRenameTier,
     darkMode,
     tierNamesVersion = 0,
+    focusPlayerId = null,
 }) => {
     const tierNames = useMemo(() => {
         void tierNamesVersion;
@@ -51,7 +52,7 @@ const TierList = ({
     }, [allPlayers, players, tierNames]);
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-5 sm:space-y-6">
             {tierNumbers.map(tierNumber => {
                 const allTierPlayers = playersByTier[tierNumber] || [];
                 const tierPlayers = allTierPlayers.filter(player =>
@@ -72,6 +73,7 @@ const TierList = ({
                         onRenameTier={onRenameTier}
                         onMovePlayer={onMovePlayer}
                         startingRank={tierRanks[tierNumber] || 1}
+                        focusPlayerId={focusPlayerId}
                         darkMode={darkMode}
                         tierNamesVersion={tierNamesVersion}
                     />

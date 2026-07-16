@@ -11,6 +11,7 @@ const ROOT = path.join(__dirname, '..');
 const RAW_FILE = path.join(__dirname, 'rawTierList2026.txt');
 const DB_FILE = path.join(ROOT, 'src', 'utils', 'playerDatabase.js');
 const PHOTO_MAP_FILE = path.join(__dirname, 'playerPhotoMap.json');
+const PHOTO_OVERRIDES_FILE = path.join(__dirname, 'photoOverrides.json');
 
 const PLACEHOLDER_PHOTO =
     'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg';
@@ -27,6 +28,22 @@ function normalizeName(name) {
         .filter((token) => token && !SUFFIXES.has(token))
         .join(' ')
         .trim();
+}
+
+function loadPhotoOverrides() {
+    if (!fs.existsSync(PHOTO_OVERRIDES_FILE)) return {};
+    const raw = JSON.parse(fs.readFileSync(PHOTO_OVERRIDES_FILE, 'utf8'));
+    const map = {};
+    for (const [key, url] of Object.entries(raw)) {
+        if (typeof url === 'string' && url) map[key.toLowerCase()] = url;
+    }
+    return map;
+}
+
+function resolvePhoto(p, photoMap, photoOverrides) {
+    const overrideKey = `${normalizeName(p.name)}|${p.position}`;
+    if (photoOverrides[overrideKey]) return photoOverrides[overrideKey];
+    return photoMap[normalizeName(p.name)] || null;
 }
 
 function loadPhotoMap() {
@@ -90,7 +107,7 @@ function parseRaw(text) {
     return players;
 }
 
-function buildRecords(players, photoMap) {
+function buildRecords(players, photoMap, photoOverrides) {
     const usedIds = new Set();
     const records = [];
 
@@ -114,7 +131,7 @@ function buildRecords(players, photoMap) {
         if (p.position === 'DST') {
             photoExpr = 'dstLogo(' + JSON.stringify(p.team.toLowerCase()) + ')';
         } else {
-            const mapped = photoMap[normalizeName(p.name)];
+            const mapped = resolvePhoto(p, photoMap, photoOverrides);
             photoExpr = mapped ? JSON.stringify(mapped) : 'PLACEHOLDER_PHOTO';
         }
 
@@ -182,8 +199,9 @@ function serialize(records) {
 function main() {
     const raw = fs.readFileSync(RAW_FILE, 'utf8');
     const photoMap = loadPhotoMap();
+    const photoOverrides = loadPhotoOverrides();
     const players = parseRaw(raw);
-    const records = buildRecords(players, photoMap);
+    const records = buildRecords(players, photoMap, photoOverrides);
     const output = serialize(records);
     fs.writeFileSync(DB_FILE, output, 'utf8');
 

@@ -48,9 +48,19 @@ function photoFromSleeper(player) {
     return null;
 }
 
+function photoRank(player) {
+    const posPriority = { QB: 0, RB: 1, WR: 2, TE: 3, K: 4, FB: 5 };
+    let rank = (posPriority[player.position] ?? 50) * 1e6;
+    rank += Number(player.search_rank) || 99999;
+    if (!player.espn_id) rank += 5e5;
+    if (!player.active) rank += 2e6;
+    return rank;
+}
+
 async function main() {
     const sleeperPlayers = await fetchJson('https://api.sleeper.app/v1/players/nfl');
     const map = {};
+    const bestRank = {};
 
     for (const player of Object.values(sleeperPlayers)) {
         if (!player || !player.full_name) continue;
@@ -58,8 +68,13 @@ async function main() {
         if (!photo) continue;
 
         const key = normalizeName(player.full_name);
-        if (!key || map[key]) continue;
-        map[key] = photo;
+        if (!key) continue;
+
+        const rank = photoRank(player);
+        if (bestRank[key] === undefined || rank < bestRank[key]) {
+            map[key] = photo;
+            bestRank[key] = rank;
+        }
     }
 
     fs.writeFileSync(OUT, JSON.stringify(map, null, 2));

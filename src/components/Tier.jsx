@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import Player from './Player';
+import ColumnHeader, { BOARD_COLUMN_TOOLTIPS } from './ColumnHeader';
 import { getTierDisplayName, TIER_NAMES_UPDATED_EVENT } from '../utils/tierNames';
+import { TIER_HEX, ui } from '../utils/uiTheme';
 
 const Tier = ({
     tierNumber,
@@ -16,6 +18,7 @@ const Tier = ({
     startingRank,
     darkMode,
     tierNamesVersion = 0,
+    focusPlayerId = null,
 }) => {
     const [isDragOver, setIsDragOver] = useState(false);
     const [dropIndex, setDropIndex] = useState(null);
@@ -24,6 +27,7 @@ const Tier = ({
     const [tierName, setTierName] = useState(() => getTierDisplayName(tierNumber));
     const tierRef = useRef(null);
     const dropIndexRef = useRef(null);
+    const tierColor = TIER_HEX[tierNumber] || TIER_HEX[12];
 
     useEffect(() => {
         dropIndexRef.current = dropIndex;
@@ -156,10 +160,27 @@ const Tier = ({
         };
     }, [isTouchDragging, finalizeDrop, resolveDropIndex]);
 
+    const headerClass = darkMode
+        ? 'border-b border-white/5 bg-slate-900/80'
+        : 'border-b border-slate-100 bg-slate-50/90';
+
+    const bodyClass = darkMode
+        ? `${isDragOver ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-white/[0.06] bg-slate-950/30'}`
+        : `${isDragOver ? 'border-emerald-300 bg-emerald-50/30' : 'border-slate-200/80 bg-white'}`;
+
     return (
-        <div className="mb-6">
-            <div className={`flex items-center justify-between p-3 rounded-t-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-900 text-white'}`}>
+        <div className={`${ui.card(darkMode)} overflow-visible`}>
+            <div
+                className={`flex items-center justify-between px-4 py-3 sm:px-5 ${headerClass}`}
+                style={{ boxShadow: `inset 4px 0 0 0 ${tierColor}` }}
+            >
                 <div className="flex items-center gap-3">
+                    <span
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold text-white shadow-sm"
+                        style={{ backgroundColor: tierColor }}
+                    >
+                        T{tierNumber}
+                    </span>
                     {isEditingName ? (
                         <div className="flex items-center gap-2">
                             <input
@@ -170,25 +191,32 @@ const Tier = ({
                                     if (e.key === 'Enter') handleSaveName();
                                     if (e.key === 'Escape') handleCancelEdit();
                                 }}
-                                className={`px-2 py-1 text-lg font-bold rounded ${darkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-gray-900 border-gray-300'} border focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                className={`rounded-lg border px-3 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/40 ${darkMode
+                                    ? 'border-white/10 bg-slate-800 text-white'
+                                    : 'border-slate-200 bg-white text-slate-900'
+                                    }`}
                                 autoFocus
                             />
-                            <button onClick={handleSaveName} className="p-1 rounded hover:bg-gray-700 text-green-400" title="Save name">
-                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <button onClick={handleSaveName} className="rounded-lg p-1.5 text-emerald-500 hover:bg-emerald-500/10" title="Save name">
+                                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                 </svg>
                             </button>
-                            <button onClick={handleCancelEdit} className="p-1 rounded hover:bg-gray-700 text-red-400" title="Cancel edit">
-                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <button onClick={handleCancelEdit} className="rounded-lg p-1.5 text-rose-500 hover:bg-rose-500/10" title="Cancel edit">
+                                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                                 </svg>
                             </button>
                         </div>
                     ) : (
                         <div className="flex items-center gap-2">
-                            <h3 className="text-lg font-bold">{tierName}</h3>
-                            <button onClick={() => setIsEditingName(true)} className="p-1 rounded hover:bg-gray-700 text-gray-400" title="Edit tier name">
-                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <h3 className={`text-base font-bold sm:text-lg ${ui.heading(darkMode)}`}>{tierName}</h3>
+                            <button
+                                onClick={() => setIsEditingName(true)}
+                                className={`rounded-lg p-1.5 transition ${darkMode ? 'text-slate-500 hover:bg-white/5 hover:text-slate-300' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'}`}
+                                title="Edit tier name"
+                            >
+                                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                                 </svg>
                             </button>
@@ -196,19 +224,19 @@ const Tier = ({
                     )}
                 </div>
                 <div className="flex items-center gap-3">
-                    <span className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-300'}`}>
+                    <span className={`text-xs font-medium sm:text-sm ${ui.muted(darkMode)}`}>
                         {allTierPlayers.length} player{allTierPlayers.length !== 1 ? 's' : ''}
                         {players.length !== allTierPlayers.length && (
-                            <span className="opacity-75"> ({players.length} shown)</span>
+                            <span className="opacity-75"> · {players.length} shown</span>
                         )}
                     </span>
                     {allTierPlayers.length === 0 && (
                         <button
                             onClick={() => onRemoveTier(tierNumber)}
-                            className={`p-1 rounded transition-colors ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-800'}`}
+                            className={`rounded-lg p-1.5 transition ${darkMode ? 'text-slate-500 hover:bg-white/5 hover:text-rose-400' : 'text-slate-400 hover:bg-rose-50 hover:text-rose-600'}`}
                             title="Remove empty tier"
                         >
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                             </svg>
                         </button>
@@ -221,49 +249,46 @@ const Tier = ({
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`border rounded-b-lg transition-all duration-200 ${darkMode
-                    ? `${isDragOver ? 'bg-gray-800 border-gray-600' : 'bg-gray-900 border-gray-700'}`
-                    : `${isDragOver ? 'bg-gray-50 border-gray-300' : 'bg-white border-gray-200'}`
-                    }`}
+                className={`border-t transition-all duration-200 ${bodyClass}`}
             >
                 {players.length === 0 ? (
-                    <div className={`flex items-center justify-center h-16 border-b ${darkMode ? 'text-gray-500 border-gray-700' : 'text-gray-400 border-gray-200'}`}>
-                        <p className="text-sm">Drop players here</p>
+                    <div className={`tier-empty-state ${ui.muted(darkMode)}`}>
+                        Drop players here
                     </div>
                 ) : (
-                    <div className="relative">
-                        <div className={`sm:hidden flex items-center p-3 border-b text-xs font-semibold sticky top-0 z-10 ${darkMode
-                            ? 'border-gray-700 bg-gray-800 text-gray-300'
-                            : 'border-gray-200 bg-gray-50 text-gray-600'
+                    <div className="relative divide-y divide-slate-200/70 dark:divide-white/[0.04]">
+                        <div className={`sticky top-0 z-10 hidden items-center px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider sm:flex sm:px-4 sm:text-[11px] ${darkMode
+                            ? 'border-b border-white/5 bg-slate-900/95 text-slate-500 backdrop-blur-md'
+                            : 'border-b border-slate-100 bg-white/95 text-slate-400 backdrop-blur-md'
                             }`}>
-                            <div className="w-8 text-center">RK</div>
-                            <div className="w-10 text-center"></div>
-                            <div className="flex-1 px-3">PLAYER</div>
-                            <div className="w-10 text-center">POS</div>
-                            <div className="w-10 text-center">TM</div>
-                            <div className="w-8 text-center">ADP</div>
+                            <div className="w-8 sm:w-14 text-center">Rank</div>
+                            <div className="w-10 sm:w-12 text-center">Photo</div>
+                            <div className="flex-1 px-2 sm:px-4">Player</div>
+                            <ColumnHeader label="Pos" tooltip={BOARD_COLUMN_TOOLTIPS.pos} className="w-14 sm:w-20" darkMode={darkMode} />
+                            <ColumnHeader label="Team" tooltip={BOARD_COLUMN_TOOLTIPS.team} className="w-10 sm:w-12" darkMode={darkMode} />
+                            <ColumnHeader label="OL" tooltip={BOARD_COLUMN_TOOLTIPS.ol} className="hidden w-12 sm:flex sm:w-14" darkMode={darkMode} />
+                            <ColumnHeader label="Bye" tooltip={BOARD_COLUMN_TOOLTIPS.bye} className="hidden w-12 sm:flex sm:w-14" darkMode={darkMode} />
+                            <ColumnHeader label="ECR" tooltip={BOARD_COLUMN_TOOLTIPS.ecr} className="hidden w-12 sm:flex sm:w-14" darkMode={darkMode} />
+                            <ColumnHeader label="ADP" tooltip={BOARD_COLUMN_TOOLTIPS.adp} className="w-10 sm:w-14" darkMode={darkMode} />
+                            <ColumnHeader label="Flags" tooltip={BOARD_COLUMN_TOOLTIPS.flags} className="hidden w-20 sm:flex sm:w-24" darkMode={darkMode} />
                         </div>
 
-                        <div className={`hidden sm:flex items-center p-3 pl-1 border-b text-xs font-semibold sticky top-0 z-10 ${darkMode
-                            ? 'border-gray-700 bg-gray-800 text-gray-300'
-                            : 'border-gray-200 bg-gray-50 text-gray-600'
+                        <div className={`flex items-center px-3 py-2 text-[10px] font-bold uppercase tracking-wider sm:hidden ${darkMode
+                            ? 'border-b border-white/5 bg-slate-900/95 text-slate-500'
+                            : 'border-b border-slate-100 bg-slate-50 text-slate-400'
                             }`}>
-                            <div className="w-8 sm:w-16 text-center">RANK</div>
-                            <div className="w-10 sm:w-12 text-center">PHOTO</div>
-                            <div className="flex-1 px-2 sm:px-4">PLAYER</div>
-                            <div className="w-16 sm:w-20 text-center mx-1 sm:mx-2">POS</div>
-                            <div className="w-10 sm:w-12 text-center">TEAM</div>
-                            <div className="w-12 sm:w-16 text-center">O-LINE</div>
-                            <div className="w-12 sm:w-16 text-center">BYE</div>
-                            <div className="w-12 sm:w-16 text-center">ECR</div>
-                            <div className="w-12 sm:w-16 text-center">ADP</div>
-                            <div className="w-20 sm:w-24 text-center mx-1 sm:mx-2">NOTES</div>
+                            <div className="w-8 text-center">#</div>
+                            <div className="w-10" />
+                            <div className="flex-1 px-2">Player</div>
+                            <ColumnHeader label="Pos" tooltip={BOARD_COLUMN_TOOLTIPS.pos} className="w-10" darkMode={darkMode} />
+                            <ColumnHeader label="Tm" tooltip={BOARD_COLUMN_TOOLTIPS.team} className="w-10" darkMode={darkMode} />
+                            <ColumnHeader label="ADP" tooltip={BOARD_COLUMN_TOOLTIPS.adp} className="w-10" darkMode={darkMode} />
                         </div>
 
                         {players.map((player, index) => (
                             <div key={player.id} className="relative">
                                 {isDragOver && dropIndex === index && (
-                                    <div className="absolute -top-1 left-0 right-0 h-0.5 bg-blue-500 z-10"></div>
+                                    <div className="drop-indicator -top-px" />
                                 )}
                                 <Player
                                     player={player}
@@ -273,12 +298,13 @@ const Tier = ({
                                     onToggleInjured={onToggleInjured}
                                     onToggleHandcuff={onToggleHandcuff}
                                     onMovePlayer={onMovePlayer}
+                                    isFocused={focusPlayerId === player.id}
                                     darkMode={darkMode}
                                 />
                             </div>
                         ))}
                         {isDragOver && dropIndex === players.length && (
-                            <div className="h-0.5 bg-blue-500"></div>
+                            <div className="drop-indicator" />
                         )}
                     </div>
                 )}

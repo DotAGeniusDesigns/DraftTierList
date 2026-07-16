@@ -1,4 +1,5 @@
 import React from 'react';
+import { ui } from '../utils/uiTheme';
 
 const ComingSoonPage = ({
     darkMode,
@@ -9,54 +10,48 @@ const ComingSoonPage = ({
     features = [],
 }) => {
     return (
-        <div className={`min-h-screen transition-colors duration-200 ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
-            <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-7xl">
-                <div className="mb-6 text-center">
-                    <h1 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                        🚧 Coming Soon
-                    </h1>
-                    <p className={`text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                        {title}
-                    </p>
-                    {subtitle && (
-                        <p className={`text-lg mt-4 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                            {subtitle}
-                        </p>
-                    )}
-                    {description && (
-                        <p className={`text-sm mt-2 max-w-2xl mx-auto ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>
-                            {description}
-                        </p>
-                    )}
-                </div>
-
-                <div className={`text-center py-16 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                    <div className="mb-8">
-                        <div className={`text-8xl mb-4 ${darkMode ? 'text-gray-600' : 'text-gray-300'}`}>
+        <div className={ui.page(darkMode)}>
+            <div className="container mx-auto max-w-4xl px-4 py-10 sm:py-16">
+                <div className={`${ui.card(darkMode)} overflow-hidden`}>
+                    <div className="bg-gradient-to-r from-emerald-500/10 via-transparent to-teal-500/10 px-6 py-10 text-center sm:px-10 sm:py-14">
+                        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 text-3xl shadow-glow">
                             {icon}
                         </div>
-                        <h2 className={`text-2xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-emerald-500">
+                            Coming Soon
+                        </p>
+                        <h1 className={`text-3xl font-bold sm:text-4xl ${ui.heading(darkMode)}`}>
                             {title}
-                        </h2>
+                        </h1>
+                        {subtitle && (
+                            <p className={`mx-auto mt-4 max-w-2xl text-base sm:text-lg ${ui.muted(darkMode)}`}>
+                                {subtitle}
+                            </p>
+                        )}
                         {description && (
-                            <p className="text-lg max-w-2xl mx-auto">
+                            <p className={`mx-auto mt-3 max-w-2xl text-sm leading-relaxed ${ui.muted(darkMode)}`}>
                                 {description}
                             </p>
                         )}
                     </div>
 
                     {features.length > 0 && (
-                        <div className={`p-6 rounded-lg ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'}`}>
-                            <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <div className="border-t border-slate-200/60 px-6 py-8 sm:px-10 dark:border-white/5">
+                            <h3 className={`mb-5 text-center text-lg font-semibold ${ui.heading(darkMode)}`}>
                                 Planned Features
                             </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left max-w-3xl mx-auto">
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 {features.map((feature) => (
-                                    <div key={feature.title} className="flex items-start gap-3">
-                                        <span className="text-green-500 text-xl">✓</span>
+                                    <div
+                                        key={feature.title}
+                                        className={`${ui.cardInset(darkMode)} flex items-start gap-3 p-4`}
+                                    >
+                                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-sm text-emerald-500">
+                                            ✓
+                                        </span>
                                         <div>
-                                            <h4 className="font-medium">{feature.title}</h4>
-                                            <p className="text-sm opacity-75">{feature.detail}</p>
+                                            <h4 className={`font-semibold ${ui.heading(darkMode)}`}>{feature.title}</h4>
+                                            <p className={`mt-1 text-sm ${ui.muted(darkMode)}`}>{feature.detail}</p>
                                         </div>
                                     </div>
                                 ))}

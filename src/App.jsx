@@ -1,21 +1,27 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import TierList from './components/TierList';
 import ExportImport from './components/ExportImport';
 import Navbar from './components/Navbar';
+import ScrollToTop from './components/ScrollToTop';
 import NewPage from './components/NewPage';
 import DraftRange from './components/DraftRange';
 import Streamers from './components/Streamers';
 import InterestingPlayers from './components/InterestingPlayers';
 import BackupManager from './components/BackupManager';
 import BurgerMenu from './components/BurgerMenu';
+import DraftBoardSearch from './components/DraftBoardSearch';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers } from './utils/playerData';
 import { getTeamLogo } from './utils/teamData';
 import { createBackup, shouldCreateBackup } from './utils/backupSystem';
 import { getPositionFilterTagClass } from './utils/playerStyles';
 import { saveTierName, clearTierNames, getTierNames } from './utils/tierNames';
+import { ui } from './utils/uiTheme';
+import { LEGACY_HASH_ROUTES } from './utils/routes';
 
 function App() {
+    const navigate = useNavigate();
     // Use localStorage hook to persist player data
     const [players, setPlayers] = useLocalStorage('fantasy-football-players', initialPlayers);
 
@@ -99,11 +105,10 @@ function App() {
     // Reset to default confirmation modal state
     const [showResetConfirm, setShowResetConfirm] = useState(false);
 
-    // Current page state
-    const [currentPage, setCurrentPage] = useState('draft-board');
-
     // Bumps when tier names change so TierList re-reads localStorage
     const [tierNamesVersion, setTierNamesVersion] = useState(0);
+
+    const [focusPlayerId, setFocusPlayerId] = useState(null);
 
     // Ref for the dropdown container
     const dropdownRef = useRef(null);
@@ -125,13 +130,15 @@ function App() {
         };
     }, [isPositionDropdownOpen]);
 
-    // Handle direct links via URL hash
+    // Redirect old hash URLs (e.g. #draft-range) to real routes
     useEffect(() => {
-        const hash = window.location.hash.replace('#', '');
-        if (hash === 'draft-range' || hash === 'draft-board' || hash === 'streamers' || hash === 'interesting-players') {
-            setCurrentPage(hash);
+        const hash = window.location.hash.replace('#', '').trim();
+        const legacyPath = LEGACY_HASH_ROUTES[hash];
+        if (legacyPath) {
+            navigate(legacyPath, { replace: true });
+            window.history.replaceState(null, '', legacyPath);
         }
-    }, []);
+    }, [navigate]);
 
     // Keep tier name labels in sync across all tier headers
     useEffect(() => {
@@ -139,6 +146,11 @@ function App() {
         window.addEventListener('tier-names-updated', handleTierNamesUpdated);
         return () => window.removeEventListener('tier-names-updated', handleTierNamesUpdated);
     }, []);
+
+    // Sync dark mode to <html> for global CSS hooks
+    useEffect(() => {
+        document.documentElement.classList.toggle('dark', darkMode);
+    }, [darkMode]);
 
     // Toggle draft status for a player
     const handleToggleDraft = useCallback((playerId) => {
@@ -269,13 +281,6 @@ function App() {
         ));
     }, [setPlayers]);
 
-    // Handle page navigation
-    const handlePageChange = (pageId) => {
-        setCurrentPage(pageId);
-        // Update URL hash for direct linking
-        window.location.hash = pageId;
-    };
-
     // Get position tag styling
     const getPositionTagStyle = getPositionFilterTagClass;
 
@@ -296,6 +301,37 @@ function App() {
         return true;
     }), [players, hideDrafted, positionFilters]);
 
+    const handleJumpToPlayer = useCallback((player) => {
+        if (!player) return;
+
+        if (hideDrafted && player.drafted) {
+            setHideDrafted(false);
+        }
+        if (positionFilters.length > 0 && !positionFilters.includes(player.position)) {
+            setPositionFilters((prev) => [...prev, player.position]);
+        }
+
+        setFocusPlayerId(player.id);
+    }, [hideDrafted, positionFilters, setHideDrafted, setPositionFilters]);
+
+    useEffect(() => {
+        if (!focusPlayerId) return undefined;
+
+        const scrollTimer = window.setTimeout(() => {
+            const element = document.querySelector(`[data-player-id="${focusPlayerId}"]`);
+            element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 80);
+
+        const clearTimer = window.setTimeout(() => {
+            setFocusPlayerId(null);
+        }, 2800);
+
+        return () => {
+            window.clearTimeout(scrollTimer);
+            window.clearTimeout(clearTimer);
+        };
+    }, [focusPlayerId, filteredPlayers]);
+
     const draftStats = useMemo(() => {
         const drafted = players.filter(p => p.drafted).length;
         return {
@@ -306,125 +342,103 @@ function App() {
     }, [players]);
 
     return (
-        <div className={`min-h-screen transition-colors duration-200 ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
-            {/* Navigation Bar */}
+        <div className={ui.page(darkMode)}>
+            <ScrollToTop />
             <Navbar
                 darkMode={darkMode}
-                currentPage={currentPage}
-                onPageChange={handlePageChange}
                 onToggleDarkMode={() => setDarkMode(!darkMode)}
             />
 
-            {/* Page Content */}
-            {currentPage === 'draft-board' && (
-                <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-7xl">
-                    {/* Header with toggles */}
-                    <div className="mb-4 sm:mb-6">
-                        {/* Title */}
-                        <div className="mb-4">
-                            <h1 className={`text-2xl sm:text-3xl lg:text-4xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                Fantasy Football 2026 Draft Board
-                            </h1>
-                            <p className={`text-sm sm:text-base mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                Drag players between tiers, mark as drafted, and track risky picks.
+            <Routes>
+                <Route path="/" element={<Navigate to="/draft-board" replace />} />
+                <Route
+                    path="/draft-board"
+                    element={(
+                <div className="container mx-auto max-w-7xl px-3 py-5 sm:px-4 sm:py-8">
+                    <div className="mb-6">
+                        <div className="mb-5">
+                            <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-500">
+                                2026 Season
                             </p>
-                            <div className={`mt-3 flex flex-wrap gap-2 sm:gap-3 text-xs sm:text-sm`}>
-                                <span className={`px-3 py-1 rounded-full ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-700 border border-gray-200'}`}>
-                                    {draftStats.total} total
-                                </span>
-                                <span className={`px-3 py-1 rounded-full ${darkMode ? 'bg-green-900/40 text-green-300' : 'bg-green-50 text-green-700 border border-green-200'}`}>
-                                    {draftStats.available} available
-                                </span>
-                                <span className={`px-3 py-1 rounded-full ${darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-100 text-gray-600 border border-gray-200'}`}>
-                                    {draftStats.drafted} drafted
-                                </span>
+                            <h1 className={`font-display text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl ${ui.heading(darkMode)}`}>
+                                <span className="text-gradient-brand">Draft Board</span>
+                            </h1>
+                            <p className={`mt-2 max-w-2xl text-sm sm:text-base ${ui.muted(darkMode)}`}>
+                                Drag players between tiers, mark picks as drafted, and flag risky or injured players.
+                            </p>
+                            <div className="mt-4 flex flex-wrap gap-2">
+                                <span className={ui.statPill(darkMode, 'default')}>{draftStats.total} total</span>
+                                <span className={ui.statPill(darkMode, 'success')}>{draftStats.available} available</span>
+                                <span className={ui.statPill(darkMode, 'muted')}>{draftStats.drafted} drafted</span>
                             </div>
                         </div>
 
-                        {/* Controls - mobile optimized */}
-                        <div className="space-y-3 sm:space-y-0 sm:flex sm:flex-wrap sm:items-center sm:gap-4">
-                            {/* Position Filters Dropdown */}
+                        <div className={`${ui.toolbar(darkMode)} flex flex-col gap-3`}>
+                            <DraftBoardSearch
+                                players={players}
+                                darkMode={darkMode}
+                                onSelectPlayer={handleJumpToPlayer}
+                            />
+
+                            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                             <div className="relative" ref={dropdownRef}>
                                 <button
                                     onClick={() => setIsPositionDropdownOpen(!isPositionDropdownOpen)}
-                                    className={`px-3 py-1 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 ${darkMode
-                                        ? 'bg-gray-700 border-gray-600 text-white'
-                                        : 'bg-white border-gray-300 text-gray-900'
-                                        }`}
+                                    className={ui.btn(darkMode)}
                                 >
                                     <span>{getPositionFilterDisplay()}</span>
-                                    <svg className={`w-4 h-4 transition-transform ${isPositionDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className={`h-4 w-4 transition-transform ${isPositionDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
 
-                                {/* Dropdown Menu */}
                                 {isPositionDropdownOpen && (
-                                    <div className={`absolute top-full left-0 mt-1 w-48 rounded-md shadow-lg z-10 ${darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white border border-gray-200'
-                                        }`}>
-                                        <div className="py-1">
-                                            {['QB', 'RB', 'WR', 'TE', 'K', 'DST'].map(position => (
-                                                <label key={position} className={`flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-gray-100 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                                                    }`}>
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={positionFilters.includes(position)}
-                                                        onChange={() => handlePositionFilterChange(position)}
-                                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                                                    />
-                                                    <span className={getPositionTagStyle(position)}>
-                                                        {position}
-                                                    </span>
-                                                </label>
-                                            ))}
-                                        </div>
+                                    <div className={`absolute left-0 top-full z-20 mt-2 w-52 p-2 ${ui.dropdown(darkMode)}`}>
+                                        {['QB', 'RB', 'WR', 'TE', 'K', 'DST'].map(position => (
+                                            <label
+                                                key={position}
+                                                className={`flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 transition ${darkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={positionFilters.includes(position)}
+                                                    onChange={() => handlePositionFilterChange(position)}
+                                                    className="h-4 w-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500/30"
+                                                />
+                                                <span className={getPositionTagStyle(position)}>
+                                                    {position}
+                                                </span>
+                                            </label>
+                                        ))}
                                     </div>
                                 )}
                             </div>
 
-                            {/* Toggles container - responsive */}
-                            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-
-
-                                {/* Hide Drafted Toggle */}
-                                <div className="flex items-center gap-2 text-sm">
-                                    <label className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                                        Hide Drafted
+                            <div className="flex flex-wrap items-center gap-3">
+                                <div className="flex items-center gap-2.5">
+                                    <label className={`text-sm font-medium ${ui.muted(darkMode)}`}>
+                                        Hide drafted
                                     </label>
                                     <button
                                         onClick={() => setHideDrafted(!hideDrafted)}
-                                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${hideDrafted
-                                            ? 'bg-blue-600'
-                                            : darkMode
-                                                ? 'bg-gray-600'
-                                                : 'bg-gray-300'
-                                            }`}
+                                        className={ui.toggle(darkMode, hideDrafted)}
                                     >
-                                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${hideDrafted ? 'translate-x-6' : 'translate-x-1'
-                                            }`} />
+                                        <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition ${hideDrafted ? 'translate-x-6' : 'translate-x-1'}`} />
                                     </button>
                                 </div>
 
-                                {/* Reset Drafted Button */}
-                                <button
-                                    onClick={handleResetDrafted}
-                                    className={`px-3 py-1 text-sm border rounded-md transition-colors whitespace-nowrap ${darkMode
-                                        ? 'bg-gray-700 border-gray-600 text-white hover:bg-gray-600'
-                                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
-                                        }`}
-                                >
-                                    🔄 Reset Drafted
+                                <button onClick={handleResetDrafted} className={ui.btn(darkMode)}>
+                                    Reset drafted
                                 </button>
 
-                                {/* Burger Menu */}
                                 <BurgerMenu
                                     darkMode={darkMode}
                                     onAddTier={handleAddTier}
                                     onShowBackupManager={() => setShowBackupManager(true)}
                                     onShowExportImport={() => setShowExportImport(true)}
                                     onShowResetConfirm={() => setShowResetConfirm(true)}
-
                                 />
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -432,6 +446,7 @@ function App() {
                     <TierList
                         players={filteredPlayers}
                         allPlayers={players}
+                        focusPlayerId={focusPlayerId}
                         onMovePlayer={handleMovePlayer}
                         onToggleDraft={handleToggleDraft}
                         onToggleRisky={handleToggleRisky}
@@ -455,82 +470,73 @@ function App() {
 
                     {/* Reset to Default Confirmation Modal */}
                     {showResetConfirm && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                            <div className={`max-w-md w-full p-6 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                                <div className="text-center mb-6">
-                                    <div className="text-4xl mb-4">⚠️</div>
-                                    <h3 className={`text-lg font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <div className={ui.modalOverlay}>
+                            <div className={ui.modal(darkMode)}>
+                                <div className="mb-6 text-center">
+                                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-500/10 text-3xl">
+                                        ⚠️
+                                    </div>
+                                    <h3 className={`mb-2 text-lg font-bold ${ui.heading(darkMode)}`}>
                                         Reset to Default?
                                     </h3>
-                                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                                    <p className={`text-sm leading-relaxed ${ui.muted(darkMode)}`}>
                                         This will clear all your custom tier arrangements and draft status,
                                         then reload the default database order. This action cannot be undone.
                                     </p>
                                 </div>
-                                <div className="flex gap-3 justify-center">
-                                    <button
-                                        onClick={() => setShowResetConfirm(false)}
-                                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
-                                            ? 'bg-gray-600 hover:bg-gray-700 text-white'
-                                            : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
-                                            }`}
-                                    >
+                                <div className="flex justify-center gap-3">
+                                    <button onClick={() => setShowResetConfirm(false)} className={ui.btn(darkMode)}>
                                         Cancel
                                     </button>
                                     <button
                                         onClick={handleResetToDefault}
-                                        className="px-4 py-2 rounded-md text-sm font-medium bg-red-600 hover:bg-red-700 text-white transition-colors"
+                                        className="inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-500"
                                     >
-                                        Yes, Reset
+                                        Yes, reset
                                     </button>
                                 </div>
                             </div>
                         </div>
                     )}
                 </div>
-            )}
-
-            {/* Draft Range Page */}
-            {currentPage === 'draft-range' && (
-                <DraftRange
-                    darkMode={darkMode}
-                    allPlayers={players}
+                    )}
                 />
-            )}
-
-            {/* Streamers Page */}
-            {currentPage === 'streamers' && (
-                <Streamers darkMode={darkMode} />
-            )}
-
-            {/* Interesting Players Page */}
-            {currentPage === 'interesting-players' && (
-                <InterestingPlayers darkMode={darkMode} />
-            )}
-
-            {/* New Tool Page */}
-            {currentPage === 'new-tool' && (
-                <NewPage darkMode={darkMode} />
-            )}
+                <Route
+                    path="/draft-range"
+                    element={(
+                        <DraftRange
+                            darkMode={darkMode}
+                            allPlayers={players}
+                        />
+                    )}
+                />
+                <Route
+                    path="/streamers"
+                    element={<Streamers darkMode={darkMode} />}
+                />
+                <Route
+                    path="/interesting-players"
+                    element={<InterestingPlayers darkMode={darkMode} />}
+                />
+                <Route
+                    path="/draft-scheduler"
+                    element={<NewPage darkMode={darkMode} />}
+                />
+                <Route path="*" element={<Navigate to="/draft-board" replace />} />
+            </Routes>
 
             {/* Global Modals (available on all pages) */}
             {/* Export/Import Modal */}
             {showExportImport && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="max-w-md w-full">
+                <div className={ui.modalOverlay}>
+                    <div className="w-full max-w-md">
                         <ExportImport
                             players={players}
                             onImportPlayers={handleImportPlayers}
                             darkMode={darkMode}
                         />
                         <div className="mt-4 text-center">
-                            <button
-                                onClick={() => setShowExportImport(false)}
-                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
-                                    ? 'bg-gray-600 hover:bg-gray-700 text-white'
-                                    : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
-                                    }`}
-                            >
+                            <button onClick={() => setShowExportImport(false)} className={ui.btn(darkMode)}>
                                 Close
                             </button>
                         </div>

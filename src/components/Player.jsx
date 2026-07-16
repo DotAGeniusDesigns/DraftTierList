@@ -1,6 +1,15 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { getOlineRank } from '../utils/teamData';
 import { getPositionTagClass } from '../utils/playerStyles';
+import { ui } from '../utils/uiTheme';
+
+const flagBtn = (active, activeClass, darkMode, idleHover) =>
+    `relative rounded-lg p-1.5 transition ${active
+        ? activeClass
+        : darkMode
+            ? `text-slate-500 ${idleHover} hover:bg-white/5`
+            : `text-slate-400 ${idleHover} hover:bg-slate-100`
+    }`;
 
 const Player = ({
     player,
@@ -11,6 +20,7 @@ const Player = ({
     onToggleInjured,
     onToggleHandcuff,
     darkMode,
+    isFocused = false,
 }) => {
     const [isDragging, setIsDragging] = useState(false);
     const [isLongPressing, setIsLongPressing] = useState(false);
@@ -41,7 +51,7 @@ const Player = ({
         e.dataTransfer.setData('text/plain', JSON.stringify({
             playerId: player.id,
             sourceIndex: index,
-            sourceTier: player.tier
+            sourceTier: player.tier,
         }));
         e.dataTransfer.effectAllowed = 'move';
     };
@@ -84,9 +94,9 @@ const Player = ({
                 detail: {
                     playerId: player.id,
                     sourceIndex: index,
-                    sourceTier: player.tier
+                    sourceTier: player.tier,
                 },
-                bubbles: true
+                bubbles: true,
             }));
         }, 500);
     };
@@ -113,10 +123,10 @@ const Player = ({
                 dragData: {
                     playerId: player.id,
                     sourceIndex: index,
-                    sourceTier: player.tier
-                }
+                    sourceTier: player.tier,
+                },
             },
-            bubbles: true
+            bubbles: true,
         }));
     };
 
@@ -141,10 +151,10 @@ const Player = ({
                 dragData: {
                     playerId: player.id,
                     sourceIndex: index,
-                    sourceTier: player.tier
-                }
+                    sourceTier: player.tier,
+                },
             },
-            bubbles: true
+            bubbles: true,
         }));
 
         setIsDragging(false);
@@ -179,6 +189,20 @@ const Player = ({
     const isRisky = player.isRisky || false;
     const isHandcuff = player.isHandcuff || false;
 
+    const rowClass = player.drafted
+        ? darkMode
+            ? 'bg-slate-900/40 opacity-70'
+            : 'bg-slate-50/80 opacity-75'
+        : '';
+
+    const valueClass = darkMode ? 'text-slate-400' : 'text-slate-500';
+    const valueBold = darkMode ? 'font-semibold text-slate-300' : 'font-semibold text-slate-700';
+
+    const deltaClass = (isPositive) =>
+        isPositive
+            ? darkMode ? 'text-rose-400' : 'text-rose-600'
+            : darkMode ? 'text-emerald-400' : 'text-emerald-600';
+
     return (
         <div
             draggable="true"
@@ -191,69 +215,65 @@ const Player = ({
             onTouchEnd={handleTouchEnd}
             onTouchCancel={handleTouchCancel}
             className={`
-                relative p-3 sm:p-3 border-b cursor-grab active:cursor-grabbing transition-all duration-200
-                ${isDragging ? 'opacity-50 scale-105 z-50' : ''}
-                ${isLongPressing ? 'ring-2 ring-blue-400 ring-opacity-50' : ''}
-                ${darkMode
-                    ? `border-gray-700 ${player.drafted ? 'bg-gray-800 opacity-60' : 'bg-gray-900 hover:bg-gray-800'}`
-                    : `border-gray-200 ${player.drafted ? 'bg-gray-100 opacity-60' : 'bg-white hover:bg-gray-50'}`
-                }
+                player-row-hover relative cursor-grab px-3 py-2.5 active:cursor-grabbing sm:px-4 sm:py-3
+                ${isDragging ? 'z-50 scale-[1.01] opacity-60' : ''}
+                ${isLongPressing ? 'ring-2 ring-emerald-400/40 ring-offset-0' : ''}
+                ${isFocused ? 'ring-2 ring-emerald-400/70 ring-offset-2 ring-offset-transparent bg-emerald-500/10' : ''}
+                ${rowClass}
             `}
             onClick={handleClick}
             style={{ userSelect: 'none', touchAction: isLongPressing ? 'none' : 'pan-y' }}
             data-player-id={player.id}
         >
             {player.drafted && (
-                <div className="absolute top-2 left-2 sm:top-3 sm:left-3">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                </div>
+                <div className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-gradient-to-b from-emerald-400 to-teal-500" />
             )}
 
             <div className="flex items-center gap-1 sm:gap-0">
-                <div className={`w-8 sm:w-16 text-center font-bold text-xs sm:text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                <div className={`w-8 text-center text-xs font-bold tabular-nums sm:w-14 sm:text-sm ${valueBold}`}>
                     {index}
                 </div>
 
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-slate-200 avatar-ring sm:h-11 sm:w-11 dark:bg-slate-800">
                     <img
                         src={player.photo}
                         alt={player.name}
                         loading="lazy"
                         decoding="async"
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                         onError={(e) => {
                             e.target.style.display = 'none';
                             e.target.nextSibling.style.display = 'flex';
                         }}
                     />
                     <div
-                        className={`w-full h-full flex items-center justify-center text-xs font-bold ${darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-300 text-gray-600'}`}
+                        className={`h-full w-full items-center justify-center text-[10px] font-bold sm:text-xs ${darkMode ? 'bg-slate-800 text-slate-500' : 'bg-slate-200 text-slate-500'}`}
                         style={{ display: 'none' }}
                     >
                         {initials}
                     </div>
                 </div>
 
-                <div className="flex-1 min-w-0 px-1 sm:px-4">
-                    <div className={`font-semibold text-sm truncate ${player.drafted ? 'line-through' : ''} ${darkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+                <div className="min-w-0 flex-1 px-2 sm:px-4">
+                    <div className={`truncate text-sm font-semibold sm:text-[15px] ${player.drafted ? 'line-through opacity-70' : ''} ${ui.heading(darkMode)}`}>
                         {player.name}
                     </div>
                 </div>
 
-                <div className="w-10 sm:w-20 text-center mx-1 sm:mx-2">
+                <div className="w-10 text-center sm:w-20">
                     <span className={getPositionTagClass(player.position, { drafted: player.drafted, darkMode })}>
                         {player.position}
                     </span>
                 </div>
 
-                <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
+                <div className="h-9 w-9 shrink-0 sm:h-10 sm:w-10">
                     {player.teamLogo ? (
                         <img
                             src={player.teamLogo}
                             alt={player.team}
                             loading="lazy"
                             decoding="async"
-                            className="w-full h-full object-contain"
+                            className="h-full w-full object-contain"
                             onError={(e) => {
                                 e.target.style.display = 'none';
                                 e.target.nextSibling.style.display = 'flex';
@@ -261,114 +281,76 @@ const Player = ({
                         />
                     ) : null}
                     <div
-                        className={`w-full h-full flex items-center justify-center text-xs font-bold ${darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-200 text-gray-600'}`}
+                        className={`h-full w-full items-center justify-center rounded-lg text-[10px] font-bold ${darkMode ? 'bg-slate-800 text-slate-500' : 'bg-slate-100 text-slate-600'}`}
                         style={{ display: player.teamLogo ? 'none' : 'flex' }}
                     >
                         {player.team}
                     </div>
                 </div>
 
-                <div className="hidden sm:block w-12 sm:w-16 text-center">
-                    <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {player.olineRank || getOlineRank(player.team) || '--'}
-                    </span>
+                <div className={`hidden w-12 text-center text-xs sm:block sm:w-14 ${valueClass}`}>
+                    {player.olineRank || getOlineRank(player.team) || '—'}
                 </div>
 
-                <div className="hidden sm:block w-12 sm:w-16 text-center">
-                    <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {player.byeWeek ?? '--'}
-                    </span>
+                <div className={`hidden w-12 text-center text-xs sm:block sm:w-14 ${valueClass}`}>
+                    {player.byeWeek ?? '—'}
                 </div>
 
-                <div className="hidden sm:block w-12 sm:w-16 text-center">
-                    <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {player.ecr ? (
-                            <>
-                                {player.ecr}
-                                {index !== player.ecr && (
-                                    <span className={`ml-1 ${index < player.ecr
-                                        ? (darkMode ? 'text-red-400' : 'text-red-600')
-                                        : (darkMode ? 'text-green-400' : 'text-green-600')
-                                        }`}>
-                                        ({index < player.ecr ? '+' : '-'}{Math.abs(index - player.ecr).toFixed(0)})
-                                    </span>
-                                )}
-                            </>
-                        ) : '--'}
-                    </span>
+                <div className={`hidden w-12 text-center text-xs sm:block sm:w-14 ${valueClass}`}>
+                    {player.ecr ? (
+                        <>
+                            <span className={valueBold}>{player.ecr}</span>
+                            {index !== player.ecr && (
+                                <span className={`ml-0.5 text-[10px] ${deltaClass(index < player.ecr)}`}>
+                                    ({index < player.ecr ? '+' : '-'}{Math.abs(index - player.ecr)})
+                                </span>
+                            )}
+                        </>
+                    ) : '—'}
                 </div>
 
-                <div className="w-8 sm:w-16 text-center">
-                    <span className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {player.adp ? (
-                            <>
-                                {player.adp.toFixed(1)}
-                                {Math.abs(index - player.adp) > 0.1 && (
-                                    <span className={`ml-1 ${index < player.adp
-                                        ? (darkMode ? 'text-red-400' : 'text-red-600')
-                                        : (darkMode ? 'text-green-400' : 'text-green-600')
-                                        }`}>
-                                        ({index < player.adp ? '+' : ''}{Math.abs(index - player.adp).toFixed(1)})
-                                    </span>
-                                )}
-                            </>
-                        ) : '--'}
-                    </span>
+                <div className={`w-10 text-center text-xs sm:w-14 ${valueClass}`}>
+                    {player.adp ? (
+                        <>
+                            <span className={valueBold}>{player.adp.toFixed(1)}</span>
+                            {Math.abs(index - player.adp) > 0.1 && (
+                                <span className={`ml-0.5 text-[10px] ${deltaClass(index < player.adp)}`}>
+                                    ({index < player.adp ? '+' : ''}{Math.abs(index - player.adp).toFixed(1)})
+                                </span>
+                            )}
+                        </>
+                    ) : '—'}
                 </div>
 
-                <div className="hidden sm:flex items-center gap-1 sm:gap-2 mx-1 sm:mx-2">
+                <div className="mx-1 hidden items-center justify-center gap-0.5 sm:flex sm:w-24">
                     <button
                         onClick={handleToggleInjured}
-                        className={`relative p-1 rounded transition-colors group ${isInjured
-                            ? 'text-red-500 bg-red-100'
-                            : darkMode
-                                ? 'text-gray-400 hover:text-red-400'
-                                : 'text-gray-500 hover:text-red-500'
-                            }`}
+                        className={flagBtn(isInjured, 'bg-rose-500/15 text-rose-500 ring-1 ring-rose-500/25', darkMode, 'hover:text-rose-500')}
                         title="Injured"
                     >
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                         </svg>
-                        <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none w-52 text-center leading-relaxed z-50">
-                            {player.injuryNote ? `Injured: ${player.injuryNote}` : 'Injured'}
-                        </span>
                     </button>
 
                     <button
                         onClick={handleToggleRisky}
-                        className={`relative p-1 rounded transition-colors group ${isRisky
-                            ? 'text-yellow-600 bg-yellow-100'
-                            : darkMode
-                                ? 'text-gray-400 hover:text-yellow-400'
-                                : 'text-gray-500 hover:text-yellow-600'
-                            }`}
+                        className={flagBtn(isRisky, 'bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/25', darkMode, 'hover:text-amber-500')}
                         title="Risky"
                     >
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.736 6.979C9.208 6.193 9.696 6 10 6c.304 0 .792.193 1.264.979.446.743.736 1.79.736 3.021 0 1.23-.29 2.278-.736 3.021C10.792 13.807 10.304 14 10 14c-.304 0-.792-.193-1.264-.979C8.29 12.278 8 11.23 8 10c0-1.231.29-2.278.736-3.021zM10 16a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
                         </svg>
-                        <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none w-52 text-center leading-relaxed z-50">
-                            {player.riskyReason ? `Risky: ${player.riskyReason}` : 'Risky'}
-                        </span>
                     </button>
 
                     <button
                         onClick={handleToggleHandcuff}
-                        className={`relative p-1 rounded transition-colors group ${isHandcuff
-                            ? 'text-blue-500 bg-blue-100'
-                            : darkMode
-                                ? 'text-gray-400 hover:text-blue-400'
-                                : 'text-gray-500 hover:text-blue-500'
-                            }`}
+                        className={flagBtn(isHandcuff, 'bg-sky-500/15 text-sky-500 ring-1 ring-sky-500/25', darkMode, 'hover:text-sky-500')}
                         title="Handcuff"
                     >
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                         </svg>
-                        <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-                            Handcuff
-                        </span>
                     </button>
                 </div>
             </div>
