@@ -7,6 +7,8 @@ import ScrollToTop from './components/ScrollToTop';
 import NewPage from './components/NewPage';
 import DraftRange from './components/DraftRange';
 import Streamers from './components/Streamers';
+import OffseasonHub from './components/OffseasonHub';
+import DraftLottery from './components/DraftLottery';
 import InterestingPlayers from './components/InterestingPlayers';
 import BackupManager from './components/BackupManager';
 import BurgerMenu from './components/BurgerMenu';
@@ -509,6 +511,14 @@ function App() {
                             allPlayers={players}
                         />
                     )}
+                />
+                <Route
+                    path="/offseason"
+                    element={<OffseasonHub darkMode={darkMode} />}
+                />
+                <Route
+                    path="/draft-lottery"
+                    element={<DraftLottery darkMode={darkMode} />}
                 />
                 <Route
                     path="/streamers"

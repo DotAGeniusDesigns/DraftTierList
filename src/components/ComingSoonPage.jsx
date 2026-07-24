@@ -10,7 +10,7 @@ const ComingSoonPage = ({
     features = [],
 }) => {
     return (
-        <div className={ui.page(darkMode)}>
+        <div>
             <div className="container mx-auto max-w-4xl px-4 py-10 sm:py-16">
                 <div className={`${ui.card(darkMode)} overflow-hidden`}>
                     <div className="bg-gradient-to-r from-emerald-500/10 via-transparent to-teal-500/10 px-6 py-10 text-center sm:px-10 sm:py-14">
@@ -20,7 +20,7 @@ const ComingSoonPage = ({
                         <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-emerald-500">
                             Coming Soon
                         </p>
-                        <h1 className={`text-3xl font-bold sm:text-4xl ${ui.heading(darkMode)}`}>
+                        <h1 className={`font-display text-3xl font-bold tracking-tight sm:text-4xl ${ui.heading(darkMode)}`}>
                             {title}
                         </h1>
                         {subtitle && (

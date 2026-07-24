@@ -230,128 +230,139 @@ const Player = ({
             )}
 
             <div className="flex items-center gap-1 sm:gap-0">
-                <div className={`w-8 text-center text-xs font-bold tabular-nums sm:w-14 sm:text-sm ${valueBold}`}>
-                    {index}
-                </div>
-
-                <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-slate-200 avatar-ring sm:h-11 sm:w-11 dark:bg-slate-800">
-                    <img
-                        src={player.photo}
-                        alt={player.name}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-full object-cover"
-                        onError={(e) => {
-                            e.target.style.display = 'none';
-                            e.target.nextSibling.style.display = 'flex';
-                        }}
-                    />
-                    <div
-                        className={`h-full w-full items-center justify-center text-[10px] font-bold sm:text-xs ${darkMode ? 'bg-slate-800 text-slate-500' : 'bg-slate-200 text-slate-500'}`}
-                        style={{ display: 'none' }}
-                    >
-                        {initials}
+                {/* Bucket 1 — identity: rank, photo, player */}
+                <div className="contents sm:flex sm:min-w-0 sm:flex-[5] sm:items-center">
+                    <div className={`w-8 shrink-0 text-center text-xs font-bold tabular-nums sm:w-14 sm:text-sm ${valueBold}`}>
+                        {index}
                     </div>
-                </div>
 
-                <div className="min-w-0 flex-1 px-2 sm:px-4">
-                    <div className={`truncate text-sm font-semibold sm:text-[15px] ${player.drafted ? 'line-through opacity-70' : ''} ${ui.heading(darkMode)}`}>
-                        {player.name}
-                    </div>
-                </div>
-
-                <div className="w-10 text-center sm:w-20">
-                    <span className={getPositionTagClass(player.position, { drafted: player.drafted, darkMode })}>
-                        {player.position}
-                    </span>
-                </div>
-
-                <div className="h-9 w-9 shrink-0 sm:h-10 sm:w-10">
-                    {player.teamLogo ? (
+                    <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-slate-200 avatar-ring sm:h-11 sm:w-11 dark:bg-slate-800">
                         <img
-                            src={player.teamLogo}
-                            alt={player.team}
+                            src={player.photo}
+                            alt={player.name}
                             loading="lazy"
                             decoding="async"
-                            className="h-full w-full object-contain"
+                            className="h-full w-full object-cover"
                             onError={(e) => {
                                 e.target.style.display = 'none';
                                 e.target.nextSibling.style.display = 'flex';
                             }}
                         />
-                    ) : null}
-                    <div
-                        className={`h-full w-full items-center justify-center rounded-lg text-[10px] font-bold ${darkMode ? 'bg-slate-800 text-slate-500' : 'bg-slate-100 text-slate-600'}`}
-                        style={{ display: player.teamLogo ? 'none' : 'flex' }}
-                    >
-                        {player.team}
+                        <div
+                            className={`h-full w-full items-center justify-center text-[10px] font-bold sm:text-xs ${darkMode ? 'bg-slate-800 text-slate-500' : 'bg-slate-200 text-slate-500'}`}
+                            style={{ display: 'none' }}
+                        >
+                            {initials}
+                        </div>
+                    </div>
+
+                    <div className="min-w-0 flex-1 px-2 sm:px-4">
+                        <div className={`truncate text-sm font-semibold sm:text-[15px] ${player.drafted ? 'line-through opacity-70' : ''} ${ui.heading(darkMode)}`}>
+                            {player.name}
+                        </div>
                     </div>
                 </div>
 
-                <div className={`hidden w-12 text-center text-xs sm:block sm:w-14 ${valueClass}`}>
-                    {player.olineRank || getOlineRank(player.team) || '—'}
+                {/* Bucket 2 — team context: pos, team, OL, bye */}
+                <div className="contents sm:flex sm:flex-[4] sm:items-center sm:justify-center sm:gap-4">
+                    <div className="w-10 shrink-0 text-center sm:w-16">
+                        <span className={getPositionTagClass(player.position, { drafted: player.drafted, darkMode })}>
+                            {player.position}
+                        </span>
+                    </div>
+
+                    <div className="flex w-10 shrink-0 justify-center sm:w-12">
+                        <div className="h-9 w-9 sm:h-10 sm:w-10">
+                            {player.teamLogo ? (
+                                <img
+                                    src={player.teamLogo}
+                                    alt={player.team}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="h-full w-full object-contain"
+                                    onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        e.target.nextSibling.style.display = 'flex';
+                                    }}
+                                />
+                            ) : null}
+                            <div
+                                className={`h-full w-full items-center justify-center rounded-lg text-[10px] font-bold ${darkMode ? 'bg-slate-800 text-slate-500' : 'bg-slate-100 text-slate-600'}`}
+                                style={{ display: player.teamLogo ? 'none' : 'flex' }}
+                            >
+                                {player.team}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className={`hidden shrink-0 text-center text-xs sm:block sm:w-10 ${valueClass}`}>
+                        {player.olineRank || getOlineRank(player.team) || '—'}
+                    </div>
+
+                    <div className={`hidden shrink-0 text-center text-xs sm:block sm:w-10 ${valueClass}`}>
+                        {player.byeWeek ?? '—'}
+                    </div>
                 </div>
 
-                <div className={`hidden w-12 text-center text-xs sm:block sm:w-14 ${valueClass}`}>
-                    {player.byeWeek ?? '—'}
-                </div>
+                {/* Bucket 3 — draft value: ECR, ADP, flags */}
+                <div className="contents sm:flex sm:flex-[4] sm:items-center sm:justify-center sm:gap-4">
+                    <div className={`hidden shrink-0 text-center text-xs sm:block sm:w-14 ${valueClass}`}>
+                        {player.ecr ? (
+                            <>
+                                <span className={valueBold}>{player.ecr}</span>
+                                {index !== player.ecr && (
+                                    <span className={`ml-0.5 text-[10px] ${deltaClass(index < player.ecr)}`}>
+                                        ({index < player.ecr ? '+' : '-'}{Math.abs(index - player.ecr)})
+                                    </span>
+                                )}
+                            </>
+                        ) : '—'}
+                    </div>
 
-                <div className={`hidden w-12 text-center text-xs sm:block sm:w-14 ${valueClass}`}>
-                    {player.ecr ? (
-                        <>
-                            <span className={valueBold}>{player.ecr}</span>
-                            {index !== player.ecr && (
-                                <span className={`ml-0.5 text-[10px] ${deltaClass(index < player.ecr)}`}>
-                                    ({index < player.ecr ? '+' : '-'}{Math.abs(index - player.ecr)})
-                                </span>
-                            )}
-                        </>
-                    ) : '—'}
-                </div>
+                    <div className={`w-10 shrink-0 text-center text-xs sm:w-16 ${valueClass}`}>
+                        {player.adp ? (
+                            <>
+                                <span className={valueBold}>{player.adp.toFixed(1)}</span>
+                                {Math.abs(index - player.adp) > 0.1 && (
+                                    <span className={`ml-0.5 text-[10px] ${deltaClass(index < player.adp)}`}>
+                                        ({index < player.adp ? '+' : ''}{Math.abs(index - player.adp).toFixed(1)})
+                                    </span>
+                                )}
+                            </>
+                        ) : '—'}
+                    </div>
 
-                <div className={`w-10 text-center text-xs sm:w-14 ${valueClass}`}>
-                    {player.adp ? (
-                        <>
-                            <span className={valueBold}>{player.adp.toFixed(1)}</span>
-                            {Math.abs(index - player.adp) > 0.1 && (
-                                <span className={`ml-0.5 text-[10px] ${deltaClass(index < player.adp)}`}>
-                                    ({index < player.adp ? '+' : ''}{Math.abs(index - player.adp).toFixed(1)})
-                                </span>
-                            )}
-                        </>
-                    ) : '—'}
-                </div>
+                    <div className="hidden shrink-0 items-center justify-center gap-0.5 sm:flex sm:w-24">
+                        <button
+                            onClick={handleToggleInjured}
+                            className={flagBtn(isInjured, 'bg-rose-500/15 text-rose-500 ring-1 ring-rose-500/25', darkMode, 'hover:text-rose-500')}
+                            title="Injured"
+                        >
+                            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                            </svg>
+                        </button>
 
-                <div className="mx-1 hidden items-center justify-center gap-0.5 sm:flex sm:w-24">
-                    <button
-                        onClick={handleToggleInjured}
-                        className={flagBtn(isInjured, 'bg-rose-500/15 text-rose-500 ring-1 ring-rose-500/25', darkMode, 'hover:text-rose-500')}
-                        title="Injured"
-                    >
-                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                        </svg>
-                    </button>
+                        <button
+                            onClick={handleToggleRisky}
+                            className={flagBtn(isRisky, 'bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/25', darkMode, 'hover:text-amber-500')}
+                            title="Risky"
+                        >
+                            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.736 6.979C9.208 6.193 9.696 6 10 6c.304 0 .792.193 1.264.979.446.743.736 1.79.736 3.021 0 1.23-.29 2.278-.736 3.021C10.792 13.807 10.304 14 10 14c-.304 0-.792-.193-1.264-.979C8.29 12.278 8 11.23 8 10c0-1.231.29-2.278.736-3.021zM10 16a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                            </svg>
+                        </button>
 
-                    <button
-                        onClick={handleToggleRisky}
-                        className={flagBtn(isRisky, 'bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/25', darkMode, 'hover:text-amber-500')}
-                        title="Risky"
-                    >
-                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.736 6.979C9.208 6.193 9.696 6 10 6c.304 0 .792.193 1.264.979.446.743.736 1.79.736 3.021 0 1.23-.29 2.278-.736 3.021C10.792 13.807 10.304 14 10 14c-.304 0-.792-.193-1.264-.979C8.29 12.278 8 11.23 8 10c0-1.231.29-2.278.736-3.021zM10 16a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-                        </svg>
-                    </button>
-
-                    <button
-                        onClick={handleToggleHandcuff}
-                        className={flagBtn(isHandcuff, 'bg-sky-500/15 text-sky-500 ring-1 ring-sky-500/25', darkMode, 'hover:text-sky-500')}
-                        title="Handcuff"
-                    >
-                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                        </svg>
-                    </button>
+                        <button
+                            onClick={handleToggleHandcuff}
+                            className={flagBtn(isHandcuff, 'bg-sky-500/15 text-sky-500 ring-1 ring-sky-500/25', darkMode, 'hover:text-sky-500')}
+                            title="Handcuff"
+                        >
+                            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -92,6 +92,10 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
     const leagueSizeOptions = [8, 10, 12, 14, 16];
     const pickPositionOptions = Array.from({ length: leagueSize }, (_, i) => i + 1);
 
+    const selectClass = `w-full cursor-pointer rounded-xl border px-3.5 py-2.5 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-emerald-500/40 ${darkMode
+        ? 'border-white/10 bg-slate-950/40 text-slate-100'
+        : 'border-slate-200 bg-white text-slate-900 shadow-sm'}`;
+
     const draftedByPosition = useMemo(() => {
         const groups = Object.fromEntries(POSITION_ORDER.map((pos) => [pos, []]));
 
@@ -162,29 +166,32 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
     );
 
     return (
-        <div className={`${ui.page(darkMode)} p-4 sm:p-6`}>
+        <div className="p-4 sm:p-6">
             <div className="mx-auto max-w-6xl">
-                <div className="mb-8 text-center">
+                <div className="mb-6">
                     <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-500">
                         Draft Tool
                     </p>
-                    <h1 className={`text-3xl font-bold sm:text-4xl ${ui.heading(darkMode)}`}>
+                    <h1 className={`font-display text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl ${ui.heading(darkMode)}`}>
                         Draft Range <span className="text-gradient-brand">Calculator</span>
                     </h1>
+                    <p className={`mt-2 max-w-2xl text-sm sm:text-base ${ui.muted(darkMode)}`}>
+                        See which players are likely to be on the board at each of your picks,
+                        based on league size and draft slot.
+                    </p>
                 </div>
 
-                <div className={`${ui.card(darkMode)} mb-8 p-6`}>
-                    <div className="flex flex-col sm:flex-row gap-6">
+                <div className={`${ui.toolbar(darkMode)} mb-8`}>
+                    <div className="flex flex-col gap-5 sm:flex-row">
                         <div className="flex-1">
-                            <label className={`block text-sm font-medium mb-2 transition-colors duration-200 ${darkMode ? 'text-gray-300' : 'text-black'}`}>
+                            <label htmlFor="league-size" className={`mb-2 block text-sm font-medium ${ui.muted(darkMode)}`}>
                                 League Size
                             </label>
                             <select
+                                id="league-size"
                                 value={leagueSize}
                                 onChange={(e) => setLeagueSize(parseInt(e.target.value))}
-                                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ${darkMode
-                                    ? 'bg-gray-700 border-gray-600 text-white'
-                                    : 'bg-white border-gray-300 text-black'}`}
+                                className={selectClass}
                             >
                                 {leagueSizeOptions.map(size => (
                                     <option key={size} value={size}>{size} teams</option>
@@ -193,15 +200,14 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
                         </div>
 
                         <div className="flex-1">
-                            <label className={`block text-sm font-medium mb-2 transition-colors duration-200 ${darkMode ? 'text-gray-300' : 'text-black'}`}>
+                            <label htmlFor="pick-position" className={`mb-2 block text-sm font-medium ${ui.muted(darkMode)}`}>
                                 Your Pick Position
                             </label>
                             <select
+                                id="pick-position"
                                 value={pickPosition}
                                 onChange={(e) => setPickPosition(parseInt(e.target.value))}
-                                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ${darkMode
-                                    ? 'bg-gray-700 border-gray-600 text-white'
-                                    : 'bg-white border-gray-300 text-black'}`}
+                                className={selectClass}
                             >
                                 {pickPositionOptions.map(pick => (
                                     <option key={pick} value={pick}>Pick {pick}</option>
@@ -211,10 +217,10 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
 
                         {/* Position Filter */}
                         <div className="flex-1">
-                            <label className={`block text-sm font-medium mb-2 transition-colors duration-200 ${darkMode ? 'text-gray-300' : 'text-black'}`}>
+                            <span className={`mb-2 block text-sm font-medium ${ui.muted(darkMode)}`}>
                                 Position Filter (optional)
-                            </label>
-                            <div className="flex flex-wrap gap-2">
+                            </span>
+                            <div className="flex flex-wrap gap-1.5">
                                 {['QB', 'RB', 'WR', 'TE', 'K', 'DST'].map(position => (
                                     <button
                                         key={position}
@@ -225,11 +231,11 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
                                                 setPositionFilter([...positionFilter, position]);
                                             }
                                         }}
-                                        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${positionFilter.includes(position)
-                                            ? 'bg-blue-600 text-white'
+                                        className={`cursor-pointer rounded-lg px-3 py-2 text-sm font-semibold transition ${positionFilter.includes(position)
+                                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-glow'
                                             : darkMode
-                                                ? 'bg-gray-600 text-gray-300 hover:bg-gray-500'
-                                                : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                                                ? 'bg-slate-800/70 text-slate-300 ring-1 ring-white/5 hover:bg-slate-700/70'
+                                                : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
                                             }`}
                                     >
                                         {position}
@@ -239,7 +245,7 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
                             {positionFilter.length > 0 && (
                                 <button
                                     onClick={() => setPositionFilter([])}
-                                    className={`mt-3 text-sm hover:underline ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}
+                                    className={`mt-3 cursor-pointer text-sm font-medium hover:underline ${darkMode ? 'text-emerald-400' : 'text-emerald-600'}`}
                                 >
                                     Clear all filters
                                 </button>
@@ -247,14 +253,14 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
                         </div>
                     </div>
 
-                    <div className={`mt-4 p-4 rounded-md transition-colors duration-200 ${darkMode ? 'bg-blue-900/20' : 'bg-blue-50'}`}>
-                        <p className={`text-sm transition-colors duration-200 ${darkMode ? 'text-blue-200' : 'text-blue-800'}`}>
-                            <strong>How it works:</strong> Based on your league size and pick position,
+                    <div className={`mt-5 rounded-xl border-l-4 border-emerald-500 p-4 ${darkMode ? 'bg-emerald-500/[0.06]' : 'bg-emerald-50/70'}`}>
+                        <p className={`text-sm leading-relaxed ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                            <strong className={ui.heading(darkMode)}>How it works:</strong> Based on your league size and pick position,
                             this tool shows players likely to be available at each of your picks.
                             The variance increases in later rounds to account for more unpredictable drafting.
                             {positionFilter.length > 0 && (
-                                <span className="block mt-1">
-                                    <strong>Filtered by:</strong> {positionFilter.join(', ')}
+                                <span className="mt-1 block">
+                                    <strong className={ui.heading(darkMode)}>Filtered by:</strong> {positionFilter.join(', ')}
                                 </span>
                             )}
                         </p>
@@ -308,86 +314,82 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
                 )}
 
                 {/* Results */}
-                <div className="space-y-6">
+                <div className="space-y-5">
                     {Object.entries(availablePlayers).map(([round, data]) => (
-                        <div key={round} className={`rounded-lg shadow-md overflow-hidden transition-colors duration-200 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                            <div className={`px-6 py-4 transition-colors duration-200 ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
-                                <h2 className={`text-xl font-bold transition-colors duration-200 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                    Round {round} - Pick {data.pickNumber} (Position {pickPosition})
-                                </h2>
-                                <p className={`text-sm transition-colors duration-200 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                                    ADP Range: {Math.max(1, data.pickNumber - data.variance)} - {data.pickNumber + data.variance}
-                                    (±{data.variance})
-                                </p>
+                        <div key={round} className={`${ui.card(darkMode)} overflow-hidden`}>
+                            <div className={`flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-5 py-4 sm:px-6 ${darkMode ? 'border-white/5' : 'border-slate-100'}`}>
+                                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-sm font-bold text-white shadow-glow">
+                                    {round}
+                                </span>
+                                <div className="min-w-0">
+                                    <h2 className={`text-base font-bold sm:text-lg ${ui.heading(darkMode)}`}>
+                                        Round {round} · Pick {data.pickNumber}
+                                    </h2>
+                                    <p className={`text-xs sm:text-sm ${ui.muted(darkMode)}`}>
+                                        ADP range {Math.max(1, data.pickNumber - data.variance)}–{data.pickNumber + data.variance} (±{data.variance})
+                                    </p>
+                                </div>
                             </div>
 
-                            <div className="p-6">
+                            <div className="p-4 sm:p-5">
                                 {data.players.length > 0 ? (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                                        {data.players.map((player, index) => (
-                                            <div
-                                                key={player.id}
-                                                onClick={() => handlePlayerClick(player)}
-                                                className={`rounded-lg p-4 border hover:shadow-md transition-all duration-200 cursor-pointer ${darkMode
-                                                    ? 'bg-gray-700 border-gray-600'
-                                                    : 'bg-gray-50 border-gray-200'} ${draftedPlayers.find(p => p.id === player.id)
-                                                        ? darkMode
-                                                            ? 'ring-2 ring-green-400 bg-gray-600 border-green-500'
-                                                            : 'ring-2 ring-green-400 bg-green-50 border-green-300'
+                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                        {data.players.map((player) => {
+                                            const isDrafted = draftedPlayers.some(p => p.id === player.id);
+                                            return (
+                                                <div
+                                                    key={player.id}
+                                                    onClick={() => handlePlayerClick(player)}
+                                                    className={`cursor-pointer p-3.5 transition hover:-translate-y-px hover:shadow-md ${ui.cardInset(darkMode)} ${isDrafted
+                                                        ? 'ring-2 ring-emerald-500/70'
                                                         : ''
-                                                    }`}
-                                            >
-                                                <div className="flex items-center space-x-3">
-                                                    {player.photo && (
-                                                        <img
-                                                            src={player.photo}
-                                                            alt={player.name}
-                                                            className="w-12 h-12 rounded-full object-cover"
-                                                        />
-                                                    )}
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="flex items-center gap-2 mb-1">
-                                                            <h3 className={`font-semibold truncate transition-colors duration-200 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                                                {player.name}
-                                                            </h3>
-                                                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${player.position === 'QB' ? (darkMode ? 'bg-orange-900 text-orange-200' : 'bg-orange-100 text-orange-800') :
-                                                                player.position === 'RB' ? (darkMode ? 'bg-red-900 text-red-200' : 'bg-red-100 text-red-800') :
-                                                                    player.position === 'WR' ? (darkMode ? 'bg-green-900 text-green-200' : 'bg-green-100 text-green-800') :
-                                                                        player.position === 'TE' ? (darkMode ? 'bg-purple-900 text-purple-200' : 'bg-purple-100 text-purple-800') :
-                                                                            player.position === 'K' ? (darkMode ? 'bg-pink-900 text-pink-200' : 'bg-pink-100 text-pink-800') :
-                                                                                (darkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-200 text-gray-700')
-                                                                }`}>
-                                                                {player.position}
-                                                            </span>
-                                                        </div>
-                                                        <div className="flex items-center gap-2 mb-1">
-                                                            {player.team && (
-                                                                <img
-                                                                    src={`https://a.espncdn.com/i/teamlogos/nfl/500/${player.team.toLowerCase()}.png`}
-                                                                    alt={player.team}
-                                                                    className="w-5 h-5 object-contain"
-                                                                    onError={(e) => {
-                                                                        e.target.style.display = 'none';
-                                                                    }}
-                                                                />
-                                                            )}
-                                                            <span className={`text-sm transition-colors duration-200 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                                                {player.team}
-                                                            </span>
-                                                        </div>
-                                                        <div className="flex items-center justify-between">
-                                                            <p className={`text-sm font-medium transition-colors duration-200 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
-                                                                ADP: {player.adp}
-                                                            </p>
+                                                        }`}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        {player.photo && (
+                                                            <img
+                                                                src={player.photo}
+                                                                alt={player.name}
+                                                                loading="lazy"
+                                                                className="h-11 w-11 shrink-0 rounded-full object-cover ring-2 ring-white/80 dark:ring-slate-700"
+                                                            />
+                                                        )}
+                                                        <div className="min-w-0 flex-1">
+                                                            <div className="mb-1 flex items-center gap-2">
+                                                                <h3 className={`truncate text-sm font-semibold ${ui.heading(darkMode)}`}>
+                                                                    {player.name}
+                                                                </h3>
+                                                                <span className={getPositionTagClass(player.position, { darkMode })}>
+                                                                    {player.position}
+                                                                </span>
+                                                            </div>
+                                                            <div className="flex items-center gap-2">
+                                                                {player.team && (
+                                                                    <img
+                                                                        src={`https://a.espncdn.com/i/teamlogos/nfl/500/${player.team.toLowerCase()}.png`}
+                                                                        alt={player.team}
+                                                                        className="h-4 w-4 object-contain"
+                                                                        onError={(e) => {
+                                                                            e.target.style.display = 'none';
+                                                                        }}
+                                                                    />
+                                                                )}
+                                                                <span className={`text-xs ${ui.muted(darkMode)}`}>
+                                                                    {player.team}
+                                                                </span>
+                                                                <span className={`ml-auto text-xs font-semibold tabular-nums ${darkMode ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                                                                    ADP {player.adp}
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-8">
-                                        <p className={`transition-colors duration-200 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                    <div className="py-8 text-center">
+                                        <p className={`text-sm ${ui.muted(darkMode)}`}>
                                             No players found in this ADP range
                                         </p>
                                     </div>

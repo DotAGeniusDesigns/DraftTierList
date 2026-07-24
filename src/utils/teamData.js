@@ -311,6 +311,25 @@ export const teamData = {
     }
 };
 
+// Projected 2026 defense ranks (1 = best, 32 = worst). Consensus of two
+// preseason sources — The Gameday power rankings (updated 7/20/2026) and
+// Sportsnaut — averaged and re-ranked to smooth out disagreements.
+//   https://thegameday.com/nfl/power-rankings/defense/
+//   https://sportsnaut.com/nfl/nfl-defense-rankings
+export const DEFENSE_RANK_2026 = {
+    SEA: 1, HOU: 2, LAR: 3, PHI: 4, DEN: 5, MIN: 6, JAC: 7, NE: 8,
+    BAL: 9, LAC: 10, DET: 11, GB: 12, KC: 13, PIT: 14, ATL: 15, SF: 16,
+    BUF: 17, IND: 18, CLE: 19, CHI: 20, NYG: 21, NO: 22, CAR: 23, TB: 24,
+    DAL: 25, LV: 26, TEN: 27, ARI: 28, CIN: 29, NYJ: 30, MIA: 31, WAS: 32,
+    JAX: 7,
+};
+
+// Fold the projected defense rank onto each team record so it sits alongside
+// olineRank rather than being looked up separately.
+Object.entries(DEFENSE_RANK_2026).forEach(([abbr, rank]) => {
+    if (teamData[abbr]) teamData[abbr].defenseRank = rank;
+});
+
 // Helper function to get team data by abbreviation
 export const getTeamData = (teamAbbr) => {
     return teamData[teamAbbr] || null;
@@ -332,6 +351,12 @@ export const getByeWeek = (teamAbbr) => {
 export const getOlineRank = (teamAbbr) => {
     const team = teamData[teamAbbr];
     return team ? team.olineRank : null;
+};
+
+// Helper function to get projected 2026 defense ranking by abbreviation
+export const getDefenseRank = (teamAbbr) => {
+    const team = teamData[teamAbbr];
+    return team ? (team.defenseRank ?? null) : null;
 };
 
 // Helper function to get all teams

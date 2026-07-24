@@ -89,6 +89,7 @@ const DraftBoardSearch = ({ players, darkMode, onSelectPlayer }) => {
                     onFocus={() => setIsOpen(true)}
                     onKeyDown={handleKeyDown}
                     placeholder="Search players..."
+                    role="combobox"
                     aria-label="Search players on draft board"
                     aria-expanded={isOpen && matches.length > 0}
                     aria-controls="draft-board-search-results"
