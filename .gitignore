@@ -8,6 +8,12 @@ yarn-error.log*
 build/
 dist/
 
+# Stray build output from local/CI runs
+build-report.txt
+build-exit.txt
+ci-build.log
+nul
+
 # Environment variables
 .env
 .env.local

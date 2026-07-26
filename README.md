@@ -1,161 +1,102 @@
-# Fantasy Football Draft Tier List
+# Fantasy Toolkit
 
-A modern, interactive React application for organizing fantasy football draft rankings with drag-and-drop functionality and draft tracking.
+A React app of fantasy football draft-prep tools for the 2026 season, built around a
+drag-and-drop tier list draft board. Live at [fantasy-toolkit.com](https://fantasy-toolkit.com).
 
-## Features
+## Tools
 
-### Core Functionality
-- **Draggable Tier List**: Players can be dragged between tiers and reordered within tiers
-- **Draft Status Tracking**: Click players to mark as drafted with visual indicators
-- **Local Storage Persistence**: All data automatically saves to browser storage
-- **Add/Remove Players**: Add new players with position and team information
-- **Tier Management**: Remove empty tiers and reorganize as needed
+| Route | What it does |
+| --- | --- |
+| `/draft-board` | Drag-and-drop tier list of ~377 players. Mark picks drafted, flag risky/injured/handcuff, rename tiers, search and jump to a player. |
+| `/draft-range` | Given your league size and pick slot, estimates which players are still likely on the board each round, with variance widening by round. |
+| `/offseason` | Per-team 2026 offseason breakdowns: coaching changes, additions, departures, rookies, and fantasy-relevant takeaways. |
+| `/draft-lottery` | Settles draft order with a physics-driven marble race (matter-js) and exports a shareable branded results card. |
 
-### UI/UX Features
-- **Modern Design**: Clean, responsive interface using Tailwind CSS
-- **Visual Feedback**: Hover states, drag indicators, and smooth animations
-- **Color-Coded Tiers**: Each tier has a distinct color for easy identification
-- **Statistics Dashboard**: Real-time counts of total, drafted, and available players
-- **Mobile Responsive**: Works on desktop, tablet, and mobile devices
+Two in-season tools — `/streamers` and `/interesting-players` — are stubbed with
+`ComingSoonPage` and intentionally left out of the navbar until they have real data.
+They still resolve by URL. Re-add them to `NAV_ROUTES` in `src/utils/routes.js` when ready.
 
-### Sample Data
-The application comes pre-loaded with popular fantasy football players organized in tiers:
-- **Tier 1**: Saquon Barkley, Ja'Marr Chase, Justin Jefferson, Jahmyr Gibbs, CeeDee Lamb
-- **Tier 2**: Puka Nacua, Amon-Ra St. Brown, Tyreek Hill, Josh Allen, Lamar Jackson
-- **Tier 3**: Christian McCaffrey, Austin Ekeler, Derrick Henry, Stefon Diggs, AJ Brown
-- **Tier 4**: Patrick Mahomes, Jalen Hurts, Joe Burrow, Travis Kelce, Mark Andrews
+## Tech stack
 
-## Tech Stack
+- **React 18** with functional components and hooks
+- **react-router-dom v6** for routing (with redirects for legacy `#hash` URLs)
+- **Tailwind CSS** — shared class helpers live in `src/utils/uiTheme.js`
+- **matter-js** for the draft lottery physics
+- **lz-string** for compressed board export codes and share links
+- **localStorage** for all persistence (no backend, no accounts)
+- Native HTML5 drag and drop — no DnD library
 
-- **React 18** - Modern React with functional components and hooks
-- **react-beautiful-dnd** - Smooth drag and drop functionality
-- **Tailwind CSS** - Utility-first CSS framework for styling
-- **Local Storage** - Browser-based data persistence
-- **HTML5 Drag and Drop API** - Native drag and drop support
-
-## Getting Started
-
-### Prerequisites
-- Node.js (version 14 or higher)
-- npm or yarn package manager
-
-### Installation
-
-1. **Clone or download the project**
-   ```bash
-   git clone <repository-url>
-   cd fantasy-football-draft-tier-list
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**
-   ```bash
-   npm start
-   ```
-
-4. **Open your browser**
-   Navigate to `http://localhost:3000` to view the application
-
-### Build for Production
+## Getting started
 
 ```bash
-npm run build
+npm install
+npm start          # dev server on http://localhost:3000
+npm run build      # production build into build/
 ```
 
-This creates an optimized production build in the `build` folder.
+Node version is pinned in `.nvmrc` (20).
 
-## How to Use
+## Data model
 
-### Basic Operations
-1. **Drag and Drop**: Click and drag players between tiers or reorder within the same tier
-2. **Mark as Drafted**: Click on any player card to toggle their draft status
-3. **Add Players**: Use the "Add Player" button to add new players to your list
-4. **Remove Tiers**: Empty tiers can be removed using the X button in the tier header
+`src/utils/playerDatabase.js` is the source of truth for the player pool and is
+**auto-generated** — don't hand-edit it. Update `scripts/rawTierList2026.txt`, then:
 
-### Data Management
-- **Automatic Saving**: All changes are automatically saved to your browser's local storage
-- **Reset Data**: Use the "Reset All" button to restore the original sample data
-- **Clear Drafted**: Use "Clear Drafted" to remove all draft status indicators
-
-### Keyboard Shortcuts
-- **Enter**: Submit the add player form
-- **Escape**: Cancel the add player form
-
-## File Structure
-
-```
-src/
-├── components/
-│   ├── TierList.jsx      # Main tier list component
-│   ├── Tier.jsx          # Individual tier component
-│   └── Player.jsx        # Player card component
-├── hooks/
-│   └── useLocalStorage.js # Custom hook for localStorage
-├── utils/
-│   └── playerData.js     # Initial data and helper functions
-├── App.jsx               # Main application component
-├── index.js              # Application entry point
-└── index.css             # Global styles and Tailwind imports
+```bash
+node scripts/generatePlayerDatabase.js      # rebuild the database
+node scripts/buildPhotoMapFromSleeper.js    # refresh headshot lookups
 ```
 
-## Customization
+`src/utils/playerData.js` derives `initialPlayers` from that database, joining in
+bye weeks, O-line ranks, and team logos from `src/utils/teamData.js`.
 
-### Adding More Players
-Edit `src/utils/playerData.js` to add more initial players:
+On every mount, `App.jsx` merges the database into the user's saved board: scouting
+fields (team, ADP, ECR, bye, photo) are refreshed from the database, user-controlled
+fields (tier, drafted, flags) are preserved, players dropped from the database are
+removed, and newly added players are appended. This is what lets a returning user keep
+their board across data updates.
 
-```javascript
-{
-  id: 'player-id',
-  name: 'Player Name',
-  position: 'RB', // QB, RB, WR, TE, K, DEF
-  team: 'KC',
-  tier: 1,
-  drafted: false
-}
+Other data lives in `src/utils/offseasonData.js` (team narratives),
+`teamData.js` (logos, byes, O-line and defense ranks), and `powerRankings.js`.
+
+## Sharing a board
+
+Two mechanisms, both in `src/utils/exportImport.js`:
+
+- **Share link** — `/draft-board?board=<code>` carries only player IDs, tier order,
+  custom tier names, and flags; everything else is rebuilt from the local database, which
+  keeps URLs around 4–5KB. Opening one shows a banner offering to adopt the board, and
+  backs up the visitor's existing board before replacing it. Never applied silently.
+- **Export code** — a larger self-contained blob (`v1.0`) for backup/restore, pasted
+  in and out via the Export/Import modal.
+
+## Regenerating brand assets
+
+`public/og-image.png`, `favicon.ico`, and `apple-touch-icon.png` are generated:
+
+```bash
+python3 scripts/generateOgAssets.py
 ```
 
-### Styling
-- Modify `tailwind.config.js` to customize colors and theme
-- Edit `src/index.css` for custom CSS styles
-- Update tier colors in `src/utils/playerData.js`
+`public/favicon.svg` is hand-maintained and mirrors `src/components/BrandLogo.jsx`.
 
-### Features
-- Add export/import functionality for sharing lists
-- Implement undo/redo functionality
-- Add player search and filtering
-- Create multiple draft lists for different leagues
+## Deployment
 
-## Browser Compatibility
+Deploys to Vercel via `vercel.json` — SPA rewrites send everything to `index.html`
+except `/_vercel/*`, which must stay reachable for Web Analytics.
 
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
+Web Analytics is the `<Analytics />` component from `@vercel/analytics/react`, mounted
+inside the router in `src/index.js` so client-side route changes count as pageviews.
+Enable **Web Analytics** in the Vercel project settings for it to report. Don't also add
+the `/_vercel/insights/script.js` tag to `public/index.html` — that double-counts.
 
-## Local Storage
+`.npmrc` sets `legacy-peer-deps=true` and must stay committed. `@vercel/analytics`
+declares an optional peer on `@sveltejs/kit`, which npm tries to resolve even here;
+SvelteKit then wants TypeScript 5 while react-scripts 5 pins TypeScript 4. Without the
+flag, `npm install` fails with ERESOLVE — locally and on Vercel's build.
 
-The application uses browser local storage to persist data. Data is stored under the key `fantasy-football-players` and includes:
-- Player information (name, position, team)
-- Tier assignments
-- Draft status
-- Custom added players
+## Safety nets
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is open source and available under the MIT License.
-
-## Support
-
-For issues or questions, please create an issue in the repository or contact the maintainers. 
+- `src/components/ErrorBoundary.jsx` catches render errors and offers a "Reset my
+  board" escape hatch that clears board localStorage keys but preserves backups.
+- `src/utils/backupSystem.js` snapshots the board automatically and before
+  destructive actions; restore from the Backups modal.

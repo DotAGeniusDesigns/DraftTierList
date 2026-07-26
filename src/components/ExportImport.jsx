@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { exportTierList, importTierList, validateImportCode, getImportInfo } from '../utils/exportImport';
+import { exportTierList, importTierList, validateImportCode, getImportInfo, buildShareUrl } from '../utils/exportImport';
+import { getTierNames } from '../utils/tierNames';
 
 const ExportImport = ({ players, onImportPlayers, darkMode }) => {
     const [importCode, setImportCode] = useState('');
     const [isExporting, setIsExporting] = useState(false);
+    const [isSharing, setIsSharing] = useState(false);
     const [isImporting, setIsImporting] = useState(false);
     const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState('');
     const [importInfo, setImportInfo] = useState(null);
+    const [shareUrl, setShareUrl] = useState('');
 
     const handleExport = async () => {
         setIsExporting(true);
@@ -23,6 +26,37 @@ const ExportImport = ({ players, onImportPlayers, darkMode }) => {
             setMessageType('error');
         } finally {
             setIsExporting(false);
+        }
+    };
+
+    const handleCopyShareLink = async () => {
+        setIsSharing(true);
+        setMessage('');
+
+        let link;
+        try {
+            link = buildShareUrl(players, getTierNames());
+            setShareUrl(link.url);
+        } catch (error) {
+            setMessage('Failed to create share link: ' + error.message);
+            setMessageType('error');
+            setIsSharing(false);
+            return;
+        }
+
+        const longNote = link.isLong ? ' It is long, so send it as a clickable link.' : '';
+
+        // The link is already built and shown below, so a clipboard failure
+        // (no permission, insecure context, unfocused document) is not fatal.
+        try {
+            await navigator.clipboard.writeText(link.url);
+            setMessage('Share link copied to clipboard!' + longNote);
+            setMessageType('success');
+        } catch (error) {
+            setMessage('Share link ready — copy it from the box below.' + longNote);
+            setMessageType('success');
+        } finally {
+            setIsSharing(false);
         }
     };
 
@@ -93,13 +127,46 @@ const ExportImport = ({ players, onImportPlayers, darkMode }) => {
                 Export / Import Tier List
             </h3>
 
+            {/* Share Section */}
+            <div className="mb-6">
+                <h4 className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                    Share Your Board
+                </h4>
+                <p className={`text-xs mb-3 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    Get a link that opens your board for anyone — no code to paste
+                </p>
+                <button
+                    onClick={handleCopyShareLink}
+                    disabled={isSharing}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${isSharing
+                            ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                            : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                        }`}
+                >
+                    {isSharing ? 'Building link...' : '🔗 Copy Share Link'}
+                </button>
+
+                {shareUrl && (
+                    <input
+                        type="text"
+                        readOnly
+                        value={shareUrl}
+                        onFocus={(e) => e.target.select()}
+                        className={`mt-3 w-full px-3 py-2 text-xs font-mono border rounded-md ${darkMode
+                                ? 'bg-gray-700 border-gray-600 text-gray-300'
+                                : 'bg-gray-50 border-gray-300 text-gray-600'
+                            }`}
+                    />
+                )}
+            </div>
+
             {/* Export Section */}
             <div className="mb-6">
                 <h4 className={`text-sm font-medium mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                     Export Your Tier List
                 </h4>
                 <p className={`text-xs mb-3 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                    Copy your current tier list to share with others
+                    Copy a backup code you can paste back in later
                 </p>
                 <button
                     onClick={handleExport}

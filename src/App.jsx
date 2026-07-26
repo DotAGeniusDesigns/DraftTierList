@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate, useSearchParams } from 'react-router-dom';
 import TierList from './components/TierList';
 import ExportImport from './components/ExportImport';
 import Navbar from './components/Navbar';
@@ -13,6 +13,7 @@ import InterestingPlayers from './components/InterestingPlayers';
 import BackupManager from './components/BackupManager';
 import BurgerMenu from './components/BurgerMenu';
 import DraftBoardSearch from './components/DraftBoardSearch';
+import SharedBoardBanner from './components/SharedBoardBanner';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers } from './utils/playerData';
 import { getTeamLogo } from './utils/teamData';
@@ -21,9 +22,11 @@ import { getPositionFilterTagClass } from './utils/playerStyles';
 import { saveTierName, clearTierNames, getTierNames } from './utils/tierNames';
 import { ui } from './utils/uiTheme';
 import { LEGACY_HASH_ROUTES } from './utils/routes';
+import { decodeSharedBoard, SHARE_PARAM } from './utils/exportImport';
 
 function App() {
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     // Use localStorage hook to persist player data
     const [players, setPlayers] = useLocalStorage('fantasy-football-players', initialPlayers);
 
@@ -112,6 +115,10 @@ function App() {
 
     const [focusPlayerId, setFocusPlayerId] = useState(null);
 
+    // Board decoded from a ?board=... share link, pending the visitor's decision
+    const [sharedBoard, setSharedBoard] = useState(null);
+    const [shareError, setShareError] = useState(null);
+
     // Ref for the dropdown container
     const dropdownRef = useRef(null);
 
@@ -141,6 +148,25 @@ function App() {
             window.history.replaceState(null, '', legacyPath);
         }
     }, [navigate]);
+
+    // Decode an incoming share link, then strip the (very long) code from the
+    // address bar so a refresh doesn't re-prompt and the URL stays readable.
+    useEffect(() => {
+        const code = searchParams.get(SHARE_PARAM);
+        if (!code) return;
+
+        try {
+            setSharedBoard(decodeSharedBoard(code));
+            setShareError(null);
+        } catch (error) {
+            setSharedBoard(null);
+            setShareError(error.message);
+        }
+
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete(SHARE_PARAM);
+        setSearchParams(nextParams, { replace: true });
+    }, [searchParams, setSearchParams]);
 
     // Keep tier name labels in sync across all tier headers
     useEffect(() => {
@@ -230,6 +256,21 @@ function App() {
             }
         });
     }, [setPositionFilters]);
+
+    // Adopt a shared board. The visitor's own board is backed up first so
+    // "Use this board" is always recoverable from the Backups modal.
+    const handleUseSharedBoard = useCallback(() => {
+        if (!sharedBoard) return;
+
+        createBackup(players, 'before applying shared board');
+        setPlayers(sharedBoard.players);
+        Object.entries(sharedBoard.tierNames || {}).forEach(([tier, name]) => {
+            saveTierName(Number(tier), name);
+        });
+
+        setSharedBoard(null);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [sharedBoard, players, setPlayers]);
 
     // Handle importing players
     const handleImportPlayers = (importedPlayers) => {
@@ -357,6 +398,36 @@ function App() {
                     path="/draft-board"
                     element={(
                 <div className="container mx-auto max-w-7xl px-3 py-5 sm:px-4 sm:py-8">
+                    <SharedBoardBanner
+                        darkMode={darkMode}
+                        board={sharedBoard}
+                        onApply={handleUseSharedBoard}
+                        onDismiss={() => setSharedBoard(null)}
+                    />
+
+                    {shareError && (
+                        <div
+                            className={`mb-5 flex items-start justify-between gap-3 rounded-2xl border p-4 ${
+                                darkMode
+                                    ? 'border-rose-500/25 bg-rose-500/[0.07]'
+                                    : 'border-rose-200 bg-rose-50'
+                            }`}
+                        >
+                            <p className={`text-sm ${darkMode ? 'text-rose-200' : 'text-rose-700'}`}>
+                                {shareError}
+                            </p>
+                            <button
+                                type="button"
+                                onClick={() => setShareError(null)}
+                                className={`shrink-0 text-sm font-semibold ${
+                                    darkMode ? 'text-rose-300 hover:text-rose-100' : 'text-rose-600 hover:text-rose-800'
+                                }`}
+                            >
+                                Dismiss
+                            </button>
+                        </div>
+                    )}
+
                     <div className="mb-6">
                         <div className="mb-5">
                             <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-500">

@@ -148,7 +148,10 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                 </div>
 
                 <div className={`lg:hidden border-t pb-3 pt-2.5 ${darkMode ? 'border-white/5' : 'border-slate-200/70'}`}>
-                    <div className="grid grid-cols-6 gap-1">
+                    <div
+                        className="grid gap-1"
+                        style={{ gridTemplateColumns: `repeat(${NAV_ROUTES.length}, minmax(0, 1fr))` }}
+                    >
                         {NAV_ROUTES.map((item) => renderNavLink(item, true))}
                     </div>
                 </div>

@@ -1,0 +1,15 @@
+<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Static mirror of src/components/BrandLogo.jsx for browser tabs. -->
+    <defs>
+        <linearGradient id="fav-grad" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#34d399" />
+            <stop offset="0.5" stop-color="#10b981" />
+            <stop offset="1" stop-color="#0d9488" />
+        </linearGradient>
+    </defs>
+    <rect x="3" y="3" width="42" height="42" rx="12" fill="url(#fav-grad)" />
+    <ellipse cx="24" cy="26" rx="12" ry="7.5" fill="#ffffff" fill-opacity="0.97" />
+    <path d="M24 21.5v9M18.8 23.6h3.2M18.8 28.4h3.2M26 23.6h3.2M26 28.4h3.2" stroke="#0d9488"
+        stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="24" cy="11.5" r="2.4" fill="#ffffff" fill-opacity="0.9" />
+</svg>

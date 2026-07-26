@@ -1,4 +1,130 @@
 import LZString from 'lz-string';
+import { initialPlayers } from './playerData';
+
+// ---------------------------------------------------------------------------
+// Shareable board links
+//
+// The v1.0 export blob below embeds photo and logo URLs for every player, which
+// is far too large to survive in a URL. A share link instead stores only what
+// the recipient cannot derive: which tier each player sits in, their order
+// within it, custom tier names, and the user-set flags. Everything else is
+// rebuilt from the local player database, so links stay short.
+// ---------------------------------------------------------------------------
+
+export const SHARE_PARAM = 'board';
+const SHARE_VERSION = 2;
+
+const FLAG_DRAFTED = 1;
+const FLAG_RISKY = 2;
+const FLAG_INJURED = 4;
+const FLAG_HANDCUFF = 8;
+
+// Links much longer than this get mangled by some chat clients.
+const SHARE_LENGTH_WARNING = 6000;
+
+export const encodeBoardForShare = (players, tierNames = {}) => {
+    const byTier = new Map();
+    const flags = {};
+
+    players.forEach((player) => {
+        if (!player?.id) return;
+        const tier = Number(player.tier) || 1;
+        if (!byTier.has(tier)) byTier.set(tier, []);
+        byTier.get(tier).push(player.id);
+
+        let mask = 0;
+        if (player.drafted) mask |= FLAG_DRAFTED;
+        if (player.isRisky) mask |= FLAG_RISKY;
+        if (player.isInjured) mask |= FLAG_INJURED;
+        if (player.isHandcuff) mask |= FLAG_HANDCUFF;
+        if (mask) flags[player.id] = mask;
+    });
+
+    const payload = {
+        v: SHARE_VERSION,
+        ts: Math.floor(Date.now() / 1000),
+        // [tier, "id,id,id"] — joining ids compresses better than nested arrays
+        b: [...byTier.entries()]
+            .sort((a, b) => a[0] - b[0])
+            .map(([tier, ids]) => [tier, ids.join(',')]),
+    };
+
+    const namedTiers = Object.entries(tierNames || {}).filter(([, name]) => name);
+    if (namedTiers.length) payload.tn = Object.fromEntries(namedTiers);
+    if (Object.keys(flags).length) payload.f = flags;
+
+    return LZString.compressToEncodedURIComponent(JSON.stringify(payload));
+};
+
+// Builds the full https URL for the current board.
+export const buildShareUrl = (players, tierNames = {}) => {
+    const code = encodeBoardForShare(players, tierNames);
+    const url = `${window.location.origin}/draft-board?${SHARE_PARAM}=${code}`;
+    return { url, isLong: url.length > SHARE_LENGTH_WARNING };
+};
+
+// Rebuilds a full board from a share code. Players added to the database after
+// the link was created are appended at their default tier so a returning
+// visitor never ends up with a board that is missing this season's new names.
+export const decodeSharedBoard = (code) => {
+    const jsonString = LZString.decompressFromEncodedURIComponent(code);
+    if (!jsonString) {
+        throw new Error('This share link is invalid or incomplete.');
+    }
+
+    const data = JSON.parse(jsonString);
+    if (data.v !== SHARE_VERSION || !Array.isArray(data.b)) {
+        throw new Error('This share link was made by a different version of the site.');
+    }
+
+    const databaseById = new Map(initialPlayers.map((player) => [player.id, player]));
+    const players = [];
+    const seen = new Set();
+    let missing = 0;
+
+    data.b.forEach(([tier, idString]) => {
+        String(idString)
+            .split(',')
+            .filter(Boolean)
+            .forEach((id) => {
+                if (seen.has(id)) return;
+                const base = databaseById.get(id);
+                if (!base) {
+                    missing += 1;
+                    return;
+                }
+                seen.add(id);
+                const mask = data.f?.[id] || 0;
+                players.push({
+                    ...base,
+                    tier: Number(tier) || 1,
+                    drafted: Boolean(mask & FLAG_DRAFTED),
+                    isRisky: Boolean(mask & FLAG_RISKY),
+                    isInjured: Boolean(mask & FLAG_INJURED),
+                    isHandcuff: Boolean(mask & FLAG_HANDCUFF),
+                });
+            });
+    });
+
+    if (!players.length) {
+        throw new Error('This share link does not contain any known players.');
+    }
+
+    initialPlayers.forEach((player) => {
+        if (!seen.has(player.id)) players.push({ ...player });
+    });
+
+    return {
+        players,
+        tierNames: data.tn || {},
+        sharedAt: data.ts ? new Date(data.ts * 1000) : null,
+        sharedCount: seen.size,
+        addedCount: players.length - seen.size,
+        missingCount: missing,
+        // A taste of the board so the visitor can decide before overwriting theirs.
+        preview: players.slice(0, 5).map((player) => player.name),
+    };
+};
 
 // Export tier list data to a compressed string
 export const exportTierList = (players) => {
