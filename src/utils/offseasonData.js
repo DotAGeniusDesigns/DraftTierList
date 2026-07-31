@@ -277,7 +277,7 @@ export const offseasonData = {
         ],
     },
 
-    JAC: {
+    JAX: {
         coaching: {
             hc: { name: 'Liam Coen', status: 'returning' },
             notes: 'Year two of the Coen offense with a fully turned-over backfield.',

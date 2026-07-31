@@ -1,6 +1,8 @@
 // Backup system for user's custom draft order and multiple draft boards
 // Automatically saves snapshots and allows restoration
 
+import { migratePlayerId } from './playerData';
+
 const BACKUP_KEY = 'fantasy-football-backups';
 const DRAFT_BOARDS_KEY = 'fantasy-football-draft-boards';
 const MAX_BACKUPS = 10; // Keep last 10 backups
@@ -80,7 +82,8 @@ export const restoreFromBackup = (backup, currentPlayers) => {
 
         // Restore the backup, preserving current database properties
         const restoredPlayers = backup.players.map(backupPlayer => {
-            const currentPlayer = currentPlayerMap.get(backupPlayer.id);
+            // Backups predating an id rename still reference the old id.
+            const currentPlayer = currentPlayerMap.get(migratePlayerId(backupPlayer.id));
             if (currentPlayer) {
                 // Restore user customizations but keep current database data
                 return {
@@ -238,7 +241,8 @@ export const loadDraftBoard = (boardId, currentPlayers) => {
 
         // Load the board, preserving current database properties
         const loadedPlayers = board.players.map(boardPlayer => {
-            const currentPlayer = currentPlayerMap.get(boardPlayer.id);
+            // Boards predating an id rename still reference the old id.
+            const currentPlayer = currentPlayerMap.get(migratePlayerId(boardPlayer.id));
             if (currentPlayer) {
                 // Load user customizations but keep current database data
                 return {

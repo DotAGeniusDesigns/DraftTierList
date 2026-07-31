@@ -1,6 +1,16 @@
 import { getByeWeek, getOlineRank, getTeamLogo } from './teamData';
 import { getAllPlayers } from './playerDatabase';
 
+// Player ids that changed after the database was generated, mapped old -> new.
+// Saved boards, backups and share links all encode ids, so anything reading a
+// persisted id runs it through migratePlayerId first or the entry is silently
+// dropped as "no longer in the database".
+const LEGACY_PLAYER_IDS = {
+    'jac-dst': 'jax-dst', // Jacksonville standardised on JAX to match Sleeper
+};
+
+export const migratePlayerId = (id) => LEGACY_PLAYER_IDS[id] || id;
+
 export const initialPlayers = getAllPlayers().map(player => ({
     ...player,
     drafted: false,

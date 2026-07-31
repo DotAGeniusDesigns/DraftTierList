@@ -5,7 +5,7 @@
 const PLACEHOLDER_PHOTO =
     "https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg";
 
-const dstLogo = (team) => `https://a.espncdn.com/i/teamlogos/nfl/500/${team === "jac" ? "jax" : team}.png`;
+const dstLogo = (team) => `https://a.espncdn.com/i/teamlogos/nfl/500/${team}.png`;
 
 export const playerDatabase = {
     "bijan-robinson": { id: "bijan-robinson", name: "Bijan Robinson", position: "RB", team: "ATL", photo: "https://sleepercdn.com/content/nfl/players/thumb/9509.jpg", tier: 1, ecr: 1, adp: 2 },
@@ -75,7 +75,7 @@ export const playerDatabase = {
     "jalen-hurts": { id: "jalen-hurts", name: "Jalen Hurts", position: "QB", team: "PHI", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/4040715.png", tier: 5, ecr: 61, adp: 66 },
     "rome-odunze": { id: "rome-odunze", name: "Rome Odunze", position: "WR", team: "CHI", photo: "https://sleepercdn.com/content/nfl/players/thumb/11620.jpg", tier: 5, ecr: 62, adp: 63 },
     "david-montgomery": { id: "david-montgomery", name: "David Montgomery", position: "RB", team: "HOU", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/4035538.png", tier: 5, ecr: 63, adp: 47 },
-    "bhayshul-tuten": { id: "bhayshul-tuten", name: "Bhayshul Tuten", position: "RB", team: "JAC", photo: "https://sleepercdn.com/content/nfl/players/thumb/12490.jpg", tier: 5, ecr: 64, adp: 60 },
+    "bhayshul-tuten": { id: "bhayshul-tuten", name: "Bhayshul Tuten", position: "RB", team: "JAX", photo: "https://sleepercdn.com/content/nfl/players/thumb/12490.jpg", tier: 5, ecr: 64, adp: 60 },
     "tucker-kraft": { id: "tucker-kraft", name: "Tucker Kraft", position: "TE", team: "GB", photo: "https://sleepercdn.com/content/nfl/players/thumb/9484.jpg", tier: 5, ecr: 65, adp: 68 },
     "carnell-tate": { id: "carnell-tate", name: "Carnell Tate", position: "WR", team: "TEN", photo: "https://sleepercdn.com/content/nfl/players/thumb/13279.jpg", tier: 5, ecr: 66, adp: 69 },
     "caleb-williams": { id: "caleb-williams", name: "Caleb Williams", position: "QB", team: "CHI", photo: "https://sleepercdn.com/content/nfl/players/thumb/11560.jpg", tier: 5, ecr: 67, adp: 65 },
@@ -85,7 +85,7 @@ export const playerDatabase = {
     "jaylen-warren": { id: "jaylen-warren", name: "Jaylen Warren", position: "RB", team: "PIT", photo: "https://sleepercdn.com/content/nfl/players/thumb/8228.jpg", tier: 6, ecr: 70, adp: 72 },
     "marvin-harrison-jr": { id: "marvin-harrison-jr", name: "Marvin Harrison Jr.", position: "WR", team: "ARI", photo: "https://sleepercdn.com/content/nfl/players/thumb/11628.jpg", tier: 6, ecr: 71, adp: 73 },
     "alec-pierce": { id: "alec-pierce", name: "Alec Pierce", position: "WR", team: "IND", photo: "https://sleepercdn.com/content/nfl/players/thumb/8142.jpg", tier: 6, ecr: 72, adp: 84 },
-    "trevor-lawrence": { id: "trevor-lawrence", name: "Trevor Lawrence", position: "QB", team: "JAC", photo: "https://sleepercdn.com/content/nfl/players/thumb/7523.jpg", tier: 6, ecr: 73, adp: 81 },
+    "trevor-lawrence": { id: "trevor-lawrence", name: "Trevor Lawrence", position: "QB", team: "JAX", photo: "https://sleepercdn.com/content/nfl/players/thumb/7523.jpg", tier: 6, ecr: 73, adp: 81 },
     "dk-metcalf": { id: "dk-metcalf", name: "DK Metcalf", position: "WR", team: "PIT", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/4047650.png", tier: 6, ecr: 74, adp: 86 },
     "rhamondre-stevenson": { id: "rhamondre-stevenson", name: "Rhamondre Stevenson", position: "RB", team: "NE", photo: "https://sleepercdn.com/content/nfl/players/thumb/7611.jpg", tier: 6, ecr: 75, adp: 74 },
     "chuba-hubbard": { id: "chuba-hubbard", name: "Chuba Hubbard", position: "RB", team: "CAR", photo: "https://sleepercdn.com/content/nfl/players/thumb/7594.jpg", tier: 6, ecr: 76, adp: 76 },
@@ -93,7 +93,7 @@ export const playerDatabase = {
     "harold-fannin-jr": { id: "harold-fannin-jr", name: "Harold Fannin Jr.", position: "TE", team: "CLE", photo: "https://sleepercdn.com/content/nfl/players/thumb/12506.jpg", tier: 6, ecr: 78, adp: 77 },
     "courtland-sutton": { id: "courtland-sutton", name: "Courtland Sutton", position: "WR", team: "DEN", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/3128429.png", tier: 6, ecr: 79, adp: 87 },
     "rico-dowdle": { id: "rico-dowdle", name: "Rico Dowdle", position: "RB", team: "PIT", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/4038815.png", tier: 6, ecr: 80, adp: 85 },
-    "brian-thomas-jr": { id: "brian-thomas-jr", name: "Brian Thomas Jr.", position: "WR", team: "JAC", photo: "https://sleepercdn.com/content/nfl/players/thumb/11631.jpg", tier: 6, ecr: 81, adp: 67 },
+    "brian-thomas-jr": { id: "brian-thomas-jr", name: "Brian Thomas Jr.", position: "WR", team: "JAX", photo: "https://sleepercdn.com/content/nfl/players/thumb/11631.jpg", tier: 6, ecr: 81, adp: 67 },
     "dak-prescott": { id: "dak-prescott", name: "Dak Prescott", position: "QB", team: "DAL", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/2577417.png", tier: 6, ecr: 82, adp: 70 },
     "kyle-pitts-sr": { id: "kyle-pitts-sr", name: "Kyle Pitts Sr.", position: "TE", team: "ATL", photo: "https://sleepercdn.com/content/nfl/players/thumb/7553.jpg", tier: 6, ecr: 83, adp: 75 },
     "sam-laporta": { id: "sam-laporta", name: "Sam LaPorta", position: "TE", team: "DET", photo: "https://sleepercdn.com/content/nfl/players/thumb/10859.jpg", tier: 6, ecr: 84, adp: 80 },
@@ -101,7 +101,7 @@ export const playerDatabase = {
     "chris-godwin-jr": { id: "chris-godwin-jr", name: "Chris Godwin Jr.", position: "WR", team: "TB", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/3116165.png", tier: 6, ecr: 86, adp: 92 },
     "jordyn-tyson": { id: "jordyn-tyson", name: "Jordyn Tyson", position: "WR", team: "NO", photo: "https://sleepercdn.com/content/nfl/players/thumb/13281.jpg", tier: 6, ecr: 87, adp: 79 },
     "rj-harvey": { id: "rj-harvey", name: "RJ Harvey", position: "RB", team: "DEN", photo: "https://sleepercdn.com/content/nfl/players/thumb/12489.jpg", tier: 6, ecr: 88, adp: 83 },
-    "parker-washington": { id: "parker-washington", name: "Parker Washington", position: "WR", team: "JAC", photo: "https://sleepercdn.com/content/nfl/players/thumb/9487.jpg", tier: 6, ecr: 89, adp: 78 },
+    "parker-washington": { id: "parker-washington", name: "Parker Washington", position: "WR", team: "JAX", photo: "https://sleepercdn.com/content/nfl/players/thumb/9487.jpg", tier: 6, ecr: 89, adp: 78 },
     "brock-purdy": { id: "brock-purdy", name: "Brock Purdy", position: "QB", team: "SF", photo: "https://sleepercdn.com/content/nfl/players/thumb/8183.jpg", tier: 6, ecr: 90, adp: 98 },
     "michael-wilson": { id: "michael-wilson", name: "Michael Wilson", position: "WR", team: "ARI", photo: "https://sleepercdn.com/content/nfl/players/thumb/10232.jpg", tier: 6, ecr: 91, adp: 89 },
     "kyle-monangai": { id: "kyle-monangai", name: "Kyle Monangai", position: "RB", team: "CHI", photo: "https://sleepercdn.com/content/nfl/players/thumb/12534.jpg", tier: 6, ecr: 92, adp: 90 },
@@ -111,7 +111,7 @@ export const playerDatabase = {
 
     "jk-dobbins": { id: "jk-dobbins", name: "J.K. Dobbins", position: "RB", team: "DEN", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/4241985.png", tier: 7, ecr: 96, adp: 97 },
     "patrick-mahomes-ii": { id: "patrick-mahomes-ii", name: "Patrick Mahomes II", position: "QB", team: "KC", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/3139477.png", tier: 7, ecr: 97, adp: 95 },
-    "jakobi-meyers": { id: "jakobi-meyers", name: "Jakobi Meyers", position: "WR", team: "JAC", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/3916433.png", tier: 7, ecr: 98, adp: 112 },
+    "jakobi-meyers": { id: "jakobi-meyers", name: "Jakobi Meyers", position: "WR", team: "JAX", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/3916433.png", tier: 7, ecr: 98, adp: 112 },
     "bo-nix": { id: "bo-nix", name: "Bo Nix", position: "QB", team: "DEN", photo: "https://sleepercdn.com/content/nfl/players/thumb/11563.jpg", tier: 7, ecr: 99, adp: 104 },
     "kenny-gainwell": { id: "kenny-gainwell", name: "Kenny Gainwell", position: "RB", team: "TB", photo: "https://sleepercdn.com/content/nfl/players/thumb/7567.jpg", tier: 7, ecr: 100, adp: 102 },
     "quentin-johnston": { id: "quentin-johnston", name: "Quentin Johnston", position: "WR", team: "LAC", photo: "https://sleepercdn.com/content/nfl/players/thumb/9754.jpg", tier: 7, ecr: 101, adp: 93 },
@@ -142,7 +142,7 @@ export const playerDatabase = {
     "khalil-shakir": { id: "khalil-shakir", name: "Khalil Shakir", position: "WR", team: "BUF", photo: "https://sleepercdn.com/content/nfl/players/thumb/8134.jpg", tier: 7, ecr: 126, adp: 129 },
     "mark-andrews": { id: "mark-andrews", name: "Mark Andrews", position: "TE", team: "BAL", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/3116365.png", tier: 7, ecr: 127, adp: 121 },
     "romeo-doubs": { id: "romeo-doubs", name: "Romeo Doubs", position: "WR", team: "NE", photo: "https://sleepercdn.com/content/nfl/players/thumb/8121.jpg", tier: 7, ecr: 128, adp: 127 },
-    "chris-rodriguez-jr": { id: "chris-rodriguez-jr", name: "Chris Rodriguez Jr.", position: "RB", team: "JAC", photo: "https://sleepercdn.com/content/nfl/players/thumb/10219.jpg", tier: 7, ecr: 129, adp: 136 },
+    "chris-rodriguez-jr": { id: "chris-rodriguez-jr", name: "Chris Rodriguez Jr.", position: "RB", team: "JAX", photo: "https://sleepercdn.com/content/nfl/players/thumb/10219.jpg", tier: 7, ecr: 129, adp: 136 },
 
     "kc-concepcion": { id: "kc-concepcion", name: "KC Concepcion", position: "WR", team: "CLE", photo: "https://sleepercdn.com/content/nfl/players/thumb/13298.jpg", tier: 8, ecr: 130, adp: 128 },
     "malik-willis": { id: "malik-willis", name: "Malik Willis", position: "QB", team: "MIA", photo: "https://sleepercdn.com/content/nfl/players/thumb/8161.jpg", tier: 8, ecr: 131, adp: 130 },
@@ -157,7 +157,7 @@ export const playerDatabase = {
     "tyjae-spears": { id: "tyjae-spears", name: "Tyjae Spears", position: "RB", team: "TEN", photo: "https://sleepercdn.com/content/nfl/players/thumb/9508.jpg", tier: 8, ecr: 140, adp: 150 },
     "dylan-sampson": { id: "dylan-sampson", name: "Dylan Sampson", position: "RB", team: "CLE", photo: "https://sleepercdn.com/content/nfl/players/thumb/12469.jpg", tier: 8, ecr: 141, adp: 165 },
     "cj-stroud": { id: "cj-stroud", name: "C.J. Stroud", position: "QB", team: "HOU", photo: "https://sleepercdn.com/content/nfl/players/thumb/9758.jpg", tier: 8, ecr: 142, adp: 141 },
-    "brenton-strange": { id: "brenton-strange", name: "Brenton Strange", position: "TE", team: "JAC", photo: "https://sleepercdn.com/content/nfl/players/thumb/9480.jpg", tier: 8, ecr: 143, adp: 138 },
+    "brenton-strange": { id: "brenton-strange", name: "Brenton Strange", position: "TE", team: "JAX", photo: "https://sleepercdn.com/content/nfl/players/thumb/9480.jpg", tier: 8, ecr: 143, adp: 138 },
     "hunter-henry": { id: "hunter-henry", name: "Hunter Henry", position: "TE", team: "NE", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/3046439.png", tier: 8, ecr: 144, adp: 147 },
     "oronde-gadsden-ii": { id: "oronde-gadsden-ii", name: "Oronde Gadsden II", position: "TE", team: "LAC", photo: "https://sleepercdn.com/content/nfl/players/thumb/12493.jpg", tier: 8, ecr: 145, adp: 145 },
     "rashid-shaheed": { id: "rashid-shaheed", name: "Rashid Shaheed", position: "WR", team: "SEA", photo: "https://sleepercdn.com/content/nfl/players/thumb/8676.jpg", tier: 8, ecr: 146, adp: 135 },
@@ -177,7 +177,7 @@ export const playerDatabase = {
     "jalen-mcmillan": { id: "jalen-mcmillan", name: "Jalen McMillan", position: "WR", team: "TB", photo: "https://sleepercdn.com/content/nfl/players/thumb/11618.jpg", tier: 8, ecr: 160, adp: 152 },
     "dalton-schultz": { id: "dalton-schultz", name: "Dalton Schultz", position: "TE", team: "HOU", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/3117256.png", tier: 8, ecr: 161, adp: 163 },
     "adonai-mitchell": { id: "adonai-mitchell", name: "Adonai Mitchell", position: "WR", team: "NYJ", photo: "https://sleepercdn.com/content/nfl/players/thumb/11625.jpg", tier: 8, ecr: 162, adp: 181 },
-    "travis-hunter": { id: "travis-hunter", name: "Travis Hunter", position: "WR", team: "JAC", photo: "https://sleepercdn.com/content/nfl/players/thumb/12530.jpg", tier: 8, ecr: 163, adp: 205 },
+    "travis-hunter": { id: "travis-hunter", name: "Travis Hunter", position: "WR", team: "JAX", photo: "https://sleepercdn.com/content/nfl/players/thumb/12530.jpg", tier: 8, ecr: 163, adp: 205 },
     "bryce-young": { id: "bryce-young", name: "Bryce Young", position: "QB", team: "CAR", photo: "https://sleepercdn.com/content/nfl/players/thumb/9228.jpg", tier: 8, ecr: 164, adp: 157 },
     "braelon-allen": { id: "braelon-allen", name: "Braelon Allen", position: "RB", team: "NYJ", photo: "https://sleepercdn.com/content/nfl/players/thumb/11576.jpg", tier: 8, ecr: 165, adp: 193 },
 
@@ -218,7 +218,7 @@ export const playerDatabase = {
     "terrance-ferguson": { id: "terrance-ferguson", name: "Terrance Ferguson", position: "TE", team: "LAR", photo: "https://sleepercdn.com/content/nfl/players/thumb/12487.jpg", tier: 9, ecr: 200, adp: 198 },
     "nicholas-singleton": { id: "nicholas-singleton", name: "Nicholas Singleton", position: "RB", team: "TEN", photo: "https://sleepercdn.com/content/nfl/players/thumb/13288.jpg", tier: 9, ecr: 201, adp: 188 },
     "pit-dst": { id: "pit-dst", name: "Pittsburgh Steelers", position: "DST", team: "PIT", photo: dstLogo("pit"), tier: 9, ecr: 202 },
-    "jac-dst": { id: "jac-dst", name: "Jacksonville Jaguars", position: "DST", team: "JAC", photo: dstLogo("jac"), tier: 9, ecr: 203 },
+    "jax-dst": { id: "jax-dst", name: "Jacksonville Jaguars", position: "DST", team: "JAX", photo: dstLogo("jax"), tier: 9, ecr: 203 },
     "kaimi-fairbairn": { id: "kaimi-fairbairn", name: "Ka'imi Fairbairn", position: "K", team: "HOU", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/2971573.png", tier: 9, ecr: 204 },
     "ted-hurst-iii": { id: "ted-hurst-iii", name: "Ted Hurst III", position: "WR", team: "TB", photo: "https://sleepercdn.com/content/nfl/players/thumb/13317.jpg", tier: 9, ecr: 205, adp: 228 },
     "chimere-dike": { id: "chimere-dike", name: "Chimere Dike", position: "WR", team: "TEN", photo: "https://sleepercdn.com/content/nfl/players/thumb/12540.jpg", tier: 9, ecr: 206, adp: 249 },
@@ -228,7 +228,7 @@ export const playerDatabase = {
     "min-dst": { id: "min-dst", name: "Minnesota Vikings", position: "DST", team: "MIN", photo: dstLogo("min"), tier: 9, ecr: 210 },
     "cade-otton": { id: "cade-otton", name: "Cade Otton", position: "TE", team: "TB", photo: "https://sleepercdn.com/content/nfl/players/thumb/8111.jpg", tier: 9, ecr: 211, adp: 180 },
 
-    "cam-little": { id: "cam-little", name: "Cam Little", position: "K", team: "JAC", photo: "https://sleepercdn.com/content/nfl/players/thumb/11786.jpg", tier: 10, ecr: 212 },
+    "cam-little": { id: "cam-little", name: "Cam Little", position: "K", team: "JAX", photo: "https://sleepercdn.com/content/nfl/players/thumb/11786.jpg", tier: 10, ecr: 212 },
     "dontayvion-wicks": { id: "dontayvion-wicks", name: "Dontayvion Wicks", position: "WR", team: "PHI", photo: "https://sleepercdn.com/content/nfl/players/thumb/9486.jpg", tier: 10, ecr: 213, adp: 211 },
     "jason-myers": { id: "jason-myers", name: "Jason Myers", position: "K", team: "SEA", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/2473037.png", tier: 10, ecr: 214 },
     "brandon-aiyuk": { id: "brandon-aiyuk", name: "Brandon Aiyuk", position: "WR", team: "SF", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/4360438.png", tier: 10, ecr: 215, adp: 191 },
@@ -300,7 +300,7 @@ export const playerDatabase = {
     "theo-johnson": { id: "theo-johnson", name: "Theo Johnson", position: "TE", team: "NYG", photo: "https://sleepercdn.com/content/nfl/players/thumb/11597.jpg", tier: 11, ecr: 280, adp: 247 },
     "isaiah-davis": { id: "isaiah-davis", name: "Isaiah Davis", position: "RB", team: "NYJ", photo: "https://sleepercdn.com/content/nfl/players/thumb/11571.jpg", tier: 11, ecr: 281, adp: 299 },
     "devaughn-vele": { id: "devaughn-vele", name: "Devaughn Vele", position: "WR", team: "NO", photo: "https://sleepercdn.com/content/nfl/players/thumb/11834.jpg", tier: 11, ecr: 282, adp: 231 },
-    "lequint-allen-jr": { id: "lequint-allen-jr", name: "LeQuint Allen Jr.", position: "RB", team: "JAC", photo: "https://sleepercdn.com/content/nfl/players/thumb/12544.jpg", tier: 11, ecr: 283, adp: 262 },
+    "lequint-allen-jr": { id: "lequint-allen-jr", name: "LeQuint Allen Jr.", position: "RB", team: "JAX", photo: "https://sleepercdn.com/content/nfl/players/thumb/12544.jpg", tier: 11, ecr: 283, adp: 262 },
     "shedeur-sanders": { id: "shedeur-sanders", name: "Shedeur Sanders", position: "QB", team: "CLE", photo: "https://sleepercdn.com/content/nfl/players/thumb/12524.jpg", tier: 11, ecr: 284, adp: 217 },
     "devin-singletary": { id: "devin-singletary", name: "Devin Singletary", position: "RB", team: "NYG", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/4040761.png", tier: 11, ecr: 285, adp: 258 },
     "atl-dst": { id: "atl-dst", name: "Atlanta Falcons", position: "DST", team: "ATL", photo: dstLogo("atl"), tier: 11, ecr: 286 },
@@ -365,7 +365,7 @@ export const playerDatabase = {
     "eli-heidenreich": { id: "eli-heidenreich", name: "Eli Heidenreich", position: "RB", team: "PIT", photo: "https://sleepercdn.com/content/nfl/players/thumb/13423.jpg", tier: 12, ecr: 344, adp: 315 },
     "dawson-knox": { id: "dawson-knox", name: "Dawson Knox", position: "TE", team: "BUF", photo: "https://a.espncdn.com/i/headshots/nfl/players/full/3930086.png", tier: 12, ecr: 345, adp: 272 },
     "donte-thornton-jr": { id: "donte-thornton-jr", name: "Dont'e Thornton Jr.", position: "WR", team: "LV", photo: "https://sleepercdn.com/content/nfl/players/thumb/12541.jpg", tier: 12, ecr: 346, adp: 330 },
-    "jmari-taylor": { id: "jmari-taylor", name: "J'Mari Taylor", position: "RB", team: "JAC", photo: "https://sleepercdn.com/content/nfl/players/thumb/13348.jpg", tier: 12, ecr: 347, adp: 339 },
+    "jmari-taylor": { id: "jmari-taylor", name: "J'Mari Taylor", position: "RB", team: "JAX", photo: "https://sleepercdn.com/content/nfl/players/thumb/13348.jpg", tier: 12, ecr: 347, adp: 339 },
     "michael-mayer": { id: "michael-mayer", name: "Michael Mayer", position: "TE", team: "LV", photo: "https://sleepercdn.com/content/nfl/players/thumb/9482.jpg", tier: 12, ecr: 348, adp: 246 },
     "joshua-palmer": { id: "joshua-palmer", name: "Joshua Palmer", position: "WR", team: "BUF", photo: "https://sleepercdn.com/content/nfl/players/thumb/7670.jpg", tier: 12, ecr: 349, adp: 301 },
     "brenen-thompson": { id: "brenen-thompson", name: "Brenen Thompson", position: "WR", team: "LAC", photo: "https://sleepercdn.com/content/nfl/players/thumb/13380.jpg", tier: 12, ecr: 350, adp: 284 },

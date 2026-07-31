@@ -138,15 +138,6 @@ export const teamData = {
         primaryColor: '#006778',
         olineRank: 28
     },
-    'JAC': {
-        name: 'Jacksonville Jaguars',
-        logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/jax.png',
-        byeWeek: 7,
-        conference: 'AFC',
-        division: 'South',
-        primaryColor: '#006778',
-        olineRank: 28
-    },
     'KC': {
         name: 'Kansas City Chiefs',
         logo: 'https://a.espncdn.com/i/teamlogos/nfl/500/kc.png',
@@ -317,11 +308,10 @@ export const teamData = {
 //   https://thegameday.com/nfl/power-rankings/defense/
 //   https://sportsnaut.com/nfl/nfl-defense-rankings
 export const DEFENSE_RANK_2026 = {
-    SEA: 1, HOU: 2, LAR: 3, PHI: 4, DEN: 5, MIN: 6, JAC: 7, NE: 8,
+    SEA: 1, HOU: 2, LAR: 3, PHI: 4, DEN: 5, MIN: 6, JAX: 7, NE: 8,
     BAL: 9, LAC: 10, DET: 11, GB: 12, KC: 13, PIT: 14, ATL: 15, SF: 16,
     BUF: 17, IND: 18, CLE: 19, CHI: 20, NYG: 21, NO: 22, CAR: 23, TB: 24,
     DAL: 25, LV: 26, TEN: 27, ARI: 28, CIN: 29, NYJ: 30, MIA: 31, WAS: 32,
-    JAX: 7,
 };
 
 // Fold the projected defense rank onto each team record so it sits alongside

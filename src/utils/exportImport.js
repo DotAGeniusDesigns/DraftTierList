@@ -1,5 +1,5 @@
 import LZString from 'lz-string';
-import { initialPlayers } from './playerData';
+import { initialPlayers, migratePlayerId } from './playerData';
 
 // ---------------------------------------------------------------------------
 // Shareable board links
@@ -86,7 +86,9 @@ export const decodeSharedBoard = (code) => {
         String(idString)
             .split(',')
             .filter(Boolean)
-            .forEach((id) => {
+            .forEach((rawId) => {
+                // Links made before an id was renamed still carry the old one.
+                const id = migratePlayerId(rawId);
                 if (seen.has(id)) return;
                 const base = databaseById.get(id);
                 if (!base) {
@@ -94,7 +96,7 @@ export const decodeSharedBoard = (code) => {
                     return;
                 }
                 seen.add(id);
-                const mask = data.f?.[id] || 0;
+                const mask = data.f?.[rawId] || data.f?.[id] || 0;
                 players.push({
                     ...base,
                     tier: Number(tier) || 1,

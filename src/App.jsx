@@ -14,8 +14,9 @@ import BackupManager from './components/BackupManager';
 import BurgerMenu from './components/BurgerMenu';
 import DraftBoardSearch from './components/DraftBoardSearch';
 import SharedBoardBanner from './components/SharedBoardBanner';
+import SleeperSync from './components/SleeperSync';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { initialPlayers } from './utils/playerData';
+import { initialPlayers, migratePlayerId } from './utils/playerData';
 import { getTeamLogo } from './utils/teamData';
 import { createBackup, shouldCreateBackup } from './utils/backupSystem';
 import { getPositionFilterTagClass } from './utils/playerStyles';
@@ -41,6 +42,12 @@ function App() {
 
             // Update existing players with new properties from database and remove deleted players
             const updatedPlayers = currentPlayers
+                .map(player => {
+                    // Rescue saved entries whose id changed in the database,
+                    // otherwise the filter below would treat them as deleted.
+                    const id = migratePlayerId(player.id);
+                    return id === player.id ? player : { ...player, id };
+                })
                 .filter(player => {
                     // Only keep players that still exist in the database
                     return databaseMap.has(player.id);
@@ -74,7 +81,9 @@ function App() {
 
             // Append any players that are new to the database so a returning
             // user (with a saved board from a prior season) still sees them.
-            const storedIds = new Set(currentPlayers.map(p => p.id));
+            // Read ids off the merged list, not the raw saved one, so a player
+            // whose id was migrated above isn't re-added as a duplicate.
+            const storedIds = new Set(updatedPlayers.map(p => p.id));
             const newPlayers = databasePlayers.filter(p => !storedIds.has(p.id));
 
             setPlayers([...updatedPlayers, ...newPlayers]);
@@ -187,6 +196,27 @@ function App() {
                 ? { ...player, drafted: !player.drafted }
                 : player
         ));
+    }, [setPlayers]);
+
+    // Bulk-mark players drafted (Sleeper live sync). Additive only: a pick can
+    // never un-draft a player the user checked off by hand. Bails out with the
+    // previous array when nothing changed so an idle poll doesn't re-render the
+    // board or rewrite localStorage.
+    const handleMarkDraftedByIds = useCallback((playerIds) => {
+        if (!playerIds || playerIds.length === 0) return;
+        const idSet = new Set(playerIds);
+
+        setPlayers(prev => {
+            let changed = false;
+            const next = prev.map(player => {
+                if (idSet.has(player.id) && !player.drafted) {
+                    changed = true;
+                    return { ...player, drafted: true };
+                }
+                return player;
+            });
+            return changed ? next : prev;
+        });
     }, [setPlayers]);
 
     // Move a player to another tier / position (drag and drop)
@@ -515,6 +545,12 @@ function App() {
                             </div>
                         </div>
                     </div>
+
+                    <SleeperSync
+                        players={players}
+                        darkMode={darkMode}
+                        onMarkDrafted={handleMarkDraftedByIds}
+                    />
 
                     <TierList
                         players={filteredPlayers}

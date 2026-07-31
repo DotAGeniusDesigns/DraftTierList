@@ -183,7 +183,7 @@ function serialize(records) {
         'const PLACEHOLDER_PHOTO =\n' +
         '    ' + JSON.stringify(PLACEHOLDER_PHOTO) + ';\n' +
         '\n' +
-        'const dstLogo = (team) => `https://a.espncdn.com/i/teamlogos/nfl/500/${team === "jac" ? "jax" : team}.png`;\n' +
+        'const dstLogo = (team) => `https://a.espncdn.com/i/teamlogos/nfl/500/${team}.png`;\n' +
         '\n' +
         'export const playerDatabase = {\n' +
         entries +

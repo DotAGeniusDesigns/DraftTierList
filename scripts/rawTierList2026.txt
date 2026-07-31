@@ -75,7 +75,7 @@
 61 | Jalen Hurts (PHI) | QB6 | 10 | +5
 62 | Rome Odunze (CHI) | WR29 | 10 | +1
 63 | David Montgomery (HOU) | RB24 | 8 | -16
-64 | Bhayshul Tuten (JAC) | RB25 | 7 | -4
+64 | Bhayshul Tuten (JAX) | RB25 | 7 | -4
 65 | Tucker Kraft (GB) | TE5 | 11 | +3
 66 | Carnell Tate (TEN) | WR30 | 9 | +3
 67 | Caleb Williams (CHI) | QB7 | 10 | -2
@@ -86,7 +86,7 @@
 70 | Jaylen Warren (PIT) | RB27 | 9 | +2
 71 | Marvin Harrison Jr. (ARI) | WR31 | 14 | +2
 72 | Alec Pierce (IND) | WR32 | 13 | +12
-73 | Trevor Lawrence (JAC) | QB9 | 7 | +8
+73 | Trevor Lawrence (JAX) | QB9 | 7 | +8
 74 | DK Metcalf (PIT) | WR33 | 9 | +12
 75 | Rhamondre Stevenson (NE) | RB28 | 11 | -1
 76 | Chuba Hubbard (CAR) | RB29 | 5 | 0
@@ -94,7 +94,7 @@
 78 | Harold Fannin Jr. (CLE) | TE6 | 11 | -1
 79 | Courtland Sutton (DEN) | WR34 | 10 | +8
 80 | Rico Dowdle (PIT) | RB31 | 9 | +5
-81 | Brian Thomas Jr. (JAC) | WR35 | 7 | -14
+81 | Brian Thomas Jr. (JAX) | WR35 | 7 | -14
 82 | Dak Prescott (DAL) | QB10 | 14 | -12
 83 | Kyle Pitts Sr. (ATL) | TE7 | 11 | -8
 84 | Sam LaPorta (DET) | TE8 | 6 | -4
@@ -102,7 +102,7 @@
 86 | Chris Godwin Jr. (TB) | WR36 | 10 | +6
 87 | Jordyn Tyson (NO) | WR37 | 8 | -8
 88 | RJ Harvey (DEN) | RB32 | 10 | -5
-89 | Parker Washington (JAC) | WR38 | 7 | -11
+89 | Parker Washington (JAX) | WR38 | 7 | -11
 90 | Brock Purdy (SF) | QB12 | 8 | +8
 91 | Michael Wilson (ARI) | WR39 | 14 | -2
 92 | Kyle Monangai (CHI) | RB33 | 10 | -2
@@ -113,7 +113,7 @@
 # Tier 7
 96 | J.K. Dobbins (DEN) | RB35 | 10 | +1
 97 | Patrick Mahomes II (KC) | QB13 | 5 | -2
-98 | Jakobi Meyers (JAC) | WR42 | 7 | +14
+98 | Jakobi Meyers (JAX) | WR42 | 7 | +14
 99 | Bo Nix (DEN) | QB14 | 10 | +5
 100 | Kenny Gainwell (TB) | RB36 | 10 | +2
 101 | Quentin Johnston (LAC) | WR43 | 7 | -8
@@ -144,7 +144,7 @@
 126 | Khalil Shakir (BUF) | WR51 | 7 | +3
 127 | Mark Andrews (BAL) | TE15 | 13 | -6
 128 | Romeo Doubs (NE) | WR52 | 11 | -1
-129 | Chris Rodriguez Jr. (JAC) | RB42 | 7 | +7
+129 | Chris Rodriguez Jr. (JAX) | RB42 | 7 | +7
 
 # Tier 8
 130 | KC Concepcion (CLE) | WR53 | 11 | -2
@@ -160,7 +160,7 @@
 140 | Tyjae Spears (TEN) | RB48 | 9 | +10
 141 | Dylan Sampson (CLE) | RB49 | 11 | +24
 142 | C.J. Stroud (HOU) | QB22 | 8 | -1
-143 | Brenton Strange (JAC) | TE17 | 7 | -5
+143 | Brenton Strange (JAX) | TE17 | 7 | -5
 144 | Hunter Henry (NE) | TE18 | 11 | +3
 145 | Oronde Gadsden II (LAC) | TE19 | 7 | 0
 146 | Rashid Shaheed (SEA) | WR56 | 11 | -11
@@ -180,7 +180,7 @@
 160 | Jalen McMillan (TB) | WR61 | 10 | -8
 161 | Dalton Schultz (HOU) | TE21 | 8 | +2
 162 | Adonai Mitchell (NYJ) | WR62 | 13 | +19
-163 | Travis Hunter (JAC) | WR63 | 7 | +42
+163 | Travis Hunter (JAX) | WR63 | 7 | +42
 164 | Bryce Young (CAR) | QB26 | 5 | -7
 165 | Braelon Allen (NYJ) | RB55 | 13 | +28
 
@@ -222,7 +222,7 @@
 200 | Terrance Ferguson (LAR) | TE28 | 11 | -2
 201 | Nicholas Singleton (TEN) | RB63 | 9 | -13
 202 | Pittsburgh Steelers (PIT) | DST6 | 9 |
-203 | Jacksonville Jaguars (JAC) | DST7 | 7 |
+203 | Jacksonville Jaguars (JAX) | DST7 | 7 |
 204 | Ka'imi Fairbairn (HOU) | K1 | 8 |
 205 | Ted Hurst III (TB) | WR79 | 10 | +23
 206 | Chimere Dike (TEN) | WR80 | 9 | +43
@@ -233,7 +233,7 @@
 211 | Cade Otton (TB) | TE29 | 10 | -31
 
 # Tier 10
-212 | Cam Little (JAC) | K4 | 7 |
+212 | Cam Little (JAX) | K4 | 7 |
 213 | Dontayvion Wicks (PHI) | WR81 | 10 | -2
 214 | Jason Myers (SEA) | K5 | 11 |
 215 | Brandon Aiyuk (SF) | WR82 | 8 | -24
@@ -306,7 +306,7 @@
 280 | Theo Johnson (NYG) | TE35 | 8 | -33
 281 | Isaiah Davis (NYJ) | RB82 | 13 | +18
 282 | Devaughn Vele (NO) | WR101 | 8 | -51
-283 | LeQuint Allen Jr. (JAC) | RB83 | 7 | -21
+283 | LeQuint Allen Jr. (JAX) | RB83 | 7 | -21
 284 | Shedeur Sanders (CLE) | QB33 | 11 | -67
 285 | Devin Singletary (NYG) | RB84 | 8 | -27
 286 | Atlanta Falcons (ATL) | DST17 | 11 |
@@ -372,7 +372,7 @@
 344 | Eli Heidenreich (PIT) | RB102 | 9 | -29
 345 | Dawson Knox (BUF) | TE45 | 7 | -73
 346 | Dont'e Thornton Jr. (LV) | WR123 | 13 | -16
-347 | J'Mari Taylor (JAC) | RB103 | 7 | -8
+347 | J'Mari Taylor (JAX) | RB103 | 7 | -8
 348 | Michael Mayer (LV) | TE46 | 13 | -102
 349 | Joshua Palmer (BUF) | WR124 | 7 | -48
 350 | Brenen Thompson (LAC) | WR125 | 7 | -66
