@@ -5,13 +5,38 @@ import { createMarbleRace, makeDefaultTeams } from '../utils/marbleRace';
 const MIN_TEAMS = 2;
 const MAX_TEAMS = 20;
 const STORAGE_KEY = 'draft-lottery-order';
+const MAX_PLAYS = 5;
 
-const mblGrad = (c) => {
-    const n = parseInt(c.slice(1), 16);
-    const lite = '#' + [Math.min(255, (n >> 16) + 70), Math.min(255, ((n >> 8) & 0xff) + 70), Math.min(255, (n & 0xff) + 70)].map(v => v.toString(16).padStart(2, '0')).join('');
-    const dark = '#' + [Math.max(0, (n >> 16) - 20), Math.max(0, ((n >> 8) & 0xff) - 20), Math.max(0, (n & 0xff) - 20)].map(v => v.toString(16).padStart(2, '0')).join('');
-    return `radial-gradient(circle at 35% 30%, ${lite}, ${c} 60%, ${dark})`;
+const PLAY_TONE = {
+    score: 'text-emerald-300',
+    hot: 'text-rose-300',
+    good: 'text-sky-300',
+    hit: 'text-amber-300',
+    neutral: 'text-slate-400',
 };
+
+const shade = (c, amount) => {
+    const n = parseInt(c.slice(1), 16);
+    const clamp = (v) => Math.max(0, Math.min(255, v));
+    return '#' + [clamp((n >> 16) + amount), clamp(((n >> 8) & 0xff) + amount), clamp((n & 0xff) + amount)]
+        .map(v => v.toString(16).padStart(2, '0')).join('');
+};
+
+// Matches the ball drawn on the field, so the setup row and the race agree.
+const FootballGlyph = ({ color }) => (
+    <svg viewBox="0 0 44 28" className="h-full w-full" aria-hidden="true">
+        <path
+            d="M2 14 Q22 0 42 14 Q22 28 2 14 Z"
+            fill={color}
+            stroke={shade(color, -70)}
+            strokeWidth="1.5"
+        />
+        <g stroke="rgba(255,255,255,0.85)" strokeWidth="1.6" strokeLinecap="round">
+            <line x1="14" y1="14" x2="30" y2="14" />
+            {[18, 22, 26].map((x) => <line key={x} x1={x} y1="10.5" x2={x} y2="17.5" />)}
+        </g>
+    </svg>
+);
 
 const formatStarted = (d) => {
     if (!d) return '';
@@ -123,7 +148,7 @@ async function buildResultsImage({ startedAt, order }) {
     ctx.textAlign = 'left';
     ctx.fillStyle = '#5b6472';
     ctx.font = '500 12px "DM Sans", system-ui, sans-serif';
-    ctx.fillText('Draft Lottery · finish order = draft order', padX, H - 24);
+    ctx.fillText('Draft Lottery · first to the end zone picks first', padX, H - 24);
     const winner = order[0];
     if (winner) {
         ctx.textAlign = 'right';
@@ -143,14 +168,9 @@ const TeamSwatch = ({ index, team, darkMode, onChange }) => {
                 type="button"
                 onClick={() => colorRef.current?.click()}
                 aria-label={`Recolor ${team.name || `team ${index + 1}`}`}
-                className="relative h-9 w-9 cursor-pointer rounded-full ring-1 ring-black/10 transition hover:scale-110 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 dark:ring-white/20"
-                style={{ background: mblGrad(team.color), boxShadow: 'inset 0 -2px 4px rgba(0,0,0,.35)' }}
+                className="h-7 w-11 cursor-pointer rounded transition hover:scale-110 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
             >
-                <span
-                    className="pointer-events-none absolute left-2 top-1.5 h-1.5 w-2 rounded-full"
-                    style={{ background: 'rgba(255,255,255,.5)', transform: 'rotate(-25deg)' }}
-                    aria-hidden="true"
-                />
+                <FootballGlyph color={team.color} />
             </button>
             <input
                 ref={colorRef}
@@ -188,12 +208,19 @@ const DraftLottery = ({ darkMode }) => {
     const [copied, setCopied] = useState(false);
     const [sharing, setSharing] = useState(false);
     const [raceStartedAt, setRaceStartedAt] = useState(null);
+    const [plays, setPlays] = useState([]);
 
     // Boot the engine once; tear it down on unmount.
     useEffect(() => {
         const controller = createMarbleRace(canvasRef.current, {
             onTimer: setTimer,
-            onPhase: setPhase,
+            // Every reset path funnels through onPhase('setup'), so clearing the
+            // feed here covers Reset, New board and team-count changes at once.
+            onPhase: (next) => {
+                setPhase(next);
+                if (next === 'setup') setPlays([]);
+            },
+            onPlay: (play) => setPlays((prev) => [play, ...prev].slice(0, MAX_PLAYS)),
             onFinish: (result) => {
                 setOrder(result);
                 try {
@@ -233,6 +260,7 @@ const DraftLottery = ({ darkMode }) => {
 
     const handleStart = useCallback(() => {
         setOrder(null);
+        setPlays([]);
         setRaceStartedAt(new Date());
         controllerRef.current?.start();
     }, []);
@@ -301,8 +329,8 @@ const DraftLottery = ({ darkMode }) => {
                     <span className="text-gradient-brand">Draft Lottery</span>
                 </h1>
                 <p className={`mt-2 max-w-2xl text-sm sm:text-base ${ui.muted(darkMode)}`}>
-                    Race a marble for every team down a randomized board — the finish order sets your
-                    draft order. First marble to the bottom earns the 1.01 pick.
+                    Every team runs a football 100 yards down a randomized field — the order they
+                    reach the end zone sets your draft order. First one in takes the 1.01.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
                     <span className={ui.statPill(darkMode, 'default')}>{count} teams</span>
@@ -342,10 +370,10 @@ const DraftLottery = ({ darkMode }) => {
                             </label>
                         </div>
                         <div className="flex items-center gap-2">
-                            <button onClick={handleNewCourse} className={ui.btn(darkMode)}>New board</button>
+                            <button onClick={handleNewCourse} className={ui.btn(darkMode)}>New field</button>
                             <button onClick={handleReset} className={ui.btn(darkMode)}>Reset</button>
                             <button onClick={handleStart} className={ui.btnPrimary()} style={{ minWidth: 120 }}>
-                                Start race
+                                Kick off
                             </button>
                         </div>
                     </div>
@@ -376,7 +404,7 @@ const DraftLottery = ({ darkMode }) => {
                 <div className="flex items-center justify-between px-4 pt-3.5">
                     <div className="flex flex-col">
                         <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
-                            Elapsed
+                            Game clock
                         </span>
                         <span className="font-mono text-3xl font-bold tabular-nums tracking-tight text-slate-100 sm:text-4xl">
                             {timer}
@@ -385,7 +413,7 @@ const DraftLottery = ({ darkMode }) => {
                     {isRacing && (
                         <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-300 ring-1 ring-emerald-500/25">
                             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-                            Racing…
+                            Live
                         </span>
                     )}
                 </div>
@@ -396,6 +424,25 @@ const DraftLottery = ({ darkMode }) => {
                         style={{ height: 'auto', aspectRatio: '700 / 560' }}
                     />
                 </div>
+
+                {plays.length > 0 && (
+                    <div className="border-t border-white/5 px-4 py-3">
+                        <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
+                            Play by play
+                        </p>
+                        <ul className="space-y-0.5" aria-live="polite">
+                            {plays.map((play, i) => (
+                                <li
+                                    key={play.id}
+                                    className={`truncate text-xs font-medium ${PLAY_TONE[play.tone] || PLAY_TONE.neutral}`}
+                                    style={{ opacity: 1 - i * 0.17 }}
+                                >
+                                    {play.text}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
 
             {/* Results */}
@@ -420,7 +467,7 @@ const DraftLottery = ({ darkMode }) => {
                             <button onClick={handleCopy} className={ui.btn(darkMode)}>
                                 {copied ? 'Copied!' : 'Copy order'}
                             </button>
-                            <button onClick={handleReset} className={ui.btnPrimary()}>Race again</button>
+                            <button onClick={handleReset} className={ui.btnPrimary()}>Run it back</button>
                         </div>
                     </div>
                     <ol className="divide-y divide-slate-200/60 dark:divide-white/[0.05]">
@@ -444,7 +491,7 @@ const DraftLottery = ({ darkMode }) => {
 
             {!order && (
                 <p className={`text-center text-xs ${ui.muted(darkMode)}`}>
-                    Set your teams, hit Start race, and let the board decide. New board generates a fresh layout.
+                    Set your teams, hit Kick off, and let the field decide. New field generates a fresh layout.
                 </p>
             )}
         </div>
