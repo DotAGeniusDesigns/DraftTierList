@@ -80,7 +80,54 @@ export function makeDefaultTeams(n) {
 
 export function createMarbleRace(canvas, callbacks = {}) {
     const { onTimer, onPhase, onFinish, onPlay } = callbacks;
-    const { Engine, Render, Runner, Bodies, Body, Composite, Events } = Matter;
+    const { Engine, Render, Bodies, Body, Composite, Events } = Matter;
+
+    // Physics is driven from wall-clock time rather than Matter's Runner.
+    //
+    // Runner steps the engine once per animation frame and clamps each frame's
+    // delta into [1000/60, 1000/30]. On a 144Hz display that clamps *up*, so
+    // the engine advances 16.67ms of simulation 144 times a second — the same
+    // race finishes ~2.4x faster than on 60Hz (~4x on 240Hz), and slower again
+    // whenever the machine is loaded. A fixed timestep fed by real elapsed time
+    // makes the race last the same everywhere.
+    const FIXED_DELTA = 1000 / 60;
+    const MAX_STEPS_PER_FRAME = 5;
+    let rafId = null;
+    let accumulatorMs = 0;
+    let lastFrameMs = 0;
+
+    function stopPhysicsLoop() {
+        if (rafId !== null) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+        }
+    }
+
+    function startPhysicsLoop() {
+        stopPhysicsLoop();
+        accumulatorMs = 0;
+        lastFrameMs = performance.now();
+
+        const step = (now) => {
+            rafId = requestAnimationFrame(step);
+            // Cap the gap so returning to a backgrounded tab doesn't try to
+            // simulate the whole time it spent hidden.
+            accumulatorMs += Math.min(now - lastFrameMs, 250);
+            lastFrameMs = now;
+
+            let steps = 0;
+            while (accumulatorMs >= FIXED_DELTA && steps < MAX_STEPS_PER_FRAME) {
+                Engine.update(engine, FIXED_DELTA);
+                accumulatorMs -= FIXED_DELTA;
+                steps++;
+            }
+            // After a stall, drop the backlog rather than spiralling trying to
+            // catch up — running briefly slow beats locking the tab.
+            if (steps === MAX_STEPS_PER_FRAME) accumulatorMs = 0;
+        };
+
+        rafId = requestAnimationFrame(step);
+    }
 
     // ── State ──────────────────────────────────────────────────────────
     let marbleCount = 4;
@@ -88,7 +135,7 @@ export function createMarbleRace(canvas, callbacks = {}) {
     let selNames = DEFAULT_NAMES.slice(0, 4);
     let shuffleStart = false;
 
-    let engine, render, runner;
+    let engine, render;
     let marbles = [];
     let raceStarted = false;
     let finishOrder = [];
@@ -492,7 +539,6 @@ export function createMarbleRace(canvas, callbacks = {}) {
         // Field geometry never changes with the course seed, so bake it once.
         fieldTexture = buildFieldTexture();
 
-        runner = Runner.create();
         Events.on(render, 'afterRender', drawOverlay);
         Events.on(engine, 'collisionStart', onCollision);
         Events.on(engine, 'afterUpdate', afterUpdate);
@@ -616,7 +662,7 @@ export function createMarbleRace(canvas, callbacks = {}) {
 
     // ── Lifecycle ──────────────────────────────────────────────────────
     function resetRace() {
-        Runner.stop(runner);
+        stopPhysicsLoop();
         clearInterval(timerHandle);
         Composite.clear(engine.world);
         raceStarted = false;
@@ -675,7 +721,7 @@ export function createMarbleRace(canvas, callbacks = {}) {
         });
         emitPlay(`Kickoff — ${marbleCount} teams away`, 'good', true);
 
-        Runner.run(runner, engine);
+        startPhysicsLoop();
         startTime = Date.now();
         timerHandle = setInterval(() => {
             const ms = Date.now() - startTime, s = Math.floor(ms / 1000);
@@ -1036,7 +1082,7 @@ export function createMarbleRace(canvas, callbacks = {}) {
                 Events.off(engine, 'collisionStart', onCollision);
                 Events.off(engine, 'afterUpdate', afterUpdate);
                 Render.stop(render);
-                Runner.stop(runner);
+                stopPhysicsLoop();
                 Composite.clear(engine.world, false);
                 Engine.clear(engine);
                 render.canvas = null;
