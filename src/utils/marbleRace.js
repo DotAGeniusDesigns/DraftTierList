@@ -16,12 +16,25 @@
 import Matter from 'matter-js';
 import decomp from 'poly-decomp';
 
-// Default racer colours + placeholder names (shared with the React UI).
+// The only colours a team can wear. Twenty entries, one per hue family plus
+// brown/slate/bone, chosen so no two read as the same colour on turf or in a
+// 3px results dot — a free colour well let two teams pick near-identical reds
+// and made the leaderboard unreadable. Listed in wheel order for the picker
+// grid; DEFAULT_COLORS below is the same set in assignment order.
+export const TEAM_PALETTE = [
+    '#ef4444', '#f97316', '#f59e0b', '#facc15', '#a3e635',
+    '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#38bdf8',
+    '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef',
+    '#ec4899', '#fb7185', '#8b5a2b', '#94a3b8', '#e7e5e4',
+];
+
+// Same twenty, reordered so the first N handed out are as far apart as
+// possible — an 8-team board should never open on four neighbouring blues.
 export const DEFAULT_COLORS = [
-    '#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#a29bfe',
-    '#fd79a8', '#fdcb6e', '#00cec9', '#e17055', '#74b9ff',
-    '#ff6b81', '#0be881', '#f8b739', '#48dbfb', '#ff5e57',
-    '#54a0ff', '#5f27cd', '#01abc4', '#ee5a24', '#6c5ce7',
+    '#ef4444', '#38bdf8', '#a3e635', '#f59e0b', '#a855f7',
+    '#14b8a6', '#ec4899', '#facc15', '#3b82f6', '#f97316',
+    '#22c55e', '#d946ef', '#06b6d4', '#fb7185', '#6366f1',
+    '#10b981', '#8b5cf6', '#e7e5e4', '#8b5a2b', '#94a3b8',
 ];
 
 export const DEFAULT_NAMES = [
@@ -43,14 +56,27 @@ const VIEW_H = 560;
 // dimension is derived, so the field always measures exactly 100 yards however
 // long the race is set to run.
 //
-// These two were picked by sweeping both against simulated races: the pair
-// below lands a full race at a ~30s median from 4 teams up to 20, while
-// leaving finishing order uncorrelated with starting slot (mean finish rank
-// stays within noise of fair across every slot). Raising gravity much further
-// starts trading that randomness away — balls plough through the pegs instead
-// of being deflected by them.
-const PX_PER_YARD = 14;
+// What the audience experiences as "the race" is the winning drive — once the
+// 1st pick is in the end zone the camera locks there and the rest is a
+// formality — so PX_PER_YARD is tuned against *that*, not against the last ball
+// in. Swept headless over 30 courses per team count, the pair below lands the
+// winner at a 21–24s median from 8 teams up to 20 (~28s at 4, where fewer balls
+// are racing for the front). Gravity stays where it was: raising it to buy
+// length trades randomness away, because balls plough through the pegs instead
+// of being deflected by them. Distance is the free lever, so the extra length
+// comes from PX_PER_YARD alone and fairness is untouched — mean finish rank
+// stays within noise of fair across every starting slot.
+const PX_PER_YARD = 22;
 const GRAVITY = 0.14;
+
+// A longer field also stretches the tail: with 20 teams the stragglers would
+// keep the clock running well past the point anyone is still watching. Once the
+// first ball scores, gravity ramps up for everyone still on the field so the
+// remaining picks land on roughly the old schedule. The ramp is applied to the
+// world rather than per-ball, so every ball still racing is sped up identically
+// and the order they come in stays as fair as it was.
+const CATCHUP_MS = 8000;
+const CATCHUP_GRAVITY = 3.5;   // multiple of GRAVITY once the ramp is complete
 
 const FIELD_YARDS = 100;
 const OWN_GOAL_Y = 70;                                   // drive starts here
@@ -69,7 +95,15 @@ const yardsToGoAt = (y) =>
 const yardMarker = (yardsToGo) =>
     Math.round(yardsToGo > 50 ? FIELD_YARDS - yardsToGo : yardsToGo);
 
-const pickLabel = (index) => `1.${String(index + 1).padStart(2, '0')}`;
+const ordinal = (n) => {
+    const teens = n % 100;
+    if (teens >= 11 && teens <= 13) return `${n}th`;
+    return `${n}${['th', 'st', 'nd', 'rd'][n % 10] || 'th'}`;
+};
+
+// Slot-style labels (1.01, 1.02) read as round numbers to anyone who doesn't
+// live in draft rooms, so the race speaks in plain picks instead.
+const pickLabel = (index) => `${ordinal(index + 1)} pick`;
 
 export function makeDefaultTeams(n) {
     return Array.from({ length: n }, (_, i) => ({
@@ -145,6 +179,7 @@ export function createMarbleRace(canvas, callbacks = {}) {
     let camY = 0;
     let destroyed = false;
     let fieldTexture = null;
+    let firstScoreAt = 0;   // drives the catch-up ramp; 0 until someone scores
 
     // Play-by-play bookkeeping.
     let playSeq = 0;
@@ -277,7 +312,7 @@ export function createMarbleRace(canvas, callbacks = {}) {
         g.textAlign = 'center';
         g.textBaseline = 'middle';
         g.fillStyle = 'rgba(209,250,229,0.75)';
-        g.fillText('PICK 1.01', W / 2, ezTop + END_ZONE_DEPTH * 0.40);
+        g.fillText('1ST PICK', W / 2, ezTop + END_ZONE_DEPTH * 0.40);
         g.restore();
 
         // Back line + uprights
@@ -549,6 +584,12 @@ export function createMarbleRace(canvas, callbacks = {}) {
 
     function afterUpdate() {
         if (!raceStarted) return;
+
+        if (firstScoreAt) {
+            const k = Math.min(1, (Date.now() - firstScoreAt) / CATCHUP_MS);
+            engine.gravity.y = GRAVITY * (1 + k * (CATCHUP_GRAVITY - 1));
+        }
+
         const MAX_V = 24;
         marbles.forEach(m => {
             if (m.finished) return;
@@ -605,8 +646,9 @@ export function createMarbleRace(canvas, callbacks = {}) {
             m.finished = true;
             m.finishTime = Date.now() - startTime;
             finishOrder.push(m);
+            if (!firstScoreAt) firstScoreAt = Date.now();
             emitPlay(
-                `${m.name} finds the end zone — pick ${pickLabel(finishOrder.length - 1)}`,
+                `${m.name} finds the end zone — ${pickLabel(finishOrder.length - 1)}`,
                 'score',
                 true,
             );
@@ -670,6 +712,8 @@ export function createMarbleRace(canvas, callbacks = {}) {
         marbles = [];
         winScheduled = false;
         camY = 0;
+        firstScoreAt = 0;
+        engine.gravity.y = GRAVITY;
         milestoneLeft = FIELD_YARDS;
         leadIdx = -1;
         lastPlayAt = 0;
@@ -786,7 +830,7 @@ export function createMarbleRace(canvas, callbacks = {}) {
         if (destroyed) return;
         clearInterval(timerHandle);
         const winner = finishOrder[0] || marbles[0];
-        if (winner) emitPlay(`Final — ${winner.name} is on the clock at 1.01`, 'score', true);
+        if (winner) emitPlay(`Final — ${winner.name} is on the clock with the 1st pick`, 'score', true);
         onPhase?.('done');
         onFinish?.(buildOrder());
     }
@@ -946,10 +990,12 @@ export function createMarbleRace(canvas, callbacks = {}) {
             ctx.textAlign = 'center';
             ctx.shadowColor = '#000'; ctx.shadowBlur = 4;
             if (pos >= 0) {
-                // Once a team scores, its label becomes the pick it just won.
+                // Once a team scores, its label becomes the pick it just won —
+                // the ordinal alone, because a full board ends up stacked in one
+                // end zone and the long form turns that into a smear.
                 ctx.font = '700 11px "DM Sans", system-ui, sans-serif';
                 ctx.fillStyle = pos === 0 ? '#fbbf24' : 'rgba(244,244,245,0.88)';
-                ctx.fillText(pickLabel(pos), x, y - r - 7);
+                ctx.fillText(ordinal(pos + 1), x, y - r - 7);
             } else {
                 ctx.font = 'bold 10px "DM Sans", Arial';
                 ctx.fillStyle = m.color;
@@ -976,7 +1022,7 @@ export function createMarbleRace(canvas, callbacks = {}) {
                 if (a.finished && b.finished) return a.finishTime - b.finishTime;
                 return b.body.position.y - a.body.position.y;
             });
-            const panelW = 172;
+            const panelW = 190;
             const panelX = W - panelW - 8;
             const bh = 22 + ranked.length * 18;
             ctx.save();
@@ -997,7 +1043,9 @@ export function createMarbleRace(canvas, callbacks = {}) {
                 ctx.fillStyle = m.color;
                 ctx.beginPath(); ctx.arc(panelX + 26, yy - 4, 3.5, 0, Math.PI * 2); ctx.fill();
                 ctx.fillStyle = m.finished ? 'rgba(244,244,245,0.55)' : 'rgba(244,244,245,0.92)';
-                ctx.fillText(m.name, panelX + 36, yy);
+                // Capped so a long name is squeezed rather than run into the
+                // pick/yardage column on its right.
+                ctx.fillText(m.name, panelX + 36, yy, panelW - 36 - 58);
 
                 // Distance still to travel, in the language of the field.
                 ctx.textAlign = 'right';

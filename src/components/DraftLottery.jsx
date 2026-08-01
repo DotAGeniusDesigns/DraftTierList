@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { ui } from '../utils/uiTheme';
-import { createMarbleRace, makeDefaultTeams } from '../utils/marbleRace';
+import { createMarbleRace, makeDefaultTeams, TEAM_PALETTE } from '../utils/marbleRace';
 
 const MIN_TEAMS = 2;
 const MAX_TEAMS = 20;
@@ -23,17 +23,24 @@ const shade = (c, amount) => {
 };
 
 // Matches the ball drawn on the field, so the setup row and the race agree.
+// A quadratic's apex sits halfway to its control point, so the controls are
+// pushed to twice the intended half-height (14 ± 26) — pointing them at the
+// viewBox edge instead is what made the earlier glyph read as a flat sliver.
 const FootballGlyph = ({ color }) => (
     <svg viewBox="0 0 44 28" className="h-full w-full" aria-hidden="true">
         <path
-            d="M2 14 Q22 0 42 14 Q22 28 2 14 Z"
+            d="M2 14 Q22 -12 42 14 Q22 40 2 14 Z"
             fill={color}
             stroke={shade(color, -70)}
             strokeWidth="1.5"
         />
-        <g stroke="rgba(255,255,255,0.85)" strokeWidth="1.6" strokeLinecap="round">
-            <line x1="14" y1="14" x2="30" y2="14" />
-            {[18, 22, 26].map((x) => <line key={x} x1={x} y1="10.5" x2={x} y2="17.5" />)}
+        <g stroke="rgba(255,255,255,0.85)" strokeLinecap="round">
+            <line x1="10" y1="7.2" x2="10" y2="20.8" strokeWidth="1.4" />
+            <line x1="34" y1="7.2" x2="34" y2="20.8" strokeWidth="1.4" />
+            <line x1="15.6" y1="14" x2="28.4" y2="14" strokeWidth="1.6" />
+            {[16.2, 19.1, 22, 24.9, 27.8].map((x) => (
+                <line key={x} x1={x} y1="9.3" x2={x} y2="18.7" strokeWidth="1.2" />
+            ))}
         </g>
     </svg>
 );
@@ -154,33 +161,69 @@ async function buildResultsImage({ startedAt, order }) {
         ctx.textAlign = 'right';
         ctx.fillStyle = '#34d399';
         ctx.font = '700 12px "DM Sans", system-ui, sans-serif';
-        ctx.fillText(`1.01  ${winner.name}`, W - padX, H - 24);
+        ctx.fillText(`1st pick  ${winner.name}`, W - padX, H - 24);
     }
 
     return cv;
 }
 
-const TeamSwatch = ({ index, team, darkMode, onChange }) => {
-    const colorRef = useRef(null);
+const TeamSwatch = ({ index, team, darkMode, taken, onChange }) => {
+    const [open, setOpen] = useState(false);
+    const wrapRef = useRef(null);
+
+    useEffect(() => {
+        if (!open) return;
+        const onDown = (e) => { if (!wrapRef.current?.contains(e.target)) setOpen(false); };
+        const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+        document.addEventListener('mousedown', onDown);
+        document.addEventListener('keydown', onKey);
+        return () => {
+            document.removeEventListener('mousedown', onDown);
+            document.removeEventListener('keydown', onKey);
+        };
+    }, [open]);
+
     return (
-        <div className="flex flex-col items-center gap-2">
+        <div ref={wrapRef} className="relative flex flex-col items-center gap-2">
+            {/* Deliberately out of the tab order: tabbing through this row should
+                walk the name fields, not stop on a ball between each one. */}
             <button
                 type="button"
-                onClick={() => colorRef.current?.click()}
+                tabIndex={-1}
+                onClick={() => setOpen((v) => !v)}
                 aria-label={`Recolor ${team.name || `team ${index + 1}`}`}
-                className="h-7 w-11 cursor-pointer rounded transition hover:scale-110 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                aria-expanded={open}
+                className="h-7 w-11 cursor-pointer rounded transition hover:scale-110 focus:outline-none"
             >
                 <FootballGlyph color={team.color} />
             </button>
-            <input
-                ref={colorRef}
-                type="color"
-                value={team.color}
-                onChange={(e) => onChange(index, { color: e.target.value })}
-                className="pointer-events-none absolute h-0 w-0 opacity-0"
-                tabIndex={-1}
-                aria-hidden="true"
-            />
+            {open && (
+                <div
+                    // Explicit 1.5rem tracks, not grid-cols-5: an absolutely
+                    // positioned box is shrink-to-fit, and fr columns collapse
+                    // to zero inside one — which stacks the swatches on top of
+                    // each other.
+                    className={`absolute left-1/2 top-9 z-30 grid -translate-x-1/2 grid-cols-[repeat(5,1.5rem)] gap-1.5 rounded-xl border p-2 shadow-xl ${darkMode ? 'border-white/10 bg-slate-900' : 'border-slate-200 bg-white'}`}
+                >
+                    {TEAM_PALETTE.map((c) => {
+                        const mine = c === team.color;
+                        // A colour another team already wears stays pickable, it
+                        // just fades — a clash should be a choice, not a wall.
+                        return (
+                            <button
+                                key={c}
+                                type="button"
+                                tabIndex={-1}
+                                onClick={() => { onChange(index, { color: c }); setOpen(false); }}
+                                aria-label={`Use ${c}`}
+                                aria-pressed={mine}
+                                className={`h-6 w-6 rounded-full transition hover:scale-110 ${mine ? 'ring-2 ring-emerald-400 ring-offset-2 ' + (darkMode ? 'ring-offset-slate-900' : 'ring-offset-white') : ''}`}
+                                style={{ background: c, opacity: !mine && taken.has(c) ? 0.4 : 1 }}
+                            />
+                        );
+                    })}
+                </div>
+            )}
             <input
                 type="text"
                 maxLength={14}
@@ -318,6 +361,7 @@ const DraftLottery = ({ darkMode }) => {
     }, [order, raceStartedAt]);
 
     const isRacing = phase === 'racing';
+    const takenColors = new Set(teams.map(t => t.color));
 
     return (
         <div className="container mx-auto max-w-3xl px-3 py-5 sm:px-4 sm:py-8">
@@ -330,7 +374,7 @@ const DraftLottery = ({ darkMode }) => {
                 </h1>
                 <p className={`mt-2 max-w-2xl text-sm sm:text-base ${ui.muted(darkMode)}`}>
                     Every team runs a football 100 yards down a randomized field — the order they
-                    reach the end zone sets your draft order. First one in takes the 1.01.
+                    reach the end zone sets your draft order. First one in takes the 1st pick.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
                     <span className={ui.statPill(darkMode, 'default')}>{count} teams</span>
@@ -382,7 +426,7 @@ const DraftLottery = ({ darkMode }) => {
 
                     <div className="flex flex-col gap-3">
                         <span className={`text-[11px] font-bold uppercase tracking-[0.14em] ${ui.muted(darkMode)}`}>
-                            Teams — click a swatch to recolor, type to rename
+                            Teams — click a ball to recolor, type to rename
                         </span>
                         <div className="flex flex-wrap gap-x-4 gap-y-3">
                             {teams.map((team, i) => (
@@ -391,6 +435,7 @@ const DraftLottery = ({ darkMode }) => {
                                     index={i}
                                     team={team}
                                     darkMode={darkMode}
+                                    taken={takenColors}
                                     onChange={handleTeamChange}
                                 />
                             ))}
@@ -454,7 +499,7 @@ const DraftLottery = ({ darkMode }) => {
                                 Draft order set
                             </p>
                             <h2 className={`mt-0.5 text-lg font-bold ${ui.heading(darkMode)}`}>
-                                {order[0]?.name} lands the 1.01
+                                {order[0]?.name} lands the 1st pick
                             </h2>
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
