@@ -7,6 +7,12 @@ const MAX_TEAMS = 20;
 const STORAGE_KEY = 'draft-lottery-order';
 const MAX_PLAYS = 5;
 
+// The results overlay sits inside the canvas, so its controls have to fit a
+// ~280px-tall box on a phone — hence the shrunk-down variants of ui.btn /
+// ui.btnPrimary rather than the page-sized ones.
+const OVERLAY_BTN = 'inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-slate-800/80 px-2.5 py-1.5 text-xs font-medium text-slate-100 transition hover:border-white/20 hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 sm:rounded-xl sm:px-3.5 sm:py-2 sm:text-sm';
+const OVERLAY_BTN_PRIMARY = 'inline-flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 px-2.5 py-1.5 text-xs font-semibold text-white shadow-glow transition hover:from-emerald-400 hover:to-teal-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/50 sm:rounded-xl sm:px-3.5 sm:py-2 sm:text-sm';
+
 const PLAY_TONE = {
     score: 'text-emerald-300',
     hot: 'text-rose-300',
@@ -462,12 +468,60 @@ const DraftLottery = ({ darkMode }) => {
                         </span>
                     )}
                 </div>
-                <div className="p-3 sm:p-4">
+                <div className="relative p-3 sm:p-4">
                     <canvas
                         ref={canvasRef}
                         className="block w-full rounded-xl border border-white/5"
                         style={{ height: 'auto', aspectRatio: '700 / 560' }}
                     />
+
+                    {/* Results land on the field itself rather than below it —
+                        the final board is the payoff, so it shouldn't make you
+                        scroll away from the thing you were watching. Inset to
+                        the wrapper's own padding so it covers the canvas
+                        exactly; the list scrolls inside on a 20-team board. */}
+                    {order && (
+                        <div className="absolute inset-3 flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0b0b0e]/95 backdrop-blur-sm sm:inset-4">
+                            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-white/5 px-3 py-2.5 sm:px-4 sm:py-3">
+                                <div>
+                                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-400">
+                                        Draft order set
+                                    </p>
+                                    <h2 className="mt-0.5 text-sm font-bold text-slate-100 sm:text-lg">
+                                        {order[0]?.name} lands the 1st pick
+                                    </h2>
+                                </div>
+                                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                                    <button onClick={handleShare} disabled={sharing} className={OVERLAY_BTN}>
+                                        <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true">
+                                            <path d="M13 4.5a2.5 2.5 0 11.702 1.737L6.97 9.605a2.5 2.5 0 010 .79l6.732 3.368a2.5 2.5 0 11-.671 1.341l-6.732-3.367a2.5 2.5 0 110-3.475l6.732-3.367A2.5 2.5 0 0113 4.5z" />
+                                        </svg>
+                                        {sharing ? 'Preparing…' : 'Share image'}
+                                    </button>
+                                    <button onClick={handleCopy} className={OVERLAY_BTN}>
+                                        {copied ? 'Copied!' : 'Copy order'}
+                                    </button>
+                                    <button onClick={handleReset} className={OVERLAY_BTN_PRIMARY}>Run it back</button>
+                                </div>
+                            </div>
+                            <ol className="min-h-0 flex-1 divide-y divide-white/[0.05] overflow-y-auto">
+                                {order.map((team, i) => (
+                                    <li key={i} className="flex items-center gap-2.5 px-3 py-1.5 sm:gap-3 sm:px-4 sm:py-2">
+                                        <span className={`w-6 shrink-0 text-center font-mono text-sm font-bold tabular-nums ${i === 0 ? 'text-emerald-400' : 'text-slate-500'}`}>
+                                            {i + 1}
+                                        </span>
+                                        <span className="h-3 w-3 shrink-0 rounded-full ring-1 ring-white/20" style={{ background: team.color }} />
+                                        <span className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-100">
+                                            {team.name}
+                                        </span>
+                                        <span className="shrink-0 font-mono text-xs tabular-nums text-slate-500">
+                                            {team.finished ? `${(team.finishTime / 1000).toFixed(2)}s` : 'DNF'}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ol>
+                        </div>
+                    )}
                 </div>
 
                 {plays.length > 0 && (
@@ -489,50 +543,6 @@ const DraftLottery = ({ darkMode }) => {
                     </div>
                 )}
             </div>
-
-            {/* Results */}
-            {order && (
-                <div className={`${ui.card(darkMode)} overflow-hidden`}>
-                    <div className={`flex flex-wrap items-center justify-between gap-3 border-b px-5 py-4 ${darkMode ? 'border-white/5' : 'border-slate-100'}`}>
-                        <div>
-                            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-500">
-                                Draft order set
-                            </p>
-                            <h2 className={`mt-0.5 text-lg font-bold ${ui.heading(darkMode)}`}>
-                                {order[0]?.name} lands the 1st pick
-                            </h2>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                            <button onClick={handleShare} disabled={sharing} className={ui.btn(darkMode)}>
-                                <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4" aria-hidden="true">
-                                    <path d="M13 4.5a2.5 2.5 0 11.702 1.737L6.97 9.605a2.5 2.5 0 010 .79l6.732 3.368a2.5 2.5 0 11-.671 1.341l-6.732-3.367a2.5 2.5 0 110-3.475l6.732-3.367A2.5 2.5 0 0113 4.5z" />
-                                </svg>
-                                {sharing ? 'Preparing…' : 'Share image'}
-                            </button>
-                            <button onClick={handleCopy} className={ui.btn(darkMode)}>
-                                {copied ? 'Copied!' : 'Copy order'}
-                            </button>
-                            <button onClick={handleReset} className={ui.btnPrimary()}>Run it back</button>
-                        </div>
-                    </div>
-                    <ol className="divide-y divide-slate-200/60 dark:divide-white/[0.05]">
-                        {order.map((team, i) => (
-                            <li key={i} className="flex items-center gap-3 px-5 py-2.5">
-                                <span className={`w-8 shrink-0 text-center font-mono text-sm font-bold tabular-nums ${i === 0 ? 'text-emerald-500' : ui.muted(darkMode)}`}>
-                                    {i + 1}
-                                </span>
-                                <span className="h-3 w-3 shrink-0 rounded-full ring-1 ring-black/10 dark:ring-white/20" style={{ background: team.color }} />
-                                <span className={`min-w-0 flex-1 truncate text-sm font-semibold ${ui.heading(darkMode)}`}>
-                                    {team.name}
-                                </span>
-                                <span className={`shrink-0 font-mono text-xs tabular-nums ${ui.muted(darkMode)}`}>
-                                    {team.finished ? `${(team.finishTime / 1000).toFixed(2)}s` : 'DNF'}
-                                </span>
-                            </li>
-                        ))}
-                    </ol>
-                </div>
-            )}
 
             {!order && (
                 <p className={`text-center text-xs ${ui.muted(darkMode)}`}>

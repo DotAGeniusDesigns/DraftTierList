@@ -60,13 +60,12 @@ const VIEW_H = 560;
 // 1st pick is in the end zone the camera locks there and the rest is a
 // formality — so PX_PER_YARD is tuned against *that*, not against the last ball
 // in. Swept headless over 30 courses per team count, the pair below lands the
-// winner at a 21–24s median from 8 teams up to 20 (~28s at 4, where fewer balls
-// are racing for the front). Gravity stays where it was: raising it to buy
-// length trades randomness away, because balls plough through the pegs instead
-// of being deflected by them. Distance is the free lever, so the extra length
-// comes from PX_PER_YARD alone and fairness is untouched — mean finish rank
-// stays within noise of fair across every starting slot.
-const PX_PER_YARD = 22;
+// winner at a 20–23s median from 4 teams up to 20. Gravity stays where it was:
+// raising it to buy length trades randomness away, because balls plough through
+// the pegs instead of being deflected by them. Distance is the free lever, so
+// the extra length comes from PX_PER_YARD alone and fairness is untouched —
+// mean finish rank stays within noise of fair across every starting slot.
+const PX_PER_YARD = 20;
 const GRAVITY = 0.14;
 
 // A longer field also stretches the tail: with 20 teams the stragglers would
