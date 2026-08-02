@@ -85,6 +85,10 @@
     @apply transition-all duration-200;
   }
 
+  /* The lift is a transform, which makes the hovered row its own stacking
+     context — anything overflowing it (the injury hover card) is then trapped
+     inside and painted under the next row. Player.jsx pairs this with a
+     hover:z-30 so the whole row rises above its later siblings. */
   .player-row-hover:hover {
     @apply -translate-y-px shadow-sm;
   }

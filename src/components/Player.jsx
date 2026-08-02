@@ -216,7 +216,7 @@ const Player = ({
             onTouchEnd={handleTouchEnd}
             onTouchCancel={handleTouchCancel}
             className={`
-                player-row-hover relative cursor-grab px-3 py-2.5 active:cursor-grabbing sm:px-4 sm:py-3
+                player-row-hover relative cursor-grab px-3 py-2.5 hover:z-30 focus-within:z-30 active:cursor-grabbing sm:px-4 sm:py-3
                 ${isDragging ? 'z-50 scale-[1.01] opacity-60' : ''}
                 ${isLongPressing ? 'ring-2 ring-emerald-400/40 ring-offset-0' : ''}
                 ${isFocused ? 'ring-2 ring-emerald-400/70 ring-offset-2 ring-offset-transparent bg-emerald-500/10' : ''}

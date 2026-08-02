@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 // Chip + hover card for a player carried by src/utils/injuryReport.js, which
 // scripts/updateInjuries.js refreshes from ESPN's injury feed. Lives next to the
@@ -39,7 +39,22 @@ const formatNewsDay = (iso) => {
     return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 };
 
+// Tallest the card gets, plus its offset. Only used to decide which side of the
+// row it opens on, so an approximation is fine.
+const CARD_HEIGHT = 170;
+
 const InjuryBadge = ({ injury, darkMode }) => {
+    // The last rows of a 377-player board have no viewport left underneath and
+    // nothing below to scroll to, so the card would open into dead space. Flip
+    // it above the row when that's where the room is.
+    const [openUp, setOpenUp] = useState(false);
+    const chipRef = useRef(null);
+    const place = useCallback(() => {
+        const rect = chipRef.current?.getBoundingClientRect();
+        if (!rect) return;
+        setOpenUp(rect.bottom + CARD_HEIGHT > window.innerHeight && rect.top > CARD_HEIGHT);
+    }, []);
+
     if (!injury) return null;
 
     const short = SHORT[injury.designation] || 'INJ';
@@ -56,7 +71,10 @@ const InjuryBadge = ({ injury, darkMode }) => {
         // name container in Player.jsx so it stays on screen at phone widths.
         <span className="group/inj inline-flex align-middle">
             <button
+                ref={chipRef}
                 type="button"
+                onMouseEnter={place}
+                onFocus={place}
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
                 aria-label={`${injury.label}${injury.bodyPart ? ` — ${injury.bodyPart}` : ''}`}
                 // min-h-0/min-w-0 opt out of the 44px tap-target floor index.css
@@ -73,15 +91,17 @@ const InjuryBadge = ({ injury, darkMode }) => {
 
             <div
                 role="tooltip"
-                className={`pointer-events-none absolute left-0 top-[calc(100%+6px)] z-40 hidden w-60 rounded-lg px-2.5 py-2 text-left text-[10px] font-medium normal-case leading-snug tracking-normal shadow-lg group-focus-within/inj:block group-hover/inj:block sm:w-72 ${
+                className={`pointer-events-none absolute left-0 ${openUp ? 'bottom-[calc(100%+6px)]' : 'top-[calc(100%+6px)]'} z-40 hidden w-60 rounded-lg px-2.5 py-2 text-left text-[10px] font-medium normal-case leading-snug tracking-normal shadow-lg group-focus-within/inj:block group-hover/inj:block sm:w-72 ${
                     darkMode
                         ? 'border border-white/10 bg-slate-800 text-slate-200'
                         : 'border border-slate-200 bg-white text-slate-600'
                 }`}
             >
                 <span
-                    className={`absolute bottom-full left-3 h-0 w-0 border-x-[6px] border-b-[6px] border-x-transparent ${
-                        darkMode ? 'border-b-slate-800' : 'border-b-white'
+                    className={`absolute left-3 h-0 w-0 border-x-[6px] border-x-transparent ${
+                        openUp
+                            ? `top-full border-t-[6px] ${darkMode ? 'border-t-slate-800' : 'border-t-white'}`
+                            : `bottom-full border-b-[6px] ${darkMode ? 'border-b-slate-800' : 'border-b-white'}`
                     }`}
                     aria-hidden="true"
                 />
