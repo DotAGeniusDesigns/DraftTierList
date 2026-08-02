@@ -16,7 +16,7 @@ import DraftBoardSearch from './components/DraftBoardSearch';
 import SharedBoardBanner from './components/SharedBoardBanner';
 import SleeperSync from './components/SleeperSync';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { initialPlayers, injuryStampOf, migratePlayerId } from './utils/playerData';
+import { initialPlayers, migratePlayerId } from './utils/playerData';
 import { getTeamLogo } from './utils/teamData';
 import { createBackup, shouldCreateBackup } from './utils/backupSystem';
 import { getPositionFilterTagClass } from './utils/playerStyles';
@@ -24,6 +24,19 @@ import { saveTierName, clearTierNames, getTierNames } from './utils/tierNames';
 import { ui } from './utils/uiTheme';
 import { LEGACY_HASH_ROUTES } from './utils/routes';
 import { decodeSharedBoard, SHARE_PARAM } from './utils/exportImport';
+
+// The three user-set flags, in the order they appear on a player row.
+const FLAG_FILTERS = {
+    upside: { label: 'Upside', field: 'isUpside', tone: 'text-emerald-500' },
+    risky: { label: 'Risky', field: 'isRisky', tone: 'text-amber-500' },
+    handcuff: { label: 'Handcuff', field: 'isHandcuff', tone: 'text-sky-500' },
+};
+
+const FLAG_ICONS = {
+    upside: 'M12.577 4.878a.75.75 0 01.919-.53l4.78 1.281a.75.75 0 01.531.919l-1.281 4.78a.75.75 0 01-1.449-.387l.81-3.022a19.407 19.407 0 00-5.594 5.203.75.75 0 01-1.139.093L7 10.06l-4.72 4.72a.75.75 0 01-1.06-1.061l5.25-5.25a.75.75 0 011.06 0l3.074 3.073a20.923 20.923 0 015.545-4.931l-3.042-.815a.75.75 0 01-.53-.919z',
+    risky: 'M10 18a8 8 0 100-16 8 8 0 000 16zM8.736 6.979C9.208 6.193 9.696 6 10 6c.304 0 .792.193 1.264.979.446.743.736 1.79.736 3.021 0 1.23-.29 2.278-.736 3.021C10.792 13.807 10.304 14 10 14c-.304 0-.792-.193-1.264-.979C8.29 12.278 8 11.23 8 10c0-1.231.29-2.278.736-3.021zM10 16a1 1 0 100-2 1 1 0 000 2z',
+    handcuff: 'M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z',
+};
 
 function App() {
     const navigate = useNavigate();
@@ -55,16 +68,12 @@ function App() {
                 .map(player => {
                     const databasePlayer = databaseMap.get(player.id);
                     if (databasePlayer) {
-                        // A player the injury report has newly filed on — or
-                        // filed an update on — raises the flag by itself. Once
-                        // that stamp is recorded the flag is the user's again,
-                        // so dismissing it isn't undone on the next page load.
-                        const injury = databasePlayer.injury || null;
-                        const stamp = injuryStampOf(injury);
-                        const isNewsToThisBoard = Boolean(injury) && player.injuryStamp !== stamp;
-
+                        // isInjured/injuryStamp are retired — the injury report
+                        // now drives the badge and the flag means upside — so
+                        // they're dropped rather than carried forward.
+                        const { isInjured, injuryStamp, ...saved } = player;
                         const updatedPlayer = {
-                            ...player,
+                            ...saved,
                             team: databasePlayer.team,
                             photo: databasePlayer.photo,
                             teamLogo: getTeamLogo(databasePlayer.team),
@@ -72,12 +81,11 @@ function App() {
                             ecr: databasePlayer.ecr,
                             byeWeek: databasePlayer.byeWeek,
                             olineRank: databasePlayer.olineRank,
-                            injury,
-                            injuryStamp: stamp || null,
+                            injury: databasePlayer.injury || null,
                             // User-controlled flags stay on the saved board
                             drafted: player.drafted,
                             tier: player.tier,
-                            isInjured: isNewsToThisBoard ? true : player.isInjured,
+                            isUpside: player.isUpside,
                             isHandcuff: player.isHandcuff,
                             isRisky: player.isRisky,
                             injuryNote: player.injuryNote || databasePlayer.injuryNote || null,
@@ -94,11 +102,7 @@ function App() {
             // Read ids off the merged list, not the raw saved one, so a player
             // whose id was migrated above isn't re-added as a duplicate.
             const storedIds = new Set(updatedPlayers.map(p => p.id));
-            const newPlayers = databasePlayers
-                .filter(p => !storedIds.has(p.id))
-                .map(p => (p.injury
-                    ? { ...p, isInjured: true, injuryStamp: injuryStampOf(p.injury) }
-                    : p));
+            const newPlayers = databasePlayers.filter(p => !storedIds.has(p.id));
 
             setPlayers([...updatedPlayers, ...newPlayers]);
         };
@@ -121,8 +125,12 @@ function App() {
     // Position filter state - now an array of selected positions
     const [positionFilters, setPositionFilters] = useLocalStorage('position-filters', []);
 
+    // Flag filter state - any of the user-set flags, matched as an OR
+    const [flagFilters, setFlagFilters] = useLocalStorage('flag-filters', []);
+
     // Dropdown open state
     const [isPositionDropdownOpen, setIsPositionDropdownOpen] = useState(false);
+    const [isFlagDropdownOpen, setIsFlagDropdownOpen] = useState(false);
 
     // Export/Import modal state
     const [showExportImport, setShowExportImport] = useState(false);
@@ -142,8 +150,9 @@ function App() {
     const [sharedBoard, setSharedBoard] = useState(null);
     const [shareError, setShareError] = useState(null);
 
-    // Ref for the dropdown container
+    // Refs for the dropdown containers
     const dropdownRef = useRef(null);
+    const flagDropdownRef = useRef(null);
 
     // Click outside handler
     useEffect(() => {
@@ -151,16 +160,19 @@ function App() {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsPositionDropdownOpen(false);
             }
+            if (flagDropdownRef.current && !flagDropdownRef.current.contains(event.target)) {
+                setIsFlagDropdownOpen(false);
+            }
         };
 
-        if (isPositionDropdownOpen) {
+        if (isPositionDropdownOpen || isFlagDropdownOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         }
 
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [isPositionDropdownOpen]);
+    }, [isPositionDropdownOpen, isFlagDropdownOpen]);
 
     // Redirect old hash URLs (e.g. #draft-range) to real routes
     useEffect(() => {
@@ -301,6 +313,12 @@ function App() {
         });
     }, [setPositionFilters]);
 
+    const handleFlagFilterChange = useCallback((key) => {
+        setFlagFilters(prev => (
+            prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
+        ));
+    }, [setFlagFilters]);
+
     // Adopt a shared board. The visitor's own board is backed up first so
     // "Use this board" is always recoverable from the Backups modal.
     const handleUseSharedBoard = useCallback(() => {
@@ -352,10 +370,10 @@ function App() {
         ));
     }, [setPlayers]);
 
-    const handleToggleInjured = useCallback((playerId, isInjured) => {
+    const handleToggleUpside = useCallback((playerId, isUpside) => {
         setPlayers(prev => prev.map(player =>
             player.id === playerId
-                ? { ...player, isInjured }
+                ? { ...player, isUpside }
                 : player
         ));
     }, [setPlayers]);
@@ -372,6 +390,13 @@ function App() {
     const getPositionTagStyle = getPositionFilterTagClass;
 
     // Get display text for dropdown
+    const getFlagFilterDisplay = () => {
+        if (flagFilters.length === 0) return 'Flags';
+        if (flagFilters.length === 1) return FLAG_FILTERS[flagFilters[0]].label;
+        return `${flagFilters.length} Flags`;
+    };
+
+    // Get display text for dropdown
     const getPositionFilterDisplay = () => {
         if (positionFilters.length === 6) {
             return 'All Positions';
@@ -382,11 +407,14 @@ function App() {
         }
     };
 
+    // Flags are matched as an OR: ticking Upside and Handcuff asks for the
+    // players carrying either, not the handful carrying both.
     const filteredPlayers = useMemo(() => players.filter(player => {
         if (hideDrafted && player.drafted) return false;
         if (positionFilters.length > 0 && !positionFilters.includes(player.position)) return false;
+        if (flagFilters.length > 0 && !flagFilters.some(key => player[FLAG_FILTERS[key].field])) return false;
         return true;
-    }), [players, hideDrafted, positionFilters]);
+    }), [players, hideDrafted, positionFilters, flagFilters]);
 
     const handleJumpToPlayer = useCallback((player) => {
         if (!player) return;
@@ -397,9 +425,14 @@ function App() {
         if (positionFilters.length > 0 && !positionFilters.includes(player.position)) {
             setPositionFilters((prev) => [...prev, player.position]);
         }
+        // Jumping to an unflagged player would otherwise scroll to a row the
+        // active flag filter has hidden.
+        if (flagFilters.length > 0 && !flagFilters.some(key => player[FLAG_FILTERS[key].field])) {
+            setFlagFilters([]);
+        }
 
         setFocusPlayerId(player.id);
-    }, [hideDrafted, positionFilters, setHideDrafted, setPositionFilters]);
+    }, [hideDrafted, positionFilters, flagFilters, setHideDrafted, setPositionFilters, setFlagFilters]);
 
     useEffect(() => {
         if (!focusPlayerId) return undefined;
@@ -481,7 +514,7 @@ function App() {
                                 <span className="text-gradient-brand">Draft Board</span>
                             </h1>
                             <p className={`mt-2 max-w-2xl text-sm sm:text-base ${ui.muted(darkMode)}`}>
-                                Drag players between tiers, mark picks as drafted, and flag risky or injured players.
+                                Drag players between tiers, mark picks as drafted, and flag upside, risky or handcuff players.
                             </p>
                             <div className="mt-4 flex flex-wrap gap-2">
                                 <span className={ui.statPill(darkMode, 'default')}>{draftStats.total} total</span>
@@ -531,6 +564,50 @@ function App() {
                                 )}
                             </div>
 
+                            <div className="relative" ref={flagDropdownRef}>
+                                <button
+                                    onClick={() => setIsFlagDropdownOpen(!isFlagDropdownOpen)}
+                                    className={ui.btn(darkMode)}
+                                >
+                                    <span>{getFlagFilterDisplay()}</span>
+                                    <svg className={`h-4 w-4 transition-transform ${isFlagDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+
+                                {isFlagDropdownOpen && (
+                                    <div className={`absolute left-0 top-full z-20 mt-2 w-52 p-2 ${ui.dropdown(darkMode)}`}>
+                                        {Object.entries(FLAG_FILTERS).map(([key, flag]) => (
+                                            <label
+                                                key={key}
+                                                className={`flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 transition ${darkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={flagFilters.includes(key)}
+                                                    onChange={() => handleFlagFilterChange(key)}
+                                                    className="h-4 w-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500/30"
+                                                />
+                                                <svg className={`h-4 w-4 ${flag.tone}`} fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                                    <path fillRule="evenodd" d={FLAG_ICONS[key]} clipRule="evenodd" />
+                                                </svg>
+                                                <span className={`text-sm font-medium ${ui.heading(darkMode)}`}>
+                                                    {flag.label}
+                                                </span>
+                                            </label>
+                                        ))}
+                                        {flagFilters.length > 0 && (
+                                            <button
+                                                onClick={() => setFlagFilters([])}
+                                                className={`mt-1 w-full rounded-lg px-3 py-2 text-left text-xs font-semibold ${ui.muted(darkMode)} ${darkMode ? 'hover:bg-white/5' : 'hover:bg-slate-50'}`}
+                                            >
+                                                Clear flag filters
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
                             <div className="flex flex-wrap items-center gap-3">
                                 <div className="flex items-center gap-2.5">
                                     <label className={`text-sm font-medium ${ui.muted(darkMode)}`}>
@@ -573,7 +650,7 @@ function App() {
                         onMovePlayer={handleMovePlayer}
                         onToggleDraft={handleToggleDraft}
                         onToggleRisky={handleToggleRisky}
-                        onToggleInjured={handleToggleInjured}
+                        onToggleUpside={handleToggleUpside}
                         onToggleHandcuff={handleToggleHandcuff}
                         onRemoveTier={handleRemoveTier}
                         onRenameTier={handleRenameTier}

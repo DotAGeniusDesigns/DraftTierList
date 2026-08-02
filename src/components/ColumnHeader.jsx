@@ -35,7 +35,7 @@ export const BOARD_COLUMN_TOOLTIPS = {
     bye: 'Week the team is on bye during the 2026 season.',
     ecr: 'Expert Consensus Rank from analysts. Parentheses show how far your board rank differs.',
     adp: 'Average Draft Position in mocks. Parentheses show value vs your current rank.',
-    flags: 'Tag injured, risky, or handcuff players to track during your draft.',
+    flags: 'Tag upside, risky, or handcuff players, then filter the board by them.',
 };
 
 export default ColumnHeader;

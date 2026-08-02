@@ -8,7 +8,7 @@ const TierList = ({
     onMovePlayer,
     onToggleDraft,
     onToggleRisky,
-    onToggleInjured,
+    onToggleUpside,
     onToggleHandcuff,
     onRemoveTier,
     onRenameTier,
@@ -67,7 +67,7 @@ const TierList = ({
                         allTierPlayers={allTierPlayers}
                         onToggleDraft={onToggleDraft}
                         onToggleRisky={onToggleRisky}
-                        onToggleInjured={onToggleInjured}
+                        onToggleUpside={onToggleUpside}
                         onToggleHandcuff={onToggleHandcuff}
                         onRemoveTier={onRemoveTier}
                         onRenameTier={onRenameTier}

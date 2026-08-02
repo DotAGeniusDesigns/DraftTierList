@@ -10,7 +10,7 @@ const Tier = ({
     allTierPlayers,
     onToggleDraft,
     onToggleRisky,
-    onToggleInjured,
+    onToggleUpside,
     onToggleHandcuff,
     onRemoveTier,
     onRenameTier,
@@ -301,7 +301,7 @@ const Tier = ({
                                     index={rankByPlayerId.get(player.id) ?? startingRank + index}
                                     onToggleDraft={onToggleDraft}
                                     onToggleRisky={onToggleRisky}
-                                    onToggleInjured={onToggleInjured}
+                                    onToggleUpside={onToggleUpside}
                                     onToggleHandcuff={onToggleHandcuff}
                                     onMovePlayer={onMovePlayer}
                                     isFocused={focusPlayerId === player.id}

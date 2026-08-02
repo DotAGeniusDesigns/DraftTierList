@@ -12,11 +12,11 @@ import { initialPlayers, migratePlayerId } from './playerData';
 // ---------------------------------------------------------------------------
 
 export const SHARE_PARAM = 'board';
-const SHARE_VERSION = 2;
+const SHARE_VERSION = 3;
 
 const FLAG_DRAFTED = 1;
 const FLAG_RISKY = 2;
-const FLAG_INJURED = 4;
+const FLAG_UPSIDE = 4;
 const FLAG_HANDCUFF = 8;
 
 // Links much longer than this get mangled by some chat clients.
@@ -35,7 +35,7 @@ export const encodeBoardForShare = (players, tierNames = {}) => {
         let mask = 0;
         if (player.drafted) mask |= FLAG_DRAFTED;
         if (player.isRisky) mask |= FLAG_RISKY;
-        if (player.isInjured) mask |= FLAG_INJURED;
+        if (player.isUpside) mask |= FLAG_UPSIDE;
         if (player.isHandcuff) mask |= FLAG_HANDCUFF;
         if (mask) flags[player.id] = mask;
     });
@@ -102,7 +102,7 @@ export const decodeSharedBoard = (code) => {
                     tier: Number(tier) || 1,
                     drafted: Boolean(mask & FLAG_DRAFTED),
                     isRisky: Boolean(mask & FLAG_RISKY),
-                    isInjured: Boolean(mask & FLAG_INJURED),
+                    isUpside: Boolean(mask & FLAG_UPSIDE),
                     isHandcuff: Boolean(mask & FLAG_HANDCUFF),
                 });
             });

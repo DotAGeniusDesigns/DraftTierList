@@ -18,7 +18,7 @@ const Player = ({
     onToggleDraft,
     onMovePlayer,
     onToggleRisky,
-    onToggleInjured,
+    onToggleUpside,
     onToggleHandcuff,
     darkMode,
     isFocused = false,
@@ -168,10 +168,10 @@ const Player = ({
         setIsDragging(false);
     };
 
-    const handleToggleInjured = (e) => {
+    const handleToggleUpside = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        onToggleInjured?.(player.id, !player.isInjured);
+        onToggleUpside?.(player.id, !player.isUpside);
     };
 
     const handleToggleRisky = (e) => {
@@ -186,7 +186,7 @@ const Player = ({
         onToggleHandcuff?.(player.id, !player.isHandcuff);
     };
 
-    const isInjured = player.isInjured || false;
+    const isUpside = player.isUpside || false;
     const isRisky = player.isRisky || false;
     const isHandcuff = player.isHandcuff || false;
 
@@ -341,14 +341,12 @@ const Player = ({
 
                     <div className="hidden shrink-0 items-center justify-center gap-0.5 sm:flex sm:w-24">
                         <button
-                            onClick={handleToggleInjured}
-                            className={flagBtn(isInjured, 'bg-rose-500/15 text-rose-500 ring-1 ring-rose-500/25', darkMode, 'hover:text-rose-500')}
-                            title={player.injury
-                                ? `Injured — raised by the ESPN report (${player.injury.label}). Clearing it sticks until that player's status changes.`
-                                : 'Injured'}
+                            onClick={handleToggleUpside}
+                            className={flagBtn(isUpside, 'bg-emerald-500/15 text-emerald-500 ring-1 ring-emerald-500/25', darkMode, 'hover:text-emerald-500')}
+                            title="Upside"
                         >
                             <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                <path fillRule="evenodd" d="M12.577 4.878a.75.75 0 01.919-.53l4.78 1.281a.75.75 0 01.531.919l-1.281 4.78a.75.75 0 01-1.449-.387l.81-3.022a19.407 19.407 0 00-5.594 5.203.75.75 0 01-1.139.093L7 10.06l-4.72 4.72a.75.75 0 01-1.06-1.061l5.25-5.25a.75.75 0 011.06 0l3.074 3.073a20.923 20.923 0 015.545-4.931l-3.042-.815a.75.75 0 01-.53-.919z" clipRule="evenodd" />
                             </svg>
                         </button>
 

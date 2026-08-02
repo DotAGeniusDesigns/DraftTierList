@@ -20,7 +20,7 @@ export const createBackup = (players, reason = 'automatic') => {
                 tier: player.tier,
                 drafted: player.drafted,
                 isRisky: player.isRisky,
-                isInjured: player.isInjured,
+                isUpside: player.isUpside,
                 isHandcuff: player.isHandcuff,
                 // Don't backup database properties that change
                 // Only backup user customizations
@@ -91,7 +91,7 @@ export const restoreFromBackup = (backup, currentPlayers) => {
                     tier: backupPlayer.tier,
                     drafted: backupPlayer.drafted,
                     isRisky: backupPlayer.isRisky,
-                    isInjured: backupPlayer.isInjured,
+                    isUpside: backupPlayer.isUpside,
                     isHandcuff: backupPlayer.isHandcuff,
                 };
             }
@@ -189,7 +189,7 @@ export const saveDraftBoard = (players, name, description = '') => {
                 tier: player.tier,
                 drafted: player.drafted,
                 isRisky: player.isRisky,
-                isInjured: player.isInjured,
+                isUpside: player.isUpside,
                 isHandcuff: player.isHandcuff,
             })),
             playerCount: players.length
@@ -250,7 +250,7 @@ export const loadDraftBoard = (boardId, currentPlayers) => {
                     tier: boardPlayer.tier,
                     drafted: boardPlayer.drafted,
                     isRisky: boardPlayer.isRisky,
-                    isInjured: boardPlayer.isInjured,
+                    isUpside: boardPlayer.isUpside,
                     isHandcuff: boardPlayer.isHandcuff,
                 };
             }
