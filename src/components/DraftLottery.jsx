@@ -4,22 +4,14 @@ import { createMarbleRace, makeDefaultTeams, TEAM_PALETTE } from '../utils/marbl
 
 const MIN_TEAMS = 2;
 const MAX_TEAMS = 20;
+const DEFAULT_TEAMS = 10;
 const STORAGE_KEY = 'draft-lottery-order';
-const MAX_PLAYS = 5;
 
 // The results overlay sits inside the canvas, so its controls have to fit a
 // ~280px-tall box on a phone — hence the shrunk-down variants of ui.btn /
 // ui.btnPrimary rather than the page-sized ones.
 const OVERLAY_BTN = 'inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-slate-800/80 px-2.5 py-1.5 text-xs font-medium text-slate-100 transition hover:border-white/20 hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 sm:rounded-xl sm:px-3.5 sm:py-2 sm:text-sm';
 const OVERLAY_BTN_PRIMARY = 'inline-flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 px-2.5 py-1.5 text-xs font-semibold text-white shadow-glow transition hover:from-emerald-400 hover:to-teal-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/50 sm:rounded-xl sm:px-3.5 sm:py-2 sm:text-sm';
-
-const PLAY_TONE = {
-    score: 'text-emerald-300',
-    hot: 'text-rose-300',
-    good: 'text-sky-300',
-    hit: 'text-amber-300',
-    neutral: 'text-slate-400',
-};
 
 const shade = (c, amount) => {
     const n = parseInt(c.slice(1), 16);
@@ -249,8 +241,8 @@ const DraftLottery = ({ darkMode }) => {
     const controllerRef = useRef(null);
     const stageRef = useRef(null);
 
-    const [count, setCount] = useState(8);
-    const [teams, setTeams] = useState(() => makeDefaultTeams(8));
+    const [count, setCount] = useState(DEFAULT_TEAMS);
+    const [teams, setTeams] = useState(() => makeDefaultTeams(DEFAULT_TEAMS));
     const [shuffle, setShuffle] = useState(false);
     const [phase, setPhase] = useState('setup'); // 'setup' | 'racing' | 'done'
     const [timer, setTimer] = useState('00:00.0');
@@ -258,19 +250,12 @@ const DraftLottery = ({ darkMode }) => {
     const [copied, setCopied] = useState(false);
     const [sharing, setSharing] = useState(false);
     const [raceStartedAt, setRaceStartedAt] = useState(null);
-    const [plays, setPlays] = useState([]);
 
     // Boot the engine once; tear it down on unmount.
     useEffect(() => {
         const controller = createMarbleRace(canvasRef.current, {
             onTimer: setTimer,
-            // Every reset path funnels through onPhase('setup'), so clearing the
-            // feed here covers Reset, New board and team-count changes at once.
-            onPhase: (next) => {
-                setPhase(next);
-                if (next === 'setup') setPlays([]);
-            },
-            onPlay: (play) => setPlays((prev) => [play, ...prev].slice(0, MAX_PLAYS)),
+            onPhase: setPhase,
             onFinish: (result) => {
                 setOrder(result);
                 try {
@@ -279,7 +264,7 @@ const DraftLottery = ({ darkMode }) => {
             },
         });
         controllerRef.current = controller;
-        controller.setCount(8, teams.map(t => t.name), teams.map(t => t.color));
+        controller.setCount(DEFAULT_TEAMS, teams.map(t => t.name), teams.map(t => t.color));
         return () => controller.destroy();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -318,7 +303,6 @@ const DraftLottery = ({ darkMode }) => {
 
     const handleStart = useCallback(() => {
         setOrder(null);
-        setPlays([]);
         setRaceStartedAt(new Date());
         controllerRef.current?.start();
     }, []);
@@ -543,25 +527,6 @@ const DraftLottery = ({ darkMode }) => {
                         )}
                     </div>
                 </div>
-
-                {plays.length > 0 && (
-                    <div className="border-t border-white/5 px-4 py-3">
-                        <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
-                            Play by play
-                        </p>
-                        <ul className="space-y-0.5" aria-live="polite">
-                            {plays.map((play, i) => (
-                                <li
-                                    key={play.id}
-                                    className={`truncate text-xs font-medium ${PLAY_TONE[play.tone] || PLAY_TONE.neutral}`}
-                                    style={{ opacity: 1 - i * 0.17 }}
-                                >
-                                    {play.text}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
             </div>
 
             {!order && (

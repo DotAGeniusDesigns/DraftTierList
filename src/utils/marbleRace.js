@@ -81,9 +81,10 @@ const FIELD_YARDS = 100;
 const OWN_GOAL_Y = 70;                                   // drive starts here
 const GOAL_Y = OWN_GOAL_Y + FIELD_YARDS * PX_PER_YARD;   // goal line = finish sensor
 const RED_ZONE_Y = GOAL_Y - 20 * PX_PER_YARD;
-// A real end zone is 10 yards, but it also has to hold the lettering and
-// uprights, so it stops shrinking below a readable floor.
-const END_ZONE_DEPTH = Math.max(240, 10 * PX_PER_YARD);
+// Shallower than a real 10-yard end zone on purpose: it only has to hold the
+// lettering and the uprights, and at full depth it read as dead green space
+// under the goal line for the whole run-out.
+const END_ZONE_DEPTH = 120;
 const H = GOAL_Y + END_ZONE_DEPTH + 30;                  // full world height
 
 const yardsToGoAt = (y) =>
@@ -112,7 +113,7 @@ export function makeDefaultTeams(n) {
 }
 
 export function createMarbleRace(canvas, callbacks = {}) {
-    const { onTimer, onPhase, onFinish, onPlay } = callbacks;
+    const { onTimer, onPhase, onFinish } = callbacks;
     const { Engine, Render, Bodies, Body, Composite, Events } = Matter;
 
     // Physics is driven from wall-clock time rather than Matter's Runner.
@@ -179,23 +180,6 @@ export function createMarbleRace(canvas, callbacks = {}) {
     let destroyed = false;
     let fieldTexture = null;
     let firstScoreAt = 0;   // drives the catch-up ramp; 0 until someone scores
-
-    // Play-by-play bookkeeping.
-    let playSeq = 0;
-    let lastPlayAt = 0;
-    let milestoneLeft = FIELD_YARDS;  // next 10-yard mark still uncalled
-    let leadIdx = -1;
-    let lastLeadChangeAt = 0;
-
-    // The ticker is flavour, not telemetry. Low-priority calls share a cooldown
-    // so a 20-team scrum can't flood the feed; scores and lead changes bypass it.
-    function emitPlay(text, tone = 'neutral', priority = false) {
-        if (!onPlay) return;
-        const now = Date.now();
-        if (!priority && now - lastPlayAt < 1100) return;
-        lastPlayAt = now;
-        onPlay({ id: ++playSeq, text, tone });
-    }
 
     let courseSeed = (Math.random() * 1e9) | 0;
     function mulberry32(a) {
@@ -305,19 +289,21 @@ export function createMarbleRace(canvas, callbacks = {}) {
         }
         g.restore();
 
+        // Sized to clear the uprights below it now that the end zone is half as
+        // deep as it was.
         g.save();
-        if ('letterSpacing' in g) g.letterSpacing = '10px';
-        g.font = '800 46px "Bricolage Grotesque", "DM Sans", system-ui, sans-serif';
+        if ('letterSpacing' in g) g.letterSpacing = '8px';
+        g.font = '800 34px "Bricolage Grotesque", "DM Sans", system-ui, sans-serif';
         g.textAlign = 'center';
         g.textBaseline = 'middle';
         g.fillStyle = 'rgba(209,250,229,0.75)';
-        g.fillText('1ST PICK', W / 2, ezTop + END_ZONE_DEPTH * 0.40);
+        g.fillText('TOUCHDOWN', W / 2, ezTop + 38);
         g.restore();
 
         // Back line + uprights
         g.fillStyle = 'rgba(255,255,255,0.3)';
         g.fillRect(18, ezBot - 3, W - 39, 3);
-        drawGoalposts(g, W / 2, ezBot - 26);
+        drawGoalposts(g, W / 2, ezBot - 16);
 
         // Pylons on all four end-zone corners.
         [[22, ezTop], [W - 22, ezTop], [22, ezBot - 3], [W - 22, ezBot - 3]].forEach(([px, py]) => {
@@ -344,13 +330,13 @@ export function createMarbleRace(canvas, callbacks = {}) {
         [-spread, spread].forEach((dx) => {
             g.beginPath();
             g.moveTo(cx + dx, baseY);
-            g.lineTo(cx + dx, baseY - 40);
+            g.lineTo(cx + dx, baseY - 30);
             g.stroke();
         });
         g.lineWidth = 6;             // stem
         g.beginPath();
         g.moveTo(cx, baseY);
-        g.lineTo(cx, baseY + 18);
+        g.lineTo(cx, baseY + 12);
         g.stroke();
         g.restore();
     }
@@ -419,8 +405,10 @@ export function createMarbleRace(canvas, callbacks = {}) {
         const HALF = COL_DX / 2;
         const SLOTS = 2 * (COLS - 1);
         const ROW_DY = 85;
-        // Obstacles stop short of the goal line so the end zone stays clear.
-        const TOP = 180, BOT = GOAL_Y - 125;
+        // Obstacles run all the way to the goal line — the clearance below is
+        // just enough that no node overhangs it, since a 125px stand-off left an
+        // empty lane the last two rows now fill.
+        const TOP = 180, BOT = GOAL_Y - 20;
         const slotX = j => NODE_R + j * HALF;
 
         // Stadium tones rather than arcade neon, so the pegs sit on the turf
@@ -632,7 +620,6 @@ export function createMarbleRace(canvas, callbacks = {}) {
         marbles.forEach(m => { m.spin += m.body.velocity.x * 0.035; });
 
         checkForScores();
-        callPlayByPlay();
     }
 
     // The goal line is tested as a plane rather than a collision sensor: balls
@@ -646,59 +633,11 @@ export function createMarbleRace(canvas, callbacks = {}) {
             m.finishTime = Date.now() - startTime;
             finishOrder.push(m);
             if (!firstScoreAt) firstScoreAt = Date.now();
-            emitPlay(
-                `${m.name} finds the end zone — ${pickLabel(finishOrder.length - 1)}`,
-                'score',
-                true,
-            );
             if (finishOrder.length >= marbleCount && !winScheduled) {
                 winScheduled = true;
                 setTimeout(finishRace, 600);
             }
         });
-    }
-
-    // ── Play-by-play ───────────────────────────────────────────────────
-    function leadingMarble() {
-        const active = marbles.filter(m => !m.finished);
-        if (active.length === 0) return null;
-        return active.reduce((a, b) => (a.body.position.y > b.body.position.y ? a : b));
-    }
-
-    function callPlayByPlay() {
-        const leader = leadingMarble();
-        if (!leader) return;
-
-        // Milestones are called off the leader only — one voice, not N.
-        const toGo = yardsToGoAt(leader.body.position.y);
-        while (milestoneLeft > 0 && toGo <= milestoneLeft - 10) {
-            milestoneLeft -= 10;
-            if (milestoneLeft === 50) {
-                emitPlay(`${leader.name} crosses midfield`, 'good', true);
-            } else if (milestoneLeft === 20) {
-                emitPlay(`${leader.name} is inside the RED ZONE`, 'hot', true);
-            } else if (milestoneLeft > 0) {
-                emitPlay(`${leader.name} down to the ${yardMarker(milestoneLeft)}`, 'neutral');
-            }
-        }
-
-        // Lead changes stop mattering once anyone has scored.
-        if (finishOrder.length > 0) return;
-
-        if (leadIdx === -1) {
-            leadIdx = leader.index;
-            return;
-        }
-        if (leader.index === leadIdx) return;
-
-        // Require a real gap, or a two-ball scrum flaps the call every frame.
-        const prev = marbles[leadIdx];
-        const margin = prev ? leader.body.position.y - prev.body.position.y : Infinity;
-        if (margin > 22 && Date.now() - lastLeadChangeAt > 1600) {
-            lastLeadChangeAt = Date.now();
-            leadIdx = leader.index;
-            emitPlay(`${leader.name} takes over the lead`, 'good', true);
-        }
     }
 
     // ── Lifecycle ──────────────────────────────────────────────────────
@@ -713,10 +652,6 @@ export function createMarbleRace(canvas, callbacks = {}) {
         camY = 0;
         firstScoreAt = 0;
         engine.gravity.y = GRAVITY;
-        milestoneLeft = FIELD_YARDS;
-        leadIdx = -1;
-        lastPlayAt = 0;
-        lastLeadChangeAt = 0;
         render.bounds = { min: { x: 0, y: 0 }, max: { x: W, y: VIEW_H } };
         Composite.add(engine.world, makeCourse());
         spawnMarbles();
@@ -762,8 +697,6 @@ export function createMarbleRace(canvas, callbacks = {}) {
             m._stuckT = t0;
             m._stuckY = m.body.position.y;
         });
-        emitPlay(`Kickoff — ${marbleCount} teams away`, 'good', true);
-
         startPhysicsLoop();
         startTime = Date.now();
         timerHandle = setInterval(() => {
@@ -789,8 +722,9 @@ export function createMarbleRace(canvas, callbacks = {}) {
             const nodeBody = aM ? bodyB : bodyA;
             const kick = nodeBody.kick || (nodeBody.parent && nodeBody.parent.kick);
             if (!kick) return;
-            const m = marbles.find(x => x.body === marbleBody && !x.finished);
-            if (!m) return;
+            // A ball that has already scored keeps rolling around the end zone;
+            // it shouldn't be kicked any further.
+            if (!marbles.some(x => x.body === marbleBody && !x.finished)) return;
             const c = nodeBody.parent || nodeBody;
             let dx = marbleBody.position.x - c.position.x;
             let dy = marbleBody.position.y - c.position.y;
@@ -802,15 +736,6 @@ export function createMarbleRace(canvas, callbacks = {}) {
             let nvy = dy * kick;
             if (nvy > 0) nvy = Math.min(nvy, Math.max(v.y, 0));
             Body.setVelocity(marbleBody, { x: nvx, y: nvy });
-
-            // Only the hardest contacts are worth calling; the cooldown inside
-            // emitPlay keeps a busy board from burying everything else.
-            if (kick >= 1.5) {
-                emitPlay(
-                    `${m.name} takes a big hit at the ${yardMarker(yardsToGoAt(marbleBody.position.y))}`,
-                    'hit',
-                );
-            }
         });
     }
 
@@ -828,8 +753,6 @@ export function createMarbleRace(canvas, callbacks = {}) {
     function finishRace() {
         if (destroyed) return;
         clearInterval(timerHandle);
-        const winner = finishOrder[0] || marbles[0];
-        if (winner) emitPlay(`Final — ${winner.name} is on the clock with the 1st pick`, 'score', true);
         onPhase?.('done');
         onFinish?.(buildOrder());
     }
