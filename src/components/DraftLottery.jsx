@@ -247,6 +247,7 @@ const TeamSwatch = ({ index, team, darkMode, taken, onChange }) => {
 const DraftLottery = ({ darkMode }) => {
     const canvasRef = useRef(null);
     const controllerRef = useRef(null);
+    const stageRef = useRef(null);
 
     const [count, setCount] = useState(8);
     const [teams, setTeams] = useState(() => makeDefaultTeams(8));
@@ -282,6 +283,14 @@ const DraftLottery = ({ darkMode }) => {
         return () => controller.destroy();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // Kick off pulls the field into view. It runs as an effect rather than from
+    // the onPhase callback because the setup panel above unmounts on the same
+    // render — scrolling before that lands on the pre-collapse layout.
+    useEffect(() => {
+        if (phase !== 'racing') return;
+        stageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, [phase]);
 
     const handleCountChange = useCallback((next) => {
         setTeams((prev) => {
@@ -388,8 +397,11 @@ const DraftLottery = ({ darkMode }) => {
                 </div>
             </div>
 
-            {/* Setup controls — above the race window */}
-            {!isRacing && (
+            {/* Setup controls — above the race window. Gone for the whole race
+                and stay gone while the results are up: the way back to setup is
+                Run it back, so the board can't be edited out from under a
+                finished order. */}
+            {phase === 'setup' && (
                 <div className={`${ui.toolbar(darkMode)} mb-5 flex flex-col gap-4`}>
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <div className="flex flex-wrap items-center gap-4">
@@ -451,7 +463,7 @@ const DraftLottery = ({ darkMode }) => {
             )}
 
             {/* Stage — the race window */}
-            <div className="mb-5 overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d10] shadow-card-dark">
+            <div ref={stageRef} className="mb-5 overflow-hidden rounded-2xl border border-white/10 bg-[#0d0d10] shadow-card-dark">
                 <div className="flex items-center justify-between px-4 pt-3.5">
                     <div className="flex flex-col">
                         <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
@@ -468,60 +480,68 @@ const DraftLottery = ({ darkMode }) => {
                         </span>
                     )}
                 </div>
-                <div className="relative p-3 sm:p-4">
-                    <canvas
-                        ref={canvasRef}
-                        className="block w-full rounded-xl border border-white/5"
-                        style={{ height: 'auto', aspectRatio: '700 / 560' }}
-                    />
+                <div className="p-3 sm:p-4">
+                    {/* Wrapper exists purely to be the overlay's containing box:
+                        percentage insets need to resolve against the canvas, not
+                        against the canvas plus this padding. */}
+                    <div className="relative">
+                        <canvas
+                            ref={canvasRef}
+                            className="block w-full rounded-xl border border-white/5"
+                            style={{ height: 'auto', aspectRatio: '700 / 560' }}
+                        />
 
-                    {/* Results land on the field itself rather than below it —
-                        the final board is the payoff, so it shouldn't make you
-                        scroll away from the thing you were watching. Inset to
-                        the wrapper's own padding so it covers the canvas
-                        exactly; the list scrolls inside on a 20-team board. */}
-                    {order && (
-                        <div className="absolute inset-3 flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0b0b0e]/95 backdrop-blur-sm sm:inset-4">
-                            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-white/5 px-3 py-2.5 sm:px-4 sm:py-3">
-                                <div>
-                                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-400">
-                                        Draft order set
-                                    </p>
-                                    <h2 className="mt-0.5 text-sm font-bold text-slate-100 sm:text-lg">
-                                        {order[0]?.name} lands the 1st pick
-                                    </h2>
+                        {/* Results land on the field itself rather than below it
+                            — the final board is the payoff, so it shouldn't make
+                            you scroll away from the thing you were watching.
+                            Inset a few percent so the field still frames it, and
+                            the list scrolls inside on a 20-team board. */}
+                        {order && (
+                            <div className="animate-result-in absolute inset-[4%] flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#0b0b0e]/95 shadow-2xl backdrop-blur-sm sm:inset-[6%]">
+                                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-white/5 px-3 py-2.5 sm:px-4 sm:py-3">
+                                    <div>
+                                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-400">
+                                            Draft order set
+                                        </p>
+                                        <h2 className="mt-0.5 text-sm font-bold text-slate-100 sm:text-lg">
+                                            {order[0]?.name} lands the 1st pick
+                                        </h2>
+                                    </div>
+                                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                                        {/* Short labels on phones: three full-length
+                                            ones wrap to a second 44px-tall row and
+                                            cost two rows of the order below. */}
+                                        <button onClick={handleShare} disabled={sharing} className={OVERLAY_BTN}>
+                                            <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true">
+                                                <path d="M13 4.5a2.5 2.5 0 11.702 1.737L6.97 9.605a2.5 2.5 0 010 .79l6.732 3.368a2.5 2.5 0 11-.671 1.341l-6.732-3.367a2.5 2.5 0 110-3.475l6.732-3.367A2.5 2.5 0 0113 4.5z" />
+                                            </svg>
+                                            {sharing ? 'Preparing…' : <span>Share<span className="hidden sm:inline"> image</span></span>}
+                                        </button>
+                                        <button onClick={handleCopy} className={OVERLAY_BTN}>
+                                            {copied ? 'Copied!' : <span>Copy<span className="hidden sm:inline"> order</span></span>}
+                                        </button>
+                                        <button onClick={handleReset} className={OVERLAY_BTN_PRIMARY}>Run it back</button>
+                                    </div>
                                 </div>
-                                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                                    <button onClick={handleShare} disabled={sharing} className={OVERLAY_BTN}>
-                                        <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true">
-                                            <path d="M13 4.5a2.5 2.5 0 11.702 1.737L6.97 9.605a2.5 2.5 0 010 .79l6.732 3.368a2.5 2.5 0 11-.671 1.341l-6.732-3.367a2.5 2.5 0 110-3.475l6.732-3.367A2.5 2.5 0 0113 4.5z" />
-                                        </svg>
-                                        {sharing ? 'Preparing…' : 'Share image'}
-                                    </button>
-                                    <button onClick={handleCopy} className={OVERLAY_BTN}>
-                                        {copied ? 'Copied!' : 'Copy order'}
-                                    </button>
-                                    <button onClick={handleReset} className={OVERLAY_BTN_PRIMARY}>Run it back</button>
-                                </div>
+                                <ol className="min-h-0 flex-1 divide-y divide-white/[0.05] overflow-y-auto">
+                                    {order.map((team, i) => (
+                                        <li key={i} className="flex items-center gap-2.5 px-3 py-1.5 sm:gap-3 sm:px-4 sm:py-2">
+                                            <span className={`w-6 shrink-0 text-center font-mono text-sm font-bold tabular-nums ${i === 0 ? 'text-emerald-400' : 'text-slate-500'}`}>
+                                                {i + 1}
+                                            </span>
+                                            <span className="h-3 w-3 shrink-0 rounded-full ring-1 ring-white/20" style={{ background: team.color }} />
+                                            <span className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-100">
+                                                {team.name}
+                                            </span>
+                                            <span className="shrink-0 font-mono text-xs tabular-nums text-slate-500">
+                                                {team.finished ? `${(team.finishTime / 1000).toFixed(2)}s` : 'DNF'}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ol>
                             </div>
-                            <ol className="min-h-0 flex-1 divide-y divide-white/[0.05] overflow-y-auto">
-                                {order.map((team, i) => (
-                                    <li key={i} className="flex items-center gap-2.5 px-3 py-1.5 sm:gap-3 sm:px-4 sm:py-2">
-                                        <span className={`w-6 shrink-0 text-center font-mono text-sm font-bold tabular-nums ${i === 0 ? 'text-emerald-400' : 'text-slate-500'}`}>
-                                            {i + 1}
-                                        </span>
-                                        <span className="h-3 w-3 shrink-0 rounded-full ring-1 ring-white/20" style={{ background: team.color }} />
-                                        <span className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-100">
-                                            {team.name}
-                                        </span>
-                                        <span className="shrink-0 font-mono text-xs tabular-nums text-slate-500">
-                                            {team.finished ? `${(team.finishTime / 1000).toFixed(2)}s` : 'DNF'}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ol>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
 
                 {plays.length > 0 && (

@@ -1013,8 +1013,10 @@ export function createMarbleRace(canvas, callbacks = {}) {
 
         ctx.restore(); // end world-space
 
-        // Live leaderboard (screen space)
-        if (raceStarted) {
+        // Live leaderboard (screen space). Retired the moment the last ball is
+        // in: the results panel takes over the board from there, and leaving
+        // this up just shows a second copy of it peeking out from behind.
+        if (raceStarted && finishOrder.length < marbleCount) {
             const ranked = [...marbles].sort((a, b) => {
                 if (a.finished && !b.finished) return -1;
                 if (!a.finished && b.finished) return 1;

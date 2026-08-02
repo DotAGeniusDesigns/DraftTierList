@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
+import InjuryBadge from './InjuryBadge';
 import { getOlineRank } from '../utils/teamData';
 import { getPositionTagClass } from '../utils/playerStyles';
 import { ui } from '../utils/uiTheme';
@@ -257,8 +258,14 @@ const Player = ({
                     </div>
 
                     <div className="min-w-0 flex-1 px-2 sm:px-4">
-                        <div className={`truncate text-sm font-semibold sm:text-[15px] ${player.drafted ? 'line-through opacity-70' : ''} ${ui.heading(darkMode)}`}>
-                            {player.name}
+                        {/* Positioning context for the injury hover card: anchored
+                            to the name rather than to the chip, which on a phone
+                            sits far enough right to push the card off screen. */}
+                        <div className="relative flex min-w-0 items-center gap-1.5">
+                            <span className={`truncate text-sm font-semibold sm:text-[15px] ${player.drafted ? 'line-through opacity-70' : ''} ${ui.heading(darkMode)}`}>
+                                {player.name}
+                            </span>
+                            <InjuryBadge injury={player.injury} darkMode={darkMode} />
                         </div>
                     </div>
                 </div>
@@ -336,7 +343,9 @@ const Player = ({
                         <button
                             onClick={handleToggleInjured}
                             className={flagBtn(isInjured, 'bg-rose-500/15 text-rose-500 ring-1 ring-rose-500/25', darkMode, 'hover:text-rose-500')}
-                            title="Injured"
+                            title={player.injury
+                                ? `Injured — raised by the ESPN report (${player.injury.label}). Clearing it sticks until that player's status changes.`
+                                : 'Injured'}
                         >
                             <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />

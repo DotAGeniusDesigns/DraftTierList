@@ -1,5 +1,6 @@
 import { getByeWeek, getOlineRank, getTeamLogo } from './teamData';
 import { getAllPlayers } from './playerDatabase';
+import { getInjury } from './injuryReport';
 
 // Player ids that changed after the database was generated, mapped old -> new.
 // Saved boards, backups and share links all encode ids, so anything reading a
@@ -17,7 +18,16 @@ export const initialPlayers = getAllPlayers().map(player => ({
     byeWeek: getByeWeek(player.team),
     olineRank: getOlineRank(player.team),
     teamLogo: getTeamLogo(player.team),
+    // Refreshed by scripts/updateInjuries.js, never persisted: the saved board
+    // takes this from the database on every load so a stale localStorage copy
+    // can't outlive the injury.
+    injury: getInjury(player.id),
 }));
+
+// One string per piece of news. The board remembers the last stamp it raised the
+// injured flag for, so clearing the flag by hand sticks until ESPN files an
+// update on that player.
+export const injuryStampOf = (injury) => (injury ? `${injury.status}|${injury.newsDate}` : '');
 
 // Helper function to get tier color
 export const getTierColor = (tier) => {

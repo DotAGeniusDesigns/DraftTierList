@@ -16,7 +16,7 @@ import DraftBoardSearch from './components/DraftBoardSearch';
 import SharedBoardBanner from './components/SharedBoardBanner';
 import SleeperSync from './components/SleeperSync';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { initialPlayers, migratePlayerId } from './utils/playerData';
+import { initialPlayers, injuryStampOf, migratePlayerId } from './utils/playerData';
 import { getTeamLogo } from './utils/teamData';
 import { createBackup, shouldCreateBackup } from './utils/backupSystem';
 import { getPositionFilterTagClass } from './utils/playerStyles';
@@ -55,6 +55,14 @@ function App() {
                 .map(player => {
                     const databasePlayer = databaseMap.get(player.id);
                     if (databasePlayer) {
+                        // A player the injury report has newly filed on — or
+                        // filed an update on — raises the flag by itself. Once
+                        // that stamp is recorded the flag is the user's again,
+                        // so dismissing it isn't undone on the next page load.
+                        const injury = databasePlayer.injury || null;
+                        const stamp = injuryStampOf(injury);
+                        const isNewsToThisBoard = Boolean(injury) && player.injuryStamp !== stamp;
+
                         const updatedPlayer = {
                             ...player,
                             team: databasePlayer.team,
@@ -64,10 +72,12 @@ function App() {
                             ecr: databasePlayer.ecr,
                             byeWeek: databasePlayer.byeWeek,
                             olineRank: databasePlayer.olineRank,
+                            injury,
+                            injuryStamp: stamp || null,
                             // User-controlled flags stay on the saved board
                             drafted: player.drafted,
                             tier: player.tier,
-                            isInjured: player.isInjured,
+                            isInjured: isNewsToThisBoard ? true : player.isInjured,
                             isHandcuff: player.isHandcuff,
                             isRisky: player.isRisky,
                             injuryNote: player.injuryNote || databasePlayer.injuryNote || null,
@@ -84,7 +94,11 @@ function App() {
             // Read ids off the merged list, not the raw saved one, so a player
             // whose id was migrated above isn't re-added as a duplicate.
             const storedIds = new Set(updatedPlayers.map(p => p.id));
-            const newPlayers = databasePlayers.filter(p => !storedIds.has(p.id));
+            const newPlayers = databasePlayers
+                .filter(p => !storedIds.has(p.id))
+                .map(p => (p.injury
+                    ? { ...p, isInjured: true, injuryStamp: injuryStampOf(p.injury) }
+                    : p));
 
             setPlayers([...updatedPlayers, ...newPlayers]);
         };
