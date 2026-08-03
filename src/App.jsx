@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Navigate, Route, Routes, useNavigate, useSearchParams } from 'react-router-dom';
+import {
+    Navigate, Route, Routes, useLocation, useNavigate, useSearchParams,
+} from 'react-router-dom';
 import TierList from './components/TierList';
 import ExportImport from './components/ExportImport';
 import Navbar from './components/Navbar';
@@ -15,15 +17,30 @@ import BurgerMenu from './components/BurgerMenu';
 import DraftBoardSearch from './components/DraftBoardSearch';
 import SharedBoardBanner from './components/SharedBoardBanner';
 import SleeperSync from './components/SleeperSync';
+import CloudBoardSync from './components/CloudBoardSync';
+import Footer from './components/Footer';
+import ProfilePage from './components/ProfilePage';
+import LoginPage from './components/auth/LoginPage';
+import SignupPage from './components/auth/SignupPage';
+import ForgotPasswordPage from './components/auth/ForgotPasswordPage';
+import ConfirmEmailPage from './components/auth/ConfirmEmailPage';
+import RecoverEmailPage from './components/auth/RecoverEmailPage';
+import RequireAuth from './components/auth/RequireAuth';
+import PrivacyPolicy from './components/legal/PrivacyPolicy';
+import TermsOfService from './components/legal/TermsOfService';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers, migratePlayerId } from './utils/playerData';
 import { getTeamLogo } from './utils/teamData';
 import { createBackup, shouldCreateBackup } from './utils/backupSystem';
 import { getPositionFilterTagClass } from './utils/playerStyles';
-import { saveTierName, clearTierNames, getTierNames } from './utils/tierNames';
+import {
+    saveTierName, clearTierNames, getTierNames, replaceTierNames,
+} from './utils/tierNames';
 import { ui } from './utils/uiTheme';
 import { LEGACY_HASH_ROUTES } from './utils/routes';
 import { decodeSharedBoard, SHARE_PARAM } from './utils/exportImport';
+import { decodeCloudBoard, setActiveBoardId } from './utils/cloudBoards';
+import { useAuth } from './context/AuthContext';
 
 // The three user-set flags, in the order they appear on a player row.
 const FLAG_FILTERS = {
@@ -40,9 +57,19 @@ const FLAG_ICONS = {
 
 function App() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
+    const { mustChangePassword } = useAuth();
     // Use localStorage hook to persist player data
     const [players, setPlayers] = useLocalStorage('fantasy-football-players', initialPlayers);
+
+    // A reset-only session cannot use account APIs until it chooses a real
+    // password. Keep navigation aligned with that server-side restriction.
+    useEffect(() => {
+        if (mustChangePassword && location.pathname !== '/profile') {
+            navigate('/profile?change-password=1', { replace: true });
+        }
+    }, [location.pathname, mustChangePassword, navigate]);
 
     // Merge new database properties with existing localStorage data
     useEffect(() => {
@@ -326,23 +353,39 @@ function App() {
 
         createBackup(players, 'before applying shared board');
         setPlayers(sharedBoard.players);
-        Object.entries(sharedBoard.tierNames || {}).forEach(([tier, name]) => {
-            saveTierName(Number(tier), name);
-        });
+        replaceTierNames(sharedBoard.tierNames);
+        setActiveBoardId(null);
 
         setSharedBoard(null);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [sharedBoard, players, setPlayers]);
 
+    // Load a board saved to the user's account. Same shape as adopting a
+    // shared board — including the safety backup — since the incoming board
+    // replaces whatever is currently on screen.
+    const handleLoadCloudBoard = useCallback((code, boardName) => {
+        const decoded = decodeCloudBoard(code);
+
+        createBackup(players, `before loading "${boardName || 'saved board'}"`);
+        setPlayers(decoded.players);
+        replaceTierNames(decoded.tierNames);
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [players, setPlayers]);
+
     // Handle importing players
     const handleImportPlayers = (importedPlayers) => {
         setPlayers(importedPlayers);
+        replaceTierNames();
+        setActiveBoardId(null);
         setShowExportImport(false);
     };
 
     // Handle restore from backup
     const handleRestoreFromBackup = (restoredPlayers) => {
         setPlayers(restoredPlayers);
+        replaceTierNames();
+        setActiveBoardId(null);
         setShowBackupManager(false);
     };
 
@@ -357,6 +400,7 @@ function App() {
     // Reset to default database order
     const handleResetToDefault = () => {
         clearTierNames();
+        setActiveBoardId(null);
         localStorage.removeItem('fantasy-football-players');
         window.location.reload();
     };
@@ -475,6 +519,8 @@ function App() {
                     path="/draft-board"
                     element={(
                 <div className="container mx-auto max-w-7xl px-3 py-5 sm:px-4 sm:py-8">
+                    <CloudBoardSync darkMode={darkMode} players={players} />
+
                     <SharedBoardBanner
                         darkMode={darkMode}
                         board={sharedBoard}
@@ -730,8 +776,34 @@ function App() {
                     path="/draft-scheduler"
                     element={<NewPage darkMode={darkMode} />}
                 />
+
+                {/* Accounts */}
+                <Route path="/login" element={<LoginPage darkMode={darkMode} />} />
+                <Route path="/signup" element={<SignupPage darkMode={darkMode} />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage darkMode={darkMode} />} />
+                <Route path="/confirm-email" element={<ConfirmEmailPage darkMode={darkMode} />} />
+                <Route path="/recover-email" element={<RecoverEmailPage darkMode={darkMode} />} />
+                <Route
+                    path="/profile"
+                    element={(
+                        <RequireAuth darkMode={darkMode}>
+                            <ProfilePage
+                                darkMode={darkMode}
+                                players={players}
+                                onLoadBoard={handleLoadCloudBoard}
+                            />
+                        </RequireAuth>
+                    )}
+                />
+
+                {/* Legal */}
+                <Route path="/privacy" element={<PrivacyPolicy darkMode={darkMode} />} />
+                <Route path="/terms" element={<TermsOfService darkMode={darkMode} />} />
+
                 <Route path="*" element={<Navigate to="/draft-board" replace />} />
             </Routes>
+
+            <Footer darkMode={darkMode} />
 
             {/* Global Modals (available on all pages) */}
             {/* Export/Import Modal */}

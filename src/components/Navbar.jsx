@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import BrandLogo from './BrandLogo';
+import AccountMenu from './AccountMenu';
 import { ui } from '../utils/uiTheme';
 import { NAV_ROUTES } from '../utils/routes';
 
@@ -134,17 +135,21 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                         >
                             <ThemeIcon darkMode={darkMode} />
                         </button>
+                        <AccountMenu darkMode={darkMode} />
                     </div>
 
-                    <button
-                        type="button"
-                        onClick={onToggleDarkMode}
-                        className={`lg:hidden ${themeButtonClass}`}
-                        aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-                        title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-                    >
-                        <ThemeIcon darkMode={darkMode} />
-                    </button>
+                    <div className="flex items-center gap-2 lg:hidden">
+                        <button
+                            type="button"
+                            onClick={onToggleDarkMode}
+                            className={themeButtonClass}
+                            aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                            title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                        >
+                            <ThemeIcon darkMode={darkMode} />
+                        </button>
+                        <AccountMenu darkMode={darkMode} compact />
+                    </div>
                 </div>
 
                 <div className={`lg:hidden border-t pb-3 pt-2.5 ${darkMode ? 'border-white/5' : 'border-slate-200/70'}`}>

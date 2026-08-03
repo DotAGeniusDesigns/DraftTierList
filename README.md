@@ -11,6 +11,9 @@ drag-and-drop tier list draft board. Live at [fantasy-toolkit.com](https://fanta
 | `/draft-range` | Given your league size and pick slot, estimates which players are still likely on the board each round, with variance widening by round. |
 | `/offseason` | Per-team 2026 offseason breakdowns: coaching changes, additions, departures, rookies, and fantasy-relevant takeaways. |
 | `/draft-lottery` | Settles draft order with a physics-driven marble race (matter-js) and exports a shareable branded results card. |
+| `/login`, `/signup`, `/forgot-password` | Account access. Optional — every tool above works signed out. |
+| `/profile` | Account settings: username, email, password, saved boards, sign out everywhere, delete account. |
+| `/privacy`, `/terms` | Privacy Policy and Terms of Service. |
 
 Two in-season tools — `/streamers` and `/interesting-players` — are stubbed with
 `ComingSoonPage` and intentionally left out of the navbar until they have real data.
@@ -23,18 +26,74 @@ They still resolve by URL. Re-add them to `NAV_ROUTES` in `src/utils/routes.js` 
 - **Tailwind CSS** — shared class helpers live in `src/utils/uiTheme.js`
 - **matter-js** for the draft lottery physics
 - **lz-string** for compressed board export codes and share links
-- **localStorage** for all persistence (no backend, no accounts)
+- **localStorage** as the primary store — the board works signed out and survives connection interruptions after loading
+- **Vercel Functions + Neon Postgres** under `/api` for accounts and cloud-saved boards
+- **Resend** for transactional password-reset, email-confirmation and recovery messages
 - Native HTML5 drag and drop — no DnD library
 
 ## Getting started
 
 ```bash
 npm install
-npm start          # dev server on http://localhost:3000
+npm start          # frontend only, http://localhost:3000 — no /api
+vercel dev         # frontend + API functions together
 npm run build      # production build into build/
 ```
 
+`npm start` is fine for anything that doesn't touch accounts. The `/api` routes
+only exist under `vercel dev` (`npm i -g vercel`, then `vercel link` once); with
+plain `npm start` the app detects the missing API and hides the account UI
+entirely rather than offering a sign-in that cannot work.
+
 Node version is pinned in `.nvmrc` (20).
+
+## Accounts
+
+Optional by design. The draft board, share links and every other tool work
+without one; an account only adds boards saved server-side.
+
+**Setup:** copy `.env.example` to `.env.local` and fill in `DATABASE_URL`
+(a free [Neon](https://neon.tech) project), `SESSION_SECRET`, and
+`RESEND_API_KEY`. Production also requires `EMAIL_FROM` on a verified Resend
+domain; set `PUBLIC_SITE_URL` to the canonical site. Set the same variables in
+Vercel's project settings. There is no migration step — `server/lib/db.js` creates
+its schema on the first request and the DDL is idempotent.
+
+### How it works
+
+- **Sessions** are JWTs in an httpOnly, SameSite=Lax cookie (30 days). There is
+  no session table; `users.token_version` is bumped on password change and on
+  "sign out everywhere", which invalidates every token issued before that moment.
+- **Passwords** are bcrypt at cost 12. Rules live in `server/lib/validate.js`, with
+  a browser-side mirror in `src/utils/accountRules.js` — change both together.
+- **Password reset** emails a temporary password valid for 60 minutes. It is
+  stored in `temp_password_hash`, *alongside* the real password rather than
+  replacing it, so spamming the reset form can't lock anyone out. Signing in with
+  it burns it, revokes existing sessions and issues a 15-minute reset-only
+  session; signing in with the real password clears it.
+- **Email changes** are staged until the new address confirms a one-hour link.
+  The previous address receives a 24-hour recovery link that restores it,
+  revokes sessions and requires a new password.
+- **Rate limiting** is a `rate_limits` table, not in-memory counters, because
+  each serverless instance would otherwise keep its own useless tally. Sign-in is
+  capped per IP *and* per account.
+- **Enumeration:** sign-in and password reset return identical responses whether
+  or not the account exists.
+
+### Cloud boards
+
+Saved boards reuse the share-link codec from `exportImport.js` rather than a
+second format: a row is a few KB instead of a few hundred, and loading one
+rebuilds photos, ADP, byes and injuries from the current player database, so a
+board saved in July isn't stale in September. Saving is always explicit — there
+is no autosave that could quietly overwrite an hour of work.
+
+| Endpoint | Purpose |
+| --- | --- |
+| `POST /api/auth/signup`, `login`, `logout` · `GET /api/auth/me` | Session lifecycle |
+| `POST /api/auth/forgot-password` | Emails a temporary password |
+| `POST /api/account/profile`, `confirm-email`, `recover-email`, `password`, `sessions`, `delete` | Account settings |
+| `GET/POST /api/boards` · `GET/PUT/DELETE /api/boards/:id` | Saved boards |
 
 ## Data model
 
@@ -82,7 +141,9 @@ python3 scripts/generateOgAssets.py
 ## Deployment
 
 Deploys to Vercel via `vercel.json` — SPA rewrites send everything to `index.html`
-except `/_vercel/*`, which must stay reachable for Web Analytics.
+except `/api/*` (the serverless functions) and `/_vercel/*`, which must stay
+reachable for Web Analytics. Both exclusions are load-bearing: dropping `api/`
+from that negative lookahead makes every endpoint silently return the HTML shell.
 
 Web Analytics is the `<Analytics />` component from `@vercel/analytics/react`, mounted
 inside the router in `src/index.js` so client-side route changes count as pageviews.

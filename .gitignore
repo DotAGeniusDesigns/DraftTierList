@@ -100,4 +100,7 @@ jspm_packages/
 .dynamodb/
 
 # Generated Sleeper photo lookup (rebuild with scripts/buildPhotoMapFromSleeper.js)
-scripts/playerPhotoMap.json 
+scripts/playerPhotoMap.json
+.vercel
+.env*
+!.env.example

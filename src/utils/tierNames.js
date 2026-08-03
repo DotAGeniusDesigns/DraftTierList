@@ -21,6 +21,20 @@ export const clearTierNames = () => {
     window.dispatchEvent(new CustomEvent(TIER_NAMES_UPDATED_EVENT));
 };
 
+export const replaceTierNames = (nextTierNames = {}) => {
+    const clean = Object.fromEntries(
+        Object.entries(nextTierNames)
+            .filter(([, name]) => typeof name === 'string' && name.trim())
+            .map(([tier, name]) => [tier, name.trim()])
+    );
+    if (Object.keys(clean).length > 0) {
+        localStorage.setItem(TIER_NAMES_KEY, JSON.stringify(clean));
+    } else {
+        localStorage.removeItem(TIER_NAMES_KEY);
+    }
+    window.dispatchEvent(new CustomEvent(TIER_NAMES_UPDATED_EVENT));
+};
+
 export const getTierDisplayName = (tierNumber) => {
     const tierNames = getTierNames();
     return tierNames[tierNumber] || `Tier ${tierNumber}`;

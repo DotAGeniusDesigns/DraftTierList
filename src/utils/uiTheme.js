@@ -76,6 +76,46 @@ export const ui = {
             : `${base} text-slate-600 hover:bg-white/60 hover:text-slate-900`;
     },
 
+    // Form primitives, added with accounts. `invalid` swaps the ring to rose
+    // so an inline field error reads without relying on the message alone.
+    label: (dark) =>
+        `block text-sm font-semibold ${dark ? 'text-slate-200' : 'text-slate-700'}`,
+
+    input: (dark, invalid = false) => {
+        const base =
+            'w-full rounded-xl border px-3.5 py-2.5 text-sm transition focus:outline-none focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60';
+        if (invalid) {
+            return dark
+                ? `${base} border-rose-500/50 bg-slate-900/70 text-slate-100 placeholder-slate-500 focus:border-rose-400 focus:ring-rose-500/30`
+                : `${base} border-rose-300 bg-white text-slate-900 placeholder-slate-400 focus:border-rose-400 focus:ring-rose-500/25`;
+        }
+        return dark
+            ? `${base} border-white/10 bg-slate-900/70 text-slate-100 placeholder-slate-500 focus:border-emerald-500/50 focus:ring-emerald-500/30`
+            : `${base} border-slate-200 bg-white text-slate-900 placeholder-slate-400 shadow-sm focus:border-emerald-400 focus:ring-emerald-500/25`;
+    },
+
+    fieldError: (dark) => `mt-1.5 text-xs font-medium ${dark ? 'text-rose-300' : 'text-rose-600'}`,
+
+    // Full-width banners for form-level success/failure.
+    alert: (dark, tone = 'error') => {
+        const base = 'rounded-xl border px-4 py-3 text-sm';
+        const tones = {
+            error: dark
+                ? 'border-rose-500/25 bg-rose-500/10 text-rose-200'
+                : 'border-rose-200 bg-rose-50 text-rose-700',
+            success: dark
+                ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-200'
+                : 'border-emerald-200 bg-emerald-50 text-emerald-700',
+            info: dark
+                ? 'border-sky-500/25 bg-sky-500/10 text-sky-200'
+                : 'border-sky-200 bg-sky-50 text-sky-700',
+            warning: dark
+                ? 'border-amber-500/25 bg-amber-500/10 text-amber-200'
+                : 'border-amber-200 bg-amber-50 text-amber-800',
+        };
+        return `${base} ${tones[tone] || tones.error}`;
+    },
+
     dropdown: (dark) =>
         dark
             ? 'rounded-xl border border-white/10 bg-slate-900/95 shadow-2xl backdrop-blur-xl'
