@@ -310,8 +310,8 @@ const Tier = ({
                                 <ColumnHeader label="Bye" tooltip={BOARD_COLUMN_TOOLTIPS.bye} className="w-10 shrink-0" darkMode={darkMode} />
                             </div>
                             <div className="flex flex-[4] items-center justify-center gap-4">
-                                <ColumnHeader label="ECR" tooltip={BOARD_COLUMN_TOOLTIPS.ecr} className="w-14 shrink-0" darkMode={darkMode} />
-                                <ColumnHeader label="ADP" tooltip={BOARD_COLUMN_TOOLTIPS.adp} className="w-16 shrink-0" darkMode={darkMode} />
+                                <ColumnHeader label="ECR ½PPR" tooltip={BOARD_COLUMN_TOOLTIPS.ecr} className="w-14 shrink-0" darkMode={darkMode} />
+                                <ColumnHeader label="ADP ½PPR" tooltip={BOARD_COLUMN_TOOLTIPS.adp} className="w-16 shrink-0" darkMode={darkMode} />
                                 <ColumnHeader label="Flags" tooltip={BOARD_COLUMN_TOOLTIPS.flags} className="w-24 shrink-0" darkMode={darkMode} />
                             </div>
                         </div>
@@ -325,7 +325,7 @@ const Tier = ({
                             <div className="flex-1 px-2">Player</div>
                             <ColumnHeader label="Pos" tooltip={BOARD_COLUMN_TOOLTIPS.pos} className="w-10" darkMode={darkMode} />
                             <ColumnHeader label="Tm" tooltip={BOARD_COLUMN_TOOLTIPS.team} className="w-10" darkMode={darkMode} />
-                            <ColumnHeader label="ADP" tooltip={BOARD_COLUMN_TOOLTIPS.adp} className="w-10" darkMode={darkMode} />
+                            <ColumnHeader label="ADP ½PPR" tooltip={BOARD_COLUMN_TOOLTIPS.adp} className="w-10" darkMode={darkMode} />
                         </div>
 
                         {players.map((player, index) => (

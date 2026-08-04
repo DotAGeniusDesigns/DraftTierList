@@ -1,405 +1,424 @@
 # Fantasy Football 2026 default draft board.
+# Scoring: Half PPR — ECR and ADP columns use half-PPR consensus (more formats later).
 # Format:  rank | Player Name (TEAM) | POSITION+RANK | BYE | ECR_VS_ADP
-# Tier boundaries are marked with "# Tier N". Blank ECR_VS_ADP means "no data" (-).
+# Tier boundaries are marked with "# Tier N". Blank ECR_VS_ADP means "no ADP data".
 # Edit this file and re-run `node scripts/generatePlayerDatabase.js` to regenerate the database.
 
+
 # Tier 1
-1 | Bijan Robinson (ATL) | RB1 | 11 | +1
-2 | Jahmyr Gibbs (DET) | RB2 | 6 | -1
+
+1 | Jahmyr Gibbs (DET) | RB1 | 6 | +1
+2 | Bijan Robinson (ATL) | RB2 | 11 | -1
 3 | Ja'Marr Chase (CIN) | WR1 | 6 | 0
 4 | Puka Nacua (LAR) | WR2 | 11 | 0
-5 | Jaxon Smith-Njigba (SEA) | WR3 | 11 | 0
+5 | Jaxon Smith-Njigba (SEA) | WR3 | 11 | +1
 6 | Amon-Ra St. Brown (DET) | WR4 | 6 | +2
-7 | Christian McCaffrey (SF) | RB3 | 8 | -1
+7 | Christian McCaffrey (SF) | RB3 | 8 | -2
 
 # Tier 2
-8 | CeeDee Lamb (DAL) | WR5 | 14 | +3
-9 | Jonathan Taylor (IND) | RB4 | 13 | -2
-10 | Justin Jefferson (MIN) | WR6 | 6 | -1
-11 | James Cook III (BUF) | RB5 | 7 | -1
-12 | Ashton Jeanty (LV) | RB6 | 13 | 0
-13 | Drake London (ATL) | WR7 | 11 | +8
-14 | De'Von Achane (MIA) | RB7 | 6 | +1
-15 | Nico Collins (HOU) | WR8 | 8 | +8
+
+8 | Jonathan Taylor (IND) | RB4 | 13 | -1
+9 | CeeDee Lamb (DAL) | WR5 | 14 | +3
+10 | Justin Jefferson (MIN) | WR6 | 6 | +1
+11 | James Cook III (BUF) | RB5 | 7 | -2
+12 | Ashton Jeanty (LV) | RB6 | 13 | -2
+13 | Drake London (ATL) | WR7 | 11 | +4
+14 | Saquon Barkley (PHI) | RB7 | 10 | 0
+15 | A.J. Brown (NE) | WR8 | 11 | +8
 
 # Tier 3
-16 | Saquon Barkley (PHI) | RB8 | 10 | -3
-17 | Brock Bowers (LV) | TE1 | 13 | -1
-18 | Chase Brown (CIN) | RB9 | 6 | -1
-19 | A.J. Brown (NE) | WR9 | 11 | +1
-20 | Omarion Hampton (LAC) | RB10 | 7 | -6
-21 | George Pickens (DAL) | WR10 | 14 | +4
-22 | Trey McBride (ARI) | TE2 | 14 | -3
-23 | Derrick Henry (BAL) | RB11 | 13 | -1
-24 | Kenneth Walker III (KC) | RB12 | 5 | -6
-25 | Chris Olave (NO) | WR11 | 8 | +2
-26 | Josh Allen (BUF) | QB1 | 7 | -2
-27 | Rashee Rice (KC) | WR12 | 5 | +1
+
+16 | Brock Bowers (LV) | TE1 | 13 | +4
+17 | Chase Brown (CIN) | RB8 | 6 | -2
+18 | Omarion Hampton (LAC) | RB9 | 7 | -2
+19 | De'Von Achane (MIA) | RB10 | 6 | -6
+20 | Nico Collins (HOU) | WR9 | 8 | +4
+21 | Derrick Henry (BAL) | RB11 | 13 | 0
+22 | George Pickens (DAL) | WR10 | 14 | +4
+23 | Kenneth Walker III (KC) | RB12 | 5 | -4
+24 | Trey McBride (ARI) | TE2 | 14 | -6
+25 | Rashee Rice (KC) | WR11 | 5 | +5
+26 | Chris Olave (NO) | WR12 | 8 | +3
+27 | Josh Allen (BUF) | QB1 | 7 | -5
 
 # Tier 4
-28 | DeVonta Smith (PHI) | WR13 | 10 | +1
-29 | Jeremiyah Love (ARI) | RB13 | 14 | -3
-30 | Tetairoa McMillan (CAR) | WR14 | 5 | +11
+
+28 | DeVonta Smith (PHI) | WR13 | 10 | +5
+29 | Zay Flowers (BAL) | WR14 | 13 | +11
+30 | Kyren Williams (LAR) | RB13 | 11 | -2
 31 | Tee Higgins (CIN) | WR15 | 6 | +6
-32 | Kyren Williams (LAR) | RB14 | 11 | -2
-33 | Zay Flowers (BAL) | WR16 | 13 | +2
-34 | Lamar Jackson (BAL) | QB2 | 13 | +9
-35 | Drake Maye (NE) | QB3 | 11 | +21
-36 | Breece Hall (NYJ) | RB15 | 13 | -5
-37 | Malik Nabers (NYG) | WR17 | 8 | +2
-38 | Josh Jacobs (GB) | RB16 | 11 | 0
-39 | Garrett Wilson (NYJ) | WR18 | 13 | +5
-40 | Colston Loveland (CHI) | TE3 | 10 | -6
-41 | Ladd McConkey (LAC) | WR19 | 7 | +1
-42 | Javonte Williams (DAL) | RB17 | 14 | -10
-43 | Emeka Egbuka (TB) | WR20 | 10 | -7
-44 | Jaylen Waddle (DEN) | WR21 | 10 | +7
-45 | Travis Etienne Jr. (NO) | RB18 | 8 | -12
-46 | Joe Burrow (CIN) | QB4 | 6 | +3
-47 | Terry McLaurin (WAS) | WR22 | 7 | +6
+32 | Tetairoa McMillan (CAR) | WR16 | 5 | +6
+33 | Jeremiyah Love (ARI) | RB14 | 14 | -8
+34 | Lamar Jackson (BAL) | QB2 | 13 | +1
+35 | Josh Jacobs (GB) | RB15 | 11 | -8
+36 | Breece Hall (NYJ) | RB16 | 13 | -4
+37 | Malik Nabers (NYG) | WR17 | 8 | -3
+38 | Emeka Egbuka (TB) | WR18 | 10 | +3
+39 | Garrett Wilson (NYJ) | WR19 | 13 | +3
+40 | Colston Loveland (CHI) | TE3 | 10 | +3
+41 | Javonte Williams (DAL) | RB17 | 14 | -10
+42 | Ladd McConkey (LAC) | WR20 | 7 | +3
+43 | Drake Maye (NE) | QB3 | 11 | +9
+44 | Jaylen Waddle (DEN) | WR21 | 10 | +4
+45 | Terry McLaurin (WAS) | WR22 | 7 | +10
+46 | Travis Etienne Jr. (NO) | RB18 | 8 | -7
+47 | Davante Adams (LAR) | WR23 | 11 | +11
 
 # Tier 5
-48 | Luther Burden III (CHI) | WR23 | 10 | -3
-49 | Davante Adams (LAR) | WR24 | 11 | +5
-50 | Cam Skattebo (NYG) | RB19 | 8 | -10
-51 | Jameson Williams (DET) | WR25 | 6 | +7
-52 | Bucky Irving (TB) | RB20 | 10 | +7
-53 | D'Andre Swift (CHI) | RB21 | 10 | -1
-54 | Quinshon Judkins (CLE) | RB22 | 11 | -6
-55 | Mike Evans (SF) | WR26 | 8 | +2
-56 | Tyler Warren (IND) | TE4 | 13 | -6
-57 | Christian Watson (GB) | WR27 | 11 | +7
-58 | TreVeyon Henderson (NE) | RB23 | 11 | -3
-59 | Jayden Daniels (WAS) | QB5 | 7 | +2
-60 | DJ Moore (BUF) | WR28 | 7 | -14
-61 | Jalen Hurts (PHI) | QB6 | 10 | +5
-62 | Rome Odunze (CHI) | WR29 | 10 | +1
-63 | David Montgomery (HOU) | RB24 | 8 | -16
-64 | Bhayshul Tuten (JAX) | RB25 | 7 | -4
-65 | Tucker Kraft (GB) | TE5 | 11 | +3
-66 | Carnell Tate (TEN) | WR30 | 9 | +3
-67 | Caleb Williams (CHI) | QB7 | 10 | -2
+
+48 | Joe Burrow (CIN) | QB4 | 6 | +2
+49 | Cam Skattebo (NYG) | RB19 | 8 | -13
+50 | Luther Burden III (CHI) | WR24 | 10 | -3
+51 | Mike Evans (SF) | WR25 | 8 | +10
+52 | Quinshon Judkins (CLE) | RB20 | 11 | -6
+53 | Tyler Warren (IND) | TE4 | 13 | +1
+54 | Jayden Daniels (WAS) | QB5 | 7 | +6
+55 | Jameson Williams (DET) | WR26 | 6 | +4
+56 | D'Andre Swift (CHI) | RB21 | 10 | 0
+57 | Bucky Irving (TB) | RB22 | 10 | -13
+58 | Christian Watson (GB) | WR27 | 11 | +8
+59 | David Montgomery (HOU) | RB23 | 8 | -8
+60 | TreVeyon Henderson (NE) | RB24 | 11 | -11
+61 | DJ Moore (BUF) | WR28 | 7 | -8
+62 | Rome Odunze (CHI) | WR29 | 10 | +2
+63 | Jalen Hurts (PHI) | QB6 | 10 | 0
+64 | Bhayshul Tuten (JAX) | RB25 | 7 | -7
+65 | Jadarian Price (SEA) | RB26 | 11 | -3
+66 | Tucker Kraft (GB) | TE5 | 11 | +2
+67 | Caleb Williams (CHI) | QB7 | 10 | +9
 
 # Tier 6
-68 | Justin Herbert (LAC) | QB8 | 7 | +14
-69 | Jadarian Price (SEA) | RB26 | 11 | -7
-70 | Jaylen Warren (PIT) | RB27 | 9 | +2
-71 | Marvin Harrison Jr. (ARI) | WR31 | 14 | +2
-72 | Alec Pierce (IND) | WR32 | 13 | +12
-73 | Trevor Lawrence (JAX) | QB9 | 7 | +8
-74 | DK Metcalf (PIT) | WR33 | 9 | +12
-75 | Rhamondre Stevenson (NE) | RB28 | 11 | -1
-76 | Chuba Hubbard (CAR) | RB29 | 5 | 0
-77 | Tony Pollard (TEN) | RB30 | 9 | -6
-78 | Harold Fannin Jr. (CLE) | TE6 | 11 | -1
-79 | Courtland Sutton (DEN) | WR34 | 10 | +8
-80 | Rico Dowdle (PIT) | RB31 | 9 | +5
-81 | Brian Thomas Jr. (JAX) | WR35 | 7 | -14
-82 | Dak Prescott (DAL) | QB10 | 14 | -12
-83 | Kyle Pitts Sr. (ATL) | TE7 | 11 | -8
-84 | Sam LaPorta (DET) | TE8 | 6 | -4
-85 | Jaxson Dart (NYG) | QB11 | 8 | +6
-86 | Chris Godwin Jr. (TB) | WR36 | 10 | +6
-87 | Jordyn Tyson (NO) | WR37 | 8 | -8
-88 | RJ Harvey (DEN) | RB32 | 10 | -5
-89 | Parker Washington (JAX) | WR38 | 7 | -11
-90 | Brock Purdy (SF) | QB12 | 8 | +8
-91 | Michael Wilson (ARI) | WR39 | 14 | -2
-92 | Kyle Monangai (CHI) | RB33 | 10 | -2
-93 | Makai Lemon (PHI) | WR40 | 10 | +1
-94 | Blake Corum (LAR) | RB34 | 11 | +5
-95 | Michael Pittman Jr. (PIT) | WR41 | 9 | +10
+
+68 | Justin Herbert (LAC) | QB8 | 7 | +11
+69 | Carnell Tate (TEN) | WR30 | 9 | 0
+70 | Jaylen Warren (PIT) | RB27 | 9 | -3
+71 | Marvin Harrison Jr. (ARI) | WR31 | 14 | +7
+72 | Trevor Lawrence (JAX) | QB9 | 7 | +10
+73 | Tony Pollard (TEN) | RB28 | 9 | +7
+74 | Brian Thomas Jr. (JAX) | WR32 | 7 | -3
+75 | DK Metcalf (PIT) | WR33 | 9 | +9
+76 | Rhamondre Stevenson (NE) | RB29 | 11 | -3
+77 | Harold Fannin Jr. (CLE) | TE6 | 11 | -12
+78 | Alec Pierce (IND) | WR34 | 13 | +5
+79 | Dak Prescott (DAL) | QB10 | 14 | +2
+80 | Parker Washington (JAX) | WR35 | 7 | +7
+81 | Sam LaPorta (DET) | TE7 | 6 | -6
+82 | Chuba Hubbard (CAR) | RB30 | 5 | -8
+83 | Kyle Pitts Sr. (ATL) | TE8 | 11 | -13
+84 | Courtland Sutton (DEN) | WR36 | 10 | +6
+85 | Rico Dowdle (PIT) | RB31 | 9 | -8
+86 | Chris Godwin Jr. (TB) | WR37 | 10 | +5
+87 | J.K. Dobbins (DEN) | RB32 | 10 | +5
+88 | Jordyn Tyson (NO) | WR38 | 8 | -2
+89 | Jaxson Dart (NYG) | QB11 | 8 | -1
+90 | Brock Purdy (SF) | QB12 | 8 | +9
+91 | Michael Pittman Jr. (PIT) | WR39 | 9 | +12
+92 | Michael Wilson (ARI) | WR40 | 14 | -3
+93 | Quentin Johnston (LAC) | WR41 | 7 | +13
+94 | RJ Harvey (DEN) | RB33 | 10 | -22
+95 | Blake Corum (LAR) | RB34 | 11 | -2
 
 # Tier 7
-96 | J.K. Dobbins (DEN) | RB35 | 10 | +1
-97 | Patrick Mahomes II (KC) | QB13 | 5 | -2
-98 | Jakobi Meyers (JAX) | WR42 | 7 | +14
-99 | Bo Nix (DEN) | QB14 | 10 | +5
-100 | Kenny Gainwell (TB) | RB36 | 10 | +2
-101 | Quentin Johnston (LAC) | WR43 | 7 | -8
-102 | Travis Kelce (KC) | TE9 | 5 | +5
-103 | Matthew Stafford (LAR) | QB15 | 11 | -15
-104 | Jordan Addison (MIN) | WR44 | 6 | +4
-105 | Ricky Pearsall (SF) | WR45 | 8 | +6
-106 | Wan'Dale Robinson (TEN) | WR46 | 9 | +3
-107 | Aaron Jones Sr. (MIN) | RB37 | 6 | +17
-108 | Dalton Kincaid (BUF) | TE10 | 7 | +6
-109 | Rachaad White (WAS) | RB38 | 7 | +4
-110 | Jared Goff (DET) | QB16 | 6 | -10
-111 | Jayden Reed (GB) | WR47 | 11 | -8
-112 | George Kittle (SF) | TE11 | 8 | -16
-113 | Kyler Murray (MIN) | QB17 | 6 | +3
-114 | Josh Downs (IND) | WR48 | 13 | -4
-115 | Jacory Croskey-Merritt (WAS) | RB39 | 7 | +10
-116 | Jake Ferguson (DAL) | TE12 | 14 | +3
-117 | Isaiah Likely (NYG) | TE13 | 8 | -16
-118 | Dallas Goedert (PHI) | TE14 | 10 | -1
-119 | Jordan Mason (MIN) | RB40 | 6 | -1
-120 | Jordan Love (GB) | QB18 | 11 | 0
-121 | Xavier Worthy (KC) | WR49 | 5 | -6
-122 | Baker Mayfield (TB) | QB19 | 10 | 0
-123 | Jayden Higgins (HOU) | WR50 | 8 | +10
-124 | Tyrone Tracy Jr. (NYG) | RB41 | 8 | +7
-125 | Tyler Shough (NO) | QB20 | 8 | -2
-126 | Khalil Shakir (BUF) | WR51 | 7 | +3
-127 | Mark Andrews (BAL) | TE15 | 13 | -6
-128 | Romeo Doubs (NE) | WR52 | 11 | -1
-129 | Chris Rodriguez Jr. (JAX) | RB42 | 7 | +7
+
+96 | Kyle Monangai (CHI) | RB35 | 10 | -11
+97 | Patrick Mahomes II (KC) | QB13 | 5 | 0
+98 | Makai Lemon (PHI) | WR42 | 10 | -4
+99 | Bo Nix (DEN) | QB14 | 10 | +3
+100 | Josh Downs (IND) | WR43 | 13 | +19
+101 | Travis Kelce (KC) | TE9 | 5 | -3
+102 | George Kittle (SF) | TE10 | 8 | -6
+103 | Jakobi Meyers (JAX) | WR44 | 7 | +8
+104 | Matthew Stafford (LAR) | QB15 | 11 | +1
+105 | Kenny Gainwell (TB) | RB36 | 10 | -1
+106 | Wan'Dale Robinson (TEN) | WR45 | 9 | +11
+107 | Jordan Addison (MIN) | WR46 | 6 | +2
+108 | Rachaad White (WAS) | RB37 | 7 | +2
+109 | Jayden Reed (GB) | WR47 | 11 | +7
+110 | Aaron Jones Sr. (MIN) | RB38 | 6 | +2
+111 | Jared Goff (DET) | QB16 | 6 | +3
+112 | Dalton Kincaid (BUF) | TE11 | 7 | -11
+113 | Jonathon Brooks (CAR) | RB39 | 5 | -18
+114 | Kyler Murray (MIN) | QB17 | 6 | +11
+115 | Jacory Croskey-Merritt (WAS) | RB40 | 7 | -7
+116 | Jordan Mason (MIN) | RB41 | 6 | -3
+117 | Dallas Goedert (PHI) | TE12 | 10 | +1
+118 | Jake Ferguson (DAL) | TE13 | 14 | -11
+119 | Baker Mayfield (TB) | QB18 | 10 | +12
+120 | Xavier Worthy (KC) | WR48 | 5 | +3
+121 | Jordan Love (GB) | QB19 | 11 | +6
+122 | Tyler Shough (NO) | QB20 | 8 | +17
+123 | Mark Andrews (BAL) | TE14 | 13 | -8
+124 | Jayden Higgins (HOU) | WR49 | 8 | +32
+125 | Tyrone Tracy Jr. (NYG) | RB42 | 8 | +11
+126 | Romeo Doubs (NE) | WR50 | 11 | +6
+127 | Khalil Shakir (BUF) | WR51 | 7 | +24
+128 | Chris Rodriguez Jr. (JAX) | RB43 | 7 | +25
+129 | Jalen Coker (CAR) | WR52 | 5 | +31
 
 # Tier 8
-130 | KC Concepcion (CLE) | WR53 | 11 | -2
-131 | Malik Willis (MIA) | QB21 | 6 | -1
-132 | Zach Charbonnet (SEA) | RB43 | 11 | +10
-133 | Tyler Allgeier (ARI) | RB44 | 14 | +22
-134 | Jonathon Brooks (CAR) | RB45 | 5 | -28
-135 | Jalen Coker (CAR) | WR54 | 5 | +2
-136 | Matthew Golden (GB) | WR55 | 11 | -10
-137 | Woody Marks (HOU) | RB46 | 8 | +2
-138 | Isiah Pacheco (DET) | RB47 | 6 | +5
-139 | Juwan Johnson (NO) | TE16 | 8 | +1
-140 | Tyjae Spears (TEN) | RB48 | 9 | +10
-141 | Dylan Sampson (CLE) | RB49 | 11 | +24
-142 | C.J. Stroud (HOU) | QB22 | 8 | -1
+
+130 | KC Concepcion (CLE) | WR53 | 11 | +7
+131 | Isaiah Likely (NYG) | TE15 | 8 | -31
+132 | Tyler Allgeier (ARI) | RB44 | 14 | +2
+133 | Malik Willis (MIA) | QB21 | 6 | -3
+134 | Matthew Golden (GB) | WR54 | 11 | +9
+135 | Woody Marks (HOU) | RB45 | 8 | +6
+136 | Tyjae Spears (TEN) | RB46 | 9 | +19
+137 | Rashid Shaheed (SEA) | WR55 | 11 | +8
+138 | Alvin Kamara (NO) | RB47 | 8 | +9
+139 | C.J. Stroud (HOU) | QB22 | 8 | +15
+140 | Dylan Sampson (CLE) | RB48 | 11 | +30
+141 | Sam Darnold (SEA) | QB23 | 11 | +3
+142 | Juwan Johnson (NO) | TE16 | 8 | +4
 143 | Brenton Strange (JAX) | TE17 | 7 | -5
-144 | Hunter Henry (NE) | TE18 | 11 | +3
-145 | Oronde Gadsden II (LAC) | TE19 | 7 | 0
-146 | Rashid Shaheed (SEA) | WR56 | 11 | -11
-147 | Keaton Mitchell (LAC) | RB50 | 7 | +1
-148 | Sam Darnold (SEA) | QB23 | 11 | -16
-149 | Cam Ward (TEN) | QB24 | 9 | -5
-150 | Brian Robinson Jr. (ATL) | RB51 | 11 | +12
-151 | Alvin Kamara (NO) | RB52 | 8 | +10
-152 | Omar Cooper Jr. (NYJ) | WR57 | 13 | +7
-153 | Jerry Jeudy (CLE) | WR58 | 11 | +18
-154 | Tank Bigsby (PHI) | RB53 | 10 | +12
-155 | Chig Okonkwo (WAS) | TE20 | 7 | -21
-156 | Jauan Jennings (MIN) | WR59 | 6 | +2
-157 | Jonah Coleman (DEN) | RB54 | 10 | -3
-158 | Denzel Boston (CLE) | WR60 | 11 | +2
-159 | Daniel Jones (IND) | QB25 | 13 | -10
-160 | Jalen McMillan (TB) | WR61 | 10 | -8
-161 | Dalton Schultz (HOU) | TE21 | 8 | +2
-162 | Adonai Mitchell (NYJ) | WR62 | 13 | +19
-163 | Travis Hunter (JAX) | WR63 | 7 | +42
-164 | Bryce Young (CAR) | QB26 | 5 | -7
-165 | Braelon Allen (NYJ) | RB55 | 13 | +28
+144 | Isiah Pacheco (DET) | RB49 | 6 | +14
+145 | Chig Okonkwo (WAS) | TE18 | 7 | -3
+146 | Hunter Henry (NE) | TE19 | 11 | -13
+147 | Zach Charbonnet (SEA) | RB50 | 11 | -23
+148 | Tank Bigsby (PHI) | RB51 | 10 | +33
+149 | Brian Robinson Jr. (ATL) | RB52 | 11 | -14
+150 | Oronde Gadsden II (LAC) | TE20 | 7 | -22
+151 | Keaton Mitchell (LAC) | RB53 | 7 | +24
+152 | Cam Ward (TEN) | QB24 | 9 | +11
+153 | Jauan Jennings (MIN) | WR56 | 6 | +12
+154 | Daniel Jones (IND) | QB25 | 13 | +22
+155 | Adonai Mitchell (NYJ) | WR57 | 13 | +72
+156 | Bryce Young (CAR) | QB26 | 5 | +8
+157 | Jonah Coleman (DEN) | RB54 | 10 | -9
+158 | Jerry Jeudy (CLE) | WR58 | 11 | +45
+159 | Dalton Schultz (HOU) | TE21 | 8 | +15
+160 | Jalen McMillan (TB) | WR59 | 10 | +19
+161 | Tre Tucker (LV) | WR60 | 13 | +68
+162 | Omar Cooper Jr. (NYJ) | WR61 | 13 | +9
+163 | De'Zhaun Stribling (SF) | WR62 | 8 | +33
+164 | T.J. Hockenson (MIN) | TE22 | 6 | +8
+165 | AJ Barner (SEA) | TE23 | 11 | +12
 
 # Tier 9
-166 | Kayshon Boutte (NE) | WR64 | 11 | +33
-167 | Tre Tucker (LV) | WR65 | 13 | 0
-168 | Kenyon Sadiq (NYJ) | TE22 | 13 | -15
-169 | Tre' Harris (LAC) | WR66 | 7 | +16
-170 | Ryan Flournoy (DAL) | WR67 | 14 | +13
-171 | Troy Franklin (DEN) | WR68 | 10 | +49
-172 | T.J. Hockenson (MIN) | TE23 | 6 | -16
-173 | AJ Barner (SEA) | TE24 | 11 | +2
-174 | Emanuel Wilson (SEA) | RB56 | 11 | +38
-175 | Isaac TeSlaa (DET) | WR69 | 6 | +3
-176 | James Conner (ARI) | RB57 | 14 | +45
-177 | Calvin Ridley (TEN) | WR70 | 9 | -1
-178 | Kimani Vidal (LAC) | RB58 | 7 | +30
-179 | Stefon Diggs (FA) | WR71 |  | -33
-180 | Jaylin Noel (HOU) | WR72 | 8 | +55
-181 | Houston Texans (HOU) | DST1 | 8 |
-182 | Ray Davis (BUF) | RB59 | 7 | +18
-183 | Jacoby Brissett (ARI) | QB27 | 14 | -14
-184 | Pat Bryant (DEN) | WR73 | 10 | +56
-185 | Emmett Johnson (KC) | RB60 | 5 | +4
-186 | Darnell Mooney (NYG) | WR74 | 8 | +32
-187 | Gunnar Helm (TEN) | TE25 | 9 | -8
-188 | Deebo Samuel Sr. (FA) | WR75 |  | -16
-189 | Mike Washington Jr. (LV) | RB61 | 13 | +1
-190 | Sean Tucker (TB) | RB62 | 10 | -6
-191 | Jalen Nailor (LV) | WR76 | 13 | -40
-192 | De'Zhaun Stribling (SF) | WR77 | 8 | 0
-193 | Denver Broncos (DEN) | DST2 | 10 |
-194 | Seattle Seahawks (SEA) | DST3 | 11 |
-195 | Malik Washington (MIA) | WR78 | 6 | -18
-196 | Los Angeles Rams (LAR) | DST4 | 11 |
-197 | Pat Freiermuth (PIT) | TE26 | 9 | -3
-198 | David Njoku (LAC) | TE27 | 7 | -16
-199 | Philadelphia Eagles (PHI) | DST5 | 10 |
-200 | Terrance Ferguson (LAR) | TE28 | 11 | -2
-201 | Nicholas Singleton (TEN) | RB63 | 9 | -13
-202 | Pittsburgh Steelers (PIT) | DST6 | 9 |
-203 | Jacksonville Jaguars (JAX) | DST7 | 7 |
-204 | Ka'imi Fairbairn (HOU) | K1 | 8 |
-205 | Ted Hurst III (TB) | WR79 | 10 | +23
-206 | Chimere Dike (TEN) | WR80 | 9 | +43
-207 | Cameron Dicker (LAC) | K2 | 7 |
-208 | Brandon Aubrey (DAL) | K3 | 14 |
-209 | New England Patriots (NE) | DST8 | 11 |
-210 | Minnesota Vikings (MIN) | DST9 | 6 |
-211 | Cade Otton (TB) | TE29 | 10 | -31
+
+166 | Ryan Flournoy (DAL) | WR63 | 14 | +96
+167 | Denzel Boston (CLE) | WR64 | 11 | +2
+168 | Tre' Harris (LAC) | WR65 | 7 | +65
+169 | Deebo Samuel Sr. (SF) | WR66 | 8 | -2
+170 | Jacoby Brissett (ARI) | QB27 | 14 | +50
+171 | Travis Hunter (JAX) | WR67 | 7 | +2
+172 | Braelon Allen (NYJ) | RB55 | 13 | +36
+173 | Sean Tucker (TB) | RB56 | 10 | +53
+174 | Houston Texans (HOU) | DST1 | 8 | -54
+175 | James Conner (ARI) | RB57 | 14 | +3
+176 | Kayshon Boutte (NE) | WR68 | 11 | +31
+177 | Kenyon Sadiq (NYJ) | TE24 | 13 | -27
+178 | Denver Broncos (DEN) | DST2 | 10 | -49
+179 | Ray Davis (BUF) | RB58 | 7 | +57
+180 | Seattle Seahawks (SEA) | DST3 | 11 | -54
+181 | Calvin Ridley (TEN) | WR69 | 9 | +42
+182 | Jalen Nailor (LV) | WR70 | 13 | +2
+183 | Los Angeles Rams (LAR) | DST4 | 11 | -62
+184 | Kimani Vidal (LAC) | RB59 | 7 | +48
+185 | Philadelphia Eagles (PHI) | DST5 | 10 | -45
+186 | Terrance Ferguson (LAR) | TE25 | 11 | -1
+187 | Jacksonville Jaguars (JAX) | DST6 | 7 | +5
+188 | Dontayvion Wicks (PHI) | WR71 | 10 | +108
+189 | Emanuel Wilson (SEA) | RB60 | 11 | +66
+190 | Malik Washington (MIA) | WR72 | 6 | +64
+191 | Darnell Mooney (NYG) | WR73 | 8 | +61
+192 | MarShawn Lloyd (GB) | RB61 | 11 | +64
+193 | Emmett Johnson (KC) | RB62 | 5 | -13
+194 | Isaac TeSlaa (DET) | WR74 | 6 | -7
+195 | New England Patriots (NE) | DST7 | 11 | -33
+196 | Ted Hurst III (TB) | WR75 | 10 | +87
+197 | Pittsburgh Steelers (PIT) | DST8 | 9 | 0
+198 | Pat Freiermuth (PIT) | TE26 | 9 | 0
+199 | Geno Smith (NYJ) | QB28 | 13 | +51
+200 | Gunnar Helm (TEN) | TE27 | 9 | +11
+201 | Rashod Bateman (BAL) | WR76 | 13 | +80
+202 | Los Angeles Chargers (LAC) | DST9 | 7 | +4
+203 | Minnesota Vikings (MIN) | DST10 | 6 | -20
+204 | Brandon Aubrey (DAL) | K1 | 14 | -82
+205 | Troy Franklin (DEN) | WR77 | 10 | +67
+206 | Pat Bryant (DEN) | WR78 | 10 | +68
+207 | Jaylin Noel (HOU) | WR79 | 8 | +66
+208 | Cade Otton (TB) | TE28 | 10 | +7
+209 | Ka'imi Fairbairn (HOU) | K2 | 8 | -57
+210 | Baltimore Ravens (BAL) | DST11 | 13 | -19
+211 | Cameron Dicker (LAC) | K3 | 7 | -62
 
 # Tier 10
-212 | Cam Little (JAX) | K4 | 7 |
-213 | Dontayvion Wicks (PHI) | WR81 | 10 | -2
-214 | Jason Myers (SEA) | K5 | 11 |
-215 | Brandon Aiyuk (SF) | WR82 | 8 | -24
-216 | Germie Bernard (PIT) | WR83 | 9 | -13
-217 | Los Angeles Chargers (LAC) | DST10 | 7 |
-218 | Antonio Williams (WAS) | WR84 | 7 | -45
-219 | Kaytron Allen (WAS) | RB64 | 7 | -22
-220 | Jaylen Wright (MIA) | RB65 | 6 | +6
-221 | Tank Dell (HOU) | WR85 | 8 | -26
-222 | Eddy Pineiro (SF) | K6 | 8 |
-223 | Rashod Bateman (BAL) | WR86 | 13 | +13
-224 | Ollie Gordon II (MIA) | RB66 | 6 | +37
-225 | Tyler Loop (BAL) | K7 | 13 |
-226 | Aaron Rodgers (PIT) | QB28 | 9 | -62
-227 | Geno Smith (NYJ) | QB29 | 13 | -53
-228 | Cooper Kupp (SEA) | WR87 | 11 | -15
-229 | Kansas City Chiefs (KC) | DST11 | 5 |
-230 | Baltimore Ravens (BAL) | DST12 | 13 |
-231 | Colby Parkinson (LAR) | TE30 | 11 | -9
-232 | Zachariah Branch (ATL) | WR88 | 11 | -46
-233 | Green Bay Packers (GB) | DST13 | 11 |
-234 | Cairo Santos (CHI) | K8 | 10 |
-235 | MarShawn Lloyd (GB) | RB67 | 11 | -33
-236 | Jake Bates (DET) | K9 | 6 |
-237 | Evan McPherson (CIN) | K10 | 6 |
-238 | Seth McGowan (IND) | RB68 | 13 | +70
-239 | Elic Ayomanor (TEN) | WR89 | 9 | +44
-240 | Andy Borregales (NE) | K11 | 11 |
-241 | Fernando Mendoza (LV) | QB30 | 13 | -73
-242 | Detroit Lions (DET) | DST14 | 6 |
-243 | Justice Hill (BAL) | RB69 | 13 | -34
-244 | Buffalo Bills (BUF) | DST15 | 7 |
-245 | Jack Bech (LV) | WR90 | 13 | +6
-246 | Cleveland Browns (CLE) | DST16 | 11 |
-247 | Eli Stowers (PHI) | TE31 | 10 | -46
-248 | Chase McLaughlin (TB) | K12 | 10 |
-249 | Keon Coleman (BUF) | WR91 | 7 | -22
-250 | Harrison Mevis (LAR) | K13 | 11 |
-251 | Malik Davis (DAL) | RB70 | 14 | +28
-252 | Elijah Sarratt (BAL) | WR92 | 13 | -15
-253 | Christian Kirk (SF) | WR93 | 8 | -43
-254 | Tory Horton (SEA) | WR94 | 11 | -9
-255 | Oscar Delp (NO) | TE32 | 8 | +21
-256 | Evan Engram (DEN) | TE33 | 10 | -31
-257 | Tyreek Hill (FA) | WR95 |  | -70
-258 | Harrison Butker (KC) | K14 | 5 |
-259 | Ty Johnson (BUF) | RB71 | 7 | -18
-260 | Chris Brooks (GB) | RB72 | 11 | -7
-261 | Chris Boswell (PIT) | K15 | 9 |
-262 | Jordan James (SF) | RB73 | 8 | -55
-263 | Chris Bell (MIA) | WR96 | 6 | -39
-264 | Malachi Fields (NYG) | WR97 | 8 | -58
-265 | DJ Giddens (IND) | RB74 | 13 | -22
-266 | Devin Neal (NO) | RB75 | 8 | +15
-267 | Jaydon Blue (DAL) | RB76 | 14 | -63
-268 | Samaje Perine (CIN) | RB77 | 6 | -30
-269 | Tua Tagovailoa (ATL) | QB31 | 11 | -73
-270 | Kaleb Johnson (PIT) | RB78 | 9 | 0
-271 | Michael Penix Jr. (ATL) | QB32 | 11 | -52
-272 | Demond Claiborne (MIN) | RB79 | 6 | -58
-273 | George Holani (SEA) | RB80 | 11 | -58
+
+212 | Aaron Rodgers (PIT) | QB29 | 9 | -22
+213 | Nicholas Singleton (TEN) | RB63 | 9 | -27
+214 | Stefon Diggs (FA) | WR80 |  | -57
+215 | Kansas City Chiefs (KC) | DST12 | 5 | -1
+216 | Cam Little (JAX) | K4 | 7 | -48
+217 | Jason Myers (SEA) | K5 | 11 | -58
+218 | Green Bay Packers (GB) | DST13 | 11 | -8
+219 | Tank Dell (HOU) | WR81 | 8 | +12
+220 | Eddy Pineiro (SF) | K6 | 8 | -21
+221 | Detroit Lions (DET) | DST14 | 6 | -12
+222 | Tyler Loop (BAL) | K7 | 13 | -22
+223 | Antonio Williams (WAS) | WR82 | 7 | -7
+224 | Kaytron Allen (WAS) | RB64 | 7 | +4
+225 | Jaydon Blue (DAL) | RB65 | 14 | +21
+226 | Buffalo Bills (BUF) | DST15 | 7 | -9
+227 | Jake Bates (DET) | K8 | 6 | -34
+228 | Mike Washington Jr. (LV) | RB66 | 13 | -46
+229 | Evan McPherson (CIN) | K9 | 6 | +1
+230 | Cooper Kupp (SEA) | WR83 | 11 | +47
+231 | Oscar Delp (NO) | TE29 | 8 | 
+232 | Jaylen Wright (MIA) | RB67 | 6 | +8
+233 | Cairo Santos (CHI) | K10 | 10 | -8
+234 | David Njoku (LAC) | TE30 | 7 | -73
+235 | Andy Borregales (NE) | K11 | 11 | -41
+236 | Ollie Gordon II (MIA) | RB68 | 6 | +90
+237 | Chimere Dike (TEN) | WR84 | 9 | +52
+238 | Chase McLaughlin (TB) | K12 | 10 | -14
+239 | Colby Parkinson (LAR) | TE31 | 11 | +22
+240 | Harrison Mevis (LAR) | K13 | 11 | -51
+241 | Keon Coleman (BUF) | WR85 | 7 | +60
+242 | Tua Tagovailoa (ATL) | QB30 | 11 | +2
+243 | Evan Engram (DEN) | TE32 | 10 | +43
+244 | Fernando Mendoza (LV) | QB31 | 13 | -78
+245 | Cleveland Browns (CLE) | DST16 | 11 | -7
+246 | George Holani (SEA) | RB69 | 11 | +11
+247 | Zachariah Branch (ATL) | WR86 | 11 | -13
+248 | Chris Boswell (PIT) | K14 | 9 | -36
+249 | Harrison Butker (KC) | K15 | 5 | -44
+250 | Jack Bech (LV) | WR87 | 13 | +53
+251 | Elic Ayomanor (TEN) | WR88 | 9 | +63
+252 | Justice Hill (BAL) | RB70 | 13 | -4
+253 | Germie Bernard (PIT) | WR89 | 9 | +18
+254 | Tory Horton (SEA) | WR90 | 11 | +40
+255 | Wil Lutz (DEN) | K16 | 10 | -36
+256 | Isaiah Davis (NYJ) | RB71 | 13 | +77
+257 | DJ Giddens (IND) | RB72 | 13 | +72
+258 | Jordan James (SF) | RB73 | 8 | +11
+259 | Tyquan Thornton (KC) | WR91 | 5 | 
+260 | Eli Stowers (PHI) | TE33 | 10 | -25
+261 | Demond Claiborne (MIN) | RB74 | 6 | -20
+262 | Christian Kirk (SF) | WR92 | 8 | +29
+263 | Chris Brooks (GB) | RB75 | 11 | +68
+264 | Samaje Perine (CIN) | RB76 | 6 | +56
+265 | Atlanta Falcons (ATL) | DST17 | 11 | -20
+266 | Malik Davis (DAL) | RB77 | 14 | 
+267 | Elijah Sarratt (BAL) | WR93 | 13 | +30
+268 | Michael Penix Jr. (ATL) | QB32 | 11 | -21
+269 | Kirk Cousins (LV) | QB33 | 13 | -11
+270 | LeQuint Allen Jr. (JAX) | RB78 | 7 | +17
+271 | Malachi Fields (NYG) | WR94 | 8 | -28
+272 | Darius Slayton (NYG) | WR95 | 8 | 
+273 | Trey Benson (ARI) | RB79 | 14 | -10
 
 # Tier 11
-274 | Marvin Mims Jr. (DEN) | WR98 | 10 | +24
-275 | Tyquan Thornton (KC) | WR99 | 5 | -41
-276 | Trey Benson (ARI) | RB81 | 14 | +64
-277 | Chris Brazzell II (CAR) | WR100 | 5 | -44
-278 | Wil Lutz (DEN) | K16 | 10 |
-279 | Mason Taylor (NYJ) | TE34 | 13 | -14
-280 | Theo Johnson (NYG) | TE35 | 8 | -33
-281 | Isaiah Davis (NYJ) | RB82 | 13 | +18
-282 | Devaughn Vele (NO) | WR101 | 8 | -51
-283 | LeQuint Allen Jr. (JAX) | RB83 | 7 | -21
-284 | Shedeur Sanders (CLE) | QB33 | 11 | -67
-285 | Devin Singletary (NYG) | RB84 | 8 | -27
-286 | Atlanta Falcons (ATL) | DST17 | 11 |
-287 | Darius Slayton (NYG) | WR102 | 8 | -21
-288 | Xavier Legette (CAR) | WR103 | 5 | -3
-289 | Will Reichard (MIN) | K17 | 6 |
-290 | Brashard Smith (KC) | RB85 | 5 | +96
-291 | Emari Demercado (KC) | RB86 | 5 | -34
-292 | Kirk Cousins (LV) | QB34 | 13 | -62
-293 | Kendre Miller (NO) | RB87 | 8 |
-294 | Greg Dulcich (MIA) | TE36 | 6 | -124
-295 | Kyle Williams (NE) | WR104 | 11 | -5
-296 | Keenan Allen (LAC) | WR105 | 7 | -52
-297 | Hollywood Brown (PHI) | WR106 | 10 | -41
-298 | Mack Hollins (NE) | WR107 | 11 | +18
-299 | Jerome Ford (WAS) | RB88 | 7 | +64
-300 | Najee Harris (LAC) | RB89 | 7 | -22
-301 | Deshaun Watson (CLE) | QB35 | 11 | -85
-302 | Kaelon Black (SF) | RB90 | 8 | -70
-303 | San Francisco 49ers (SF) | DST18 | 8 |
-304 | Adam Randall (BAL) | RB91 | 13 | -44
-305 | Mike Gesicki (CIN) | TE37 | 6 | -82
-306 | Indianapolis Colts (IND) | DST19 | 13 |
-307 | Charlie Smyth (NO) | K18 | 8 |
-308 | Trevor Etienne (CAR) | RB92 | 5 | +19
-309 | Isaiah Bond (CLE) | WR108 | 11 | -15
-310 | Isaac Guerendo (SF) | RB93 | 8 | +40
-311 | Jaleel McLaughlin (DEN) | RB94 | 10 |
-312 | Tahj Brooks (CIN) | RB95 | 6 | -2
-313 | Skyler Bell (BUF) | WR109 | 7 | -59
-314 | Jake Tonges (SF) | TE38 | 8 | -85
-315 | Joe Mixon (FA) | RB96 |  | -56
-316 | Ja'Kobi Lane (BAL) | WR110 | 13 | -68
-317 | Jarquez Hunter (LAR) | RB97 | 11 | +37
+
+274 | Ty Johnson (BUF) | RB80 | 7 | -7
+275 | Chris Bell (MIA) | WR96 | 6 | +18
+276 | Deshaun Watson (CLE) | QB34 | 11 | -8
+277 | Greg Dulcich (MIA) | TE34 | 6 | -55
+278 | Devaughn Vele (NO) | WR97 | 8 | +21
+279 | Xavier Legette (CAR) | WR98 | 5 | 
+280 | Shedeur Sanders (CLE) | QB35 | 11 | -31
+281 | Devin Neal (NO) | RB81 | 8 | +43
+282 | Brandon Aiyuk (SF) | WR99 | 8 | -69
+283 | Will Reichard (MIN) | K17 | 6 | -62
+284 | Kaelon Black (SF) | RB82 | 8 | -20
+285 | San Francisco 49ers (SF) | DST18 | 8 | -83
+286 | Marvin Mims Jr. (DEN) | WR100 | 10 | -7
+287 | Mason Taylor (NYJ) | TE35 | 13 | +1
+288 | Kaleb Johnson (PIT) | RB83 | 9 | -23
+289 | Hollywood Brown (PHI) | WR101 | 10 | 
+290 | Emari Demercado (KC) | RB84 | 5 | +44
+291 | Theo Johnson (NYG) | TE36 | 8 | -49
+292 | Kendre Miller (NO) | RB85 | 8 | -17
+293 | Keenan Allen (LAC) | WR102 | 7 | -17
+294 | Devin Singletary (NYG) | RB86 | 8 | -9
+295 | Jerome Ford (WAS) | RB87 | 7 | +37
+296 | Brashard Smith (KC) | RB88 | 5 | -16
+297 | Mack Hollins (NE) | WR103 | 11 | 
+298 | Najee Harris (LAC) | RB89 | 7 | +19
+299 | Kyle Williams (NE) | WR104 | 11 | -15
+300 | Adam Randall (BAL) | RB90 | 13 | +35
+301 | Tyreek Hill (FA) | WR105 |  | -113
+302 | Trevor Etienne (CAR) | RB91 | 5 | 
+303 | Tahj Brooks (CIN) | RB92 | 6 | 
+304 | Mike Gesicki (CIN) | TE37 | 6 | -22
+305 | Isaiah Bond (CLE) | WR106 | 11 | 
+306 | New Orleans Saints (NO) | DST19 | 8 | +4
+307 | Seth McGowan (IND) | RB93 | 13 | +29
+308 | Skyler Bell (BUF) | WR107 | 7 | +4
+309 | Isaac Guerendo (SF) | RB94 | 8 | 
+310 | Jarquez Hunter (LAR) | RB95 | 11 | -10
+311 | Charlie Smyth (NO) | K18 | 8 | +12
+312 | Ja'Kobi Lane (BAL) | WR108 | 13 | -73
+313 | Jaleel McLaughlin (DEN) | RB96 | 10 | 
+314 | Indianapolis Colts (IND) | DST20 | 13 | -22
+315 | Chris Brazzell II (CAR) | WR109 | 5 | 0
+316 | Chicago Bears (CHI) | DST21 | 10 | -112
+317 | Audric Estime (NO) | RB97 | 8 | -22
 
 # Tier 12
-318 | Audric Estime (NO) | RB98 | 8 |
-319 | New Orleans Saints (NO) | DST20 | 8 |
-320 | Kareem Hunt (FA) | RB99 |  | -53
-321 | Andrei Iosivas (CIN) | WR111 | 6 | -58
-322 | Darnell Washington (PIT) | TE39 | 9 | -80
-323 | Cedric Tillman (CLE) | WR112 | 11 | +76
-324 | Chicago Bears (CHI) | DST21 | 10 |
-325 | J.J. McCarthy (MIN) | QB36 | 6 | -43
-326 | Will Shipley (PHI) | RB100 | 10 | +43
-327 | Jalen Royals (KC) | WR113 | 5 | -3
-328 | Jahan Dotson (ATL) | WR114 | 11 | -64
-329 | Calvin Austin III (NYG) | WR115 | 8 | -23
-330 | Tez Johnson (TB) | WR116 | 10 | -41
-331 | Luke McCaffrey (WAS) | WR117 | 7 | -12
-332 | Max Klare (LAR) | TE40 | 11 | -28
-333 | Konata Mumpfield (LAR) | WR118 | 11 | +4
-334 | Caleb Douglas (MIA) | WR119 | 6 | -82
-335 | Olamide Zaccheaus (ATL) | WR120 | 11 | -13
-336 | Jalen Tolbert (MIA) | WR121 | 6 | -86
-337 | Mac Jones (SF) | QB37 | 8 | -41
-338 | Noah Gray (KC) | TE41 | 5 | -15
-339 | Elijah Arroyo (SEA) | TE42 | 11 | -66
-340 | Bam Knight (ARI) | RB101 | 14 |
-341 | Cole Kmet (CHI) | TE43 | 10 | -55
-342 | Tyler Higbee (LAR) | TE44 | 11 | +34
-343 | Xavier Hutchinson (HOU) | WR122 | 8 | -18
-344 | Eli Heidenreich (PIT) | RB102 | 9 | -29
-345 | Dawson Knox (BUF) | TE45 | 7 | -73
-346 | Dont'e Thornton Jr. (LV) | WR123 | 13 | -16
-347 | J'Mari Taylor (JAX) | RB103 | 7 | -8
-348 | Michael Mayer (LV) | TE46 | 13 | -102
-349 | Joshua Palmer (BUF) | WR124 | 7 | -48
-350 | Brenen Thompson (LAC) | WR125 | 7 | -66
-351 | Ja'Tavion Sanders (CAR) | TE47 | 5 | -77
-352 | Carson Beck (ARI) | QB38 | 14 | -97
-353 | Jawhar Jordan (HOU) | RB104 | 8 | +27
-354 | Nick Chubb (FA) | RB105 |  |
-355 | DeMario Douglas (NE) | WR126 | 11 | -20
-356 | John Metchie III (CAR) | WR127 | 5 | +10
-357 | Carolina Panthers (CAR) | DST22 | 5 |
-358 | Ty Simpson (LAR) | QB39 | 11 | -40
-359 | Bryce Lance (NO) | WR128 | 8 | -71
-360 | Kendrick Bourne (ARI) | WR129 | 14 | -73
-361 | Justin Fields (KC) | QB40 | 5 | -86
-362 | Michael Carter (TEN) | RB106 | 9 | +33
-363 | Treylon Burks (WAS) | WR130 | 7 | -68
-364 | Noah Fant (NO) | TE48 | 8 | +3
-365 | Nick Westbrook-Ikhine (IND) | WR131 | 13 | -32
-366 | Kalif Raymond (CHI) | WR132 | 10 | -34
-367 | Raheim Sanders (CLE) | RB107 | 11 |
-368 | Anthony Richardson Sr. (IND) | QB41 | 13 | -63
-369 | Justin Joly (DEN) | TE49 | 10 | -66
-370 | Austin Ekeler (FA) | RB108 |  | -131
-371 | Jaylin Lane (WAS) | WR133 | 7 | -69
-372 | KaVontae Turpin (DAL) | WR134 | 14 | -92
-373 | Zavion Thomas (CHI) | WR135 | 10 | -105
-374 | Savion Williams (GB) | WR136 | 11 | -97
-375 | Eli Raridon (NE) | TE50 | 11 | -84
-376 | Tyler Bass (BUF) | K19 | 7 |
-377 | Luke Musgrave (GB) | TE51 | 11 | -13
+
+318 | Jake Tonges (SF) | TE38 | 8 | -58
+319 | Will Shipley (PHI) | RB98 | 10 | 
+320 | Kareem Hunt (FA) | RB99 |  | -18
+321 | Joe Mixon (FA) | RB100 |  | -10
+322 | Darnell Washington (PIT) | TE39 | 9 | -44
+323 | Andrei Iosivas (CIN) | WR110 | 6 | 
+324 | J.J. McCarthy (MIN) | QB36 | 6 | -58
+325 | Cedric Tillman (CLE) | WR111 | 11 | 
+326 | Caleb Douglas (MIA) | WR112 | 6 | -28
+327 | Konata Mumpfield (LAR) | WR113 | 11 | 
+328 | Tez Johnson (TB) | WR114 | 10 | 
+329 | Luke McCaffrey (WAS) | WR115 | 7 | 
+330 | Jalen Royals (KC) | WR116 | 5 | 
+331 | Calvin Austin III (NYG) | WR117 | 8 | 
+332 | Jahan Dotson (ATL) | WR118 | 11 | -28
+333 | Jalen Tolbert (MIA) | WR119 | 6 | -63
+334 | Carolina Panthers (CAR) | DST22 | 5 | -28
+335 | Bam Knight (ARI) | RB101 | 14 | 
+336 | Max Klare (LAR) | TE40 | 11 | -29
+337 | Elijah Arroyo (SEA) | TE41 | 11 | 
+338 | Mac Jones (SF) | QB37 | 8 | 
+339 | Jake Elliott (PHI) | K19 | 10 | -121
+340 | Noah Gray (KC) | TE42 | 5 | 
+341 | Cole Kmet (CHI) | TE43 | 10 | 
+342 | Tyler Higbee (LAR) | TE44 | 11 | 
+343 | Olamide Zaccheaus (ATL) | WR120 | 11 | 
+344 | Ja'Tavion Sanders (CAR) | TE45 | 5 | 
+345 | DeMario Douglas (NE) | WR121 | 11 | 
+346 | Joshua Palmer (BUF) | WR122 | 7 | 
+347 | Carson Beck (ARI) | QB38 | 14 | -88
+348 | Michael Mayer (LV) | TE46 | 13 | 
+349 | Justin Fields (KC) | QB39 | 5 | 
+350 | Cyrus Allen (KC) | WR123 | 5 | -34
+351 | Treylon Burks (WAS) | WR124 | 7 | 
+352 | Dawson Knox (BUF) | TE47 | 7 | 
+353 | Eli Heidenreich (PIT) | RB102 | 9 | 
+354 | Dont'e Thornton Jr. (LV) | WR125 | 13 | 
+355 | Kendrick Bourne (ARI) | WR126 | 14 | 
+356 | Anthony Richardson Sr. (IND) | QB40 | 13 | 
+357 | Erick All Jr. (CIN) | TE48 | 6 | 
+358 | Bryce Lance (NO) | WR127 | 8 | 
+359 | Michael Carter (TEN) | RB103 | 9 | 
+360 | J'Mari Taylor (JAX) | RB104 | 7 | 
+361 | Raheim Sanders (CLE) | RB105 | 11 | 
+362 | Ty Simpson (LAR) | QB41 | 11 | -49
+363 | Brenen Thompson (LAC) | WR128 | 7 | -41
+364 | Xavier Hutchinson (HOU) | WR129 | 8 | 
+365 | Jawhar Jordan (HOU) | RB106 | 8 | 
+366 | John Metchie III (CAR) | WR130 | 5 | 
+367 | Nick Chubb (FA) | RB107 |  | 
+368 | Eli Raridon (NE) | TE49 | 11 | 
+369 | Noah Fant (NO) | TE50 | 8 | 
+370 | Jaylin Lane (WAS) | WR131 | 7 | 
+371 | Justin Joly (DEN) | TE51 | 10 | 
+372 | Luke Musgrave (GB) | TE52 | 11 | 
+373 | Dallas Cowboys (DAL) | DST23 | 14 | -178
+374 | Tyler Bass (BUF) | K20 | 7 | -121
+375 | Kalif Raymond (CHI) | WR132 | 10 | 
+376 | Deion Burks (IND) | WR133 | 13 | 
+377 | KaVontae Turpin (DAL) | WR134 | 14 | 
+378 | New York Giants (NYG) | DST24 | 8 | -177
+379 | Tommy Tremble (CAR) | TE53 | 5 | 
+380 | Austin Ekeler (FA) | RB108 |  | -129
+381 | Ben Sinnott (WAS) | TE54 | 7 | 
+382 | Zane Gonzalez (MIA) | K21 | 6 |

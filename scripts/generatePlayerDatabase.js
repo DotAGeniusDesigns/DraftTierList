@@ -177,6 +177,7 @@ function serialize(records) {
 
     return (
         '// Auto-generated from scripts/rawTierList2026.txt (2026 season default board).\n' +
+        '// ECR/ADP are half-PPR consensus values; more scoring formats may be added later.\n' +
         '// To regenerate after editing the raw file, run: node scripts/generatePlayerDatabase.js\n' +
         '// Headshots fall back to initials in the UI when a photo is missing.\n' +
         '\n' +

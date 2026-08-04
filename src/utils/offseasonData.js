@@ -581,7 +581,7 @@ export const offseasonData = {
         rookies: [],
         keyPoints: [
             "Mike Evans signing is a red-zone cheat code in Shanahan's scheme",
-            "Evans crowds Pearsall and pushes Aiyuk down the pecking order",
+            "Evans crowds the young SF WR room and pushes Aiyuk down the pecking order",
             "CMC and Kittle keep their roles — health is the perennial asterisk",
         ],
     },
