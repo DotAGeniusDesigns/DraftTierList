@@ -1,6 +1,7 @@
 // 2026 offseason tracker data — coaching changes, player movement, rookies,
 // and three key bullet points per team. Compiled July 2026 from offseason
-// reporting (coaching carousel, free agency, trades, and the 2026 draft).
+// reporting; key points refreshed August 2026 for training-camp intel.
+// Live headlines/transactions: npm run offseason → offseasonNews.js
 // Depth charts are NOT stored here — they are computed from playerDatabase
 // so they always match the draft board rosters.
 
@@ -26,9 +27,9 @@ export const offseasonData = {
             { name: 'Carson Beck', pos: 'QB', detail: 'Developmental pick behind Brissett' },
         ],
         keyPoints: [
-            "Rookie Jeremiyah Love (No. 3 pick) leads a crowded backfield with top-5 RB upside",
-            "New HC Mike LaFleur brings a McVay-style scheme; fresh start for Marvin Harrison Jr.",
-            "Brissett/Beck at QB caps the ceiling until the position settles",
+            "Rookie Jeremiyah Love (No. 3 pick) flashing in camp as the early lead-back",
+            "Brissett running with the ones; Sweat and Garrett Williams start on PUP",
+            "Marvin Harrison Jr. the clear alpha in LaFleur's passing offense",
         ],
     },
 
@@ -39,6 +40,7 @@ export const offseasonData = {
         },
         additions: [
             { name: 'Tua Tagovailoa', pos: 'QB', detail: 'Signed after his Miami release to push Michael Penix Jr.' },
+            { name: 'Cooper Rush', pos: 'QB', detail: 'Signed in camp as veteran insurance in the three-QB room' },
             { name: 'Jahan Dotson', pos: 'WR', detail: 'Replaces Darnell Mooney as the No. 2 receiver' },
         ],
         departures: [
@@ -50,7 +52,7 @@ export const offseasonData = {
         ],
         keyPoints: [
             "Bijan Robinson a top-2 fantasy pick in Stefanski's zone-run scheme",
-            "Tua vs. Penix QB battle clouds Drake London and Kyle Pitts",
+            "Tua vs. Penix QB battle still wide open with Cooper Rush in the mix",
             "RB2 room behind Bijan thins out after Allgeier's exit",
         ],
     },
@@ -103,13 +105,13 @@ export const offseasonData = {
         additions: [],
         departures: [],
         rookies: [
-            { name: 'Chris Brazzell II', pos: 'WR', detail: 'Lanky vertical threat' },
+            { name: 'Chris Brazzell II', pos: 'WR', detail: 'Lanky vertical threat — season-ending LCL surgery in camp (IR)' },
             { name: 'Trevor Etienne', pos: 'RB', detail: 'Change-of-pace depth' },
         ],
         keyPoints: [
             "Tetairoa McMillan is the clear No. 1 and a top-30 fantasy pick",
             "Hubbard leads the backfield with Jonathon Brooks as the upside stash",
-            "Bryce Young still caps the offense — WRs beyond McMillan are darts",
+            "Brazzell's camp injury removes the top vertical dart behind McMillan",
         ],
     },
 
@@ -161,7 +163,7 @@ export const offseasonData = {
             { name: 'Denzel Boston', pos: 'WR', detail: 'Big X-receiver with red-zone chops' },
         ],
         keyPoints: [
-            "Open Sanders vs. Watson QB battle decides the offense's ceiling",
+            "Open Sanders vs. Watson QB battle still unsettled after week one of camp",
             "Judkins/Sampson backfield and Harold Fannin Jr. are the volume beneficiaries",
             "Rookies Concepcion and Boston join a rebuilt line (Fano, No. 9)",
         ],
@@ -235,8 +237,8 @@ export const offseasonData = {
         ],
         rookies: [],
         keyPoints: [
+            "Tucker Kraft cleared from PUP and back as a top-5 fantasy TE",
             "Thinner WR room finally consolidates roles around Watson and Golden",
-            "Tucker Kraft a top-5 fantasy TE; Jayden Reed keeps the slot",
             "Josh Jacobs remains the workhorse behind a strong line",
         ],
     },
@@ -272,8 +274,8 @@ export const offseasonData = {
         rookies: [],
         keyPoints: [
             "Jonathan Taylor remains the bankable workhorse centerpiece",
-            "Pittman traded out; Alec Pierce ($116M) is the new clear No. 1",
-            "Daniel Jones back at QB; Tyler Warren grows into a year-2 role",
+            "Pierce ($116M) is the new No. 1 but opened camp on the PUP list",
+            "WR room wide open behind Pierce — camp competition clouds WR2 value",
         ],
     },
 
@@ -313,8 +315,8 @@ export const offseasonData = {
         ],
         keyPoints: [
             "Kenneth Walker III signed as the true workhorse Reid has lacked",
-            "Rice/Worthy/Kelce hierarchy returns; Mahomes a bounce-back bet",
-            "Justin Fields added as win-now insurance behind Mahomes",
+            "Worthy and rookie Cyrus Allen both banged up early in camp — monitor",
+            "Rice/Kelce hierarchy returns; Mahomes a bounce-back bet",
         ],
     },
 
@@ -499,7 +501,7 @@ export const offseasonData = {
             { name: 'Omar Cooper Jr.', pos: 'WR', detail: 'Polished route-runner added to a thin WR room' },
         ],
         keyPoints: [
-            "Geno Smith bounce-back is a modest but real QB upgrade",
+            "Geno Smith has looked sharp early — modest but real QB upgrade",
             "Garrett Wilson and Breece Hall keep safe volume floors",
             "Rookie TE Kenyon Sadiq is a sleeper on an open depth chart",
         ],

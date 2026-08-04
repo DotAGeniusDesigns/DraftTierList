@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import BrandLogo from './BrandLogo';
 import AccountMenu from './AccountMenu';
+import PayPalDonateButton from './PayPalDonateButton';
 import { ui } from '../utils/uiTheme';
 import { NAV_ROUTES } from '../utils/routes';
 
@@ -126,6 +127,7 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                         <div className={ui.navSegment(darkMode)}>
                             {NAV_ROUTES.map((item) => renderNavLink(item))}
                         </div>
+                        <PayPalDonateButton />
                         <button
                             type="button"
                             onClick={onToggleDarkMode}
@@ -139,6 +141,7 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                     </div>
 
                     <div className="flex items-center gap-2 lg:hidden">
+                        <PayPalDonateButton compact />
                         <button
                             type="button"
                             onClick={onToggleDarkMode}

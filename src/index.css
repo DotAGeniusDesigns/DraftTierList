@@ -173,3 +173,17 @@
     min-width: 44px;
   }
 }
+
+/* PayPal donate SDK renders a form + image button — keep it compact in the nav. */
+.paypal-donate-button form {
+  margin: 0;
+  line-height: 0;
+}
+
+.paypal-donate-button input[type="image"] {
+  display: block;
+  min-height: 0;
+  min-width: 0;
+  height: auto;
+  border-radius: 0.375rem;
+}

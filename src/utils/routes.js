@@ -8,6 +8,11 @@ export const NAV_ROUTES = [
     { path: '/draft-lottery', label: 'Draft Lottery', shortLabel: 'Lottery', icon: 'lottery' },
 ];
 
+export const PAYPAL_HOSTED_BUTTON_ID = 'JBSDA3B82L9N4';
+
+export const PAYPAL_DONATE_URL =
+    `https://www.paypal.com/donate/?hosted_button_id=${PAYPAL_HOSTED_BUTTON_ID}`;
+
 export const LEGACY_HASH_ROUTES = {
     'draft-board': '/draft-board',
     'draft-range': '/draft-range',

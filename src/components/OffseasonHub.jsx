@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { ui } from '../utils/uiTheme';
 import { getPositionTagClass } from '../utils/playerStyles';
 import { offseasonData, NEW_HC_TEAMS } from '../utils/offseasonData';
+import { getOffseasonNews, OFFSEASON_NEWS_UPDATED_AT } from '../utils/offseasonNews';
 import { teamData } from '../utils/teamData';
 import { playerDatabase } from '../utils/playerDatabase';
 
@@ -140,7 +141,78 @@ const RankStat = ({ label, rank, darkMode }) => {
     );
 };
 
-const TeamCard = ({ abbr, team, info, depthChart, darkMode, open, onToggle }) => {
+const formatNewsDate = (iso) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '';
+    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+};
+
+const NewsBlock = ({ liveNews, darkMode }) => {
+    const { news, transactions } = liveNews;
+    if (!news.length && !transactions.length) return null;
+
+    return (
+        <div className={`${ui.cardInset(darkMode)} mb-4 p-4`}>
+            <p className={`mb-3 text-[11px] font-bold uppercase tracking-[0.14em] ${darkMode ? 'text-sky-400' : 'text-sky-600'}`}>
+                Latest News
+            </p>
+            {news.length > 0 && (
+                <ul className="space-y-3">
+                    {news.map((item) => (
+                        <li key={item.id || item.headline}>
+                            {item.url ? (
+                                <a
+                                    href={item.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`text-sm font-semibold leading-snug underline decoration-emerald-500/40 underline-offset-2 transition hover:decoration-emerald-500 ${ui.heading(darkMode)}`}
+                                >
+                                    {item.headline}
+                                </a>
+                            ) : (
+                                <p className={`text-sm font-semibold leading-snug ${ui.heading(darkMode)}`}>
+                                    {item.headline}
+                                </p>
+                            )}
+                            {item.summary && (
+                                <p className={`mt-1 text-xs leading-relaxed ${ui.muted(darkMode)}`}>
+                                    {item.summary}
+                                </p>
+                            )}
+                            {item.date && (
+                                <p className={`mt-1 text-[10px] ${ui.muted(darkMode)}`}>
+                                    {formatNewsDate(item.date)}
+                                </p>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            )}
+            {transactions.length > 0 && (
+                <div className={news.length ? `mt-4 border-t pt-4 ${darkMode ? 'border-white/5' : 'border-slate-200'}` : ''}>
+                    <p className={`mb-2 text-[10px] font-bold uppercase tracking-[0.12em] ${ui.muted(darkMode)}`}>
+                        Recent Transactions
+                    </p>
+                    <ul className="space-y-1.5">
+                        {transactions.map((txn) => (
+                            <li key={`${txn.date}-${txn.description}`} className={`text-xs leading-relaxed ${ui.muted(darkMode)}`}>
+                                {txn.date && (
+                                    <span className={`mr-2 tabular-nums ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+                                        {formatNewsDate(txn.date)}
+                                    </span>
+                                )}
+                                {txn.description}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+};
+
+const TeamCard = ({ abbr, team, info, liveNews, depthChart, darkMode, open, onToggle }) => {
     const isNewHc = info.coaching.hc.status === 'new';
 
     return (
@@ -225,6 +297,8 @@ const TeamCard = ({ abbr, team, info, depthChart, darkMode, open, onToggle }) =>
                             ))}
                         </div>
                     </div>
+
+                    <NewsBlock liveNews={liveNews} darkMode={darkMode} />
 
                     <div
                         className={`rounded-xl border-l-4 border-emerald-500 p-4 ${
@@ -319,6 +393,11 @@ const OffseasonHub = ({ darkMode }) => {
                     <span className={ui.statPill(darkMode, 'default')}>32 teams</span>
                     <span className={ui.statPill(darkMode, 'success')}>{NEW_HC_TEAMS.length} new head coaches</span>
                     <span className={ui.statPill(darkMode, 'muted')}>{MOVE_COUNT} tracked moves</span>
+                    {OFFSEASON_NEWS_UPDATED_AT && (
+                        <span className={ui.statPill(darkMode, 'muted')}>
+                            News updated {formatNewsDate(OFFSEASON_NEWS_UPDATED_AT)}
+                        </span>
+                    )}
                 </div>
             </div>
 
@@ -392,6 +471,7 @@ const OffseasonHub = ({ darkMode }) => {
                             abbr={abbr}
                             team={team}
                             info={info}
+                            liveNews={getOffseasonNews(abbr)}
                             depthChart={DEPTH_CHARTS[abbr]}
                             darkMode={darkMode}
                             open={openTeams.has(abbr)}
