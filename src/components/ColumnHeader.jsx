@@ -33,8 +33,8 @@ export const BOARD_COLUMN_TOOLTIPS = {
     team: 'NFL team for the 2026 season.',
     ol: 'Offensive line rank for the player’s team (lower is better).',
     bye: 'Week the team is on bye during the 2026 season.',
-    ecr: 'Half-PPR Expert Consensus Rank. Parentheses show how far your board rank differs.',
-    adp: 'Half-PPR Average Draft Position. Parentheses show value vs your current rank.',
+    ecr: 'Expert Consensus Rank from analysts. Parentheses show how far your board rank differs.',
+    adp: 'Average Draft Position in mocks. Parentheses show value vs your current rank.',
     flags: 'Tag upside, risky, or handcuff players, then filter the board by them.',
 };
 

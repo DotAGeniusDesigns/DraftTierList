@@ -21,7 +21,7 @@ import {
 // dismissible line, and signed-in users get one button. The board itself is
 // always the localStorage copy — saving to the account is explicit, never
 // automatic, so a stray click can't overwrite a board someone spent an hour on.
-const CloudBoardSync = ({ darkMode, players }) => {
+const CloudBoardSync = ({ darkMode, players, scoringFormat }) => {
     const { user, isAuthenticated, isLoading, isOffline } = useAuth();
 
     const [activeBoard, setActiveBoard] = useState(null);
@@ -93,7 +93,7 @@ const CloudBoardSync = ({ darkMode, players }) => {
     const handleUpload = async () => {
         setSaving(true);
         try {
-            const { code, playerCount } = encodeCurrentBoard(players);
+            const { code, playerCount } = encodeCurrentBoard(players, scoringFormat);
             const data = await api.createBoard({ name: DEFAULT_BOARD_NAME, code, playerCount });
             setActiveBoardId(data.board.id);
             setActiveBoard(data.board);
@@ -118,7 +118,7 @@ const CloudBoardSync = ({ darkMode, players }) => {
         setStatus(null);
 
         try {
-            const { code, playerCount } = encodeCurrentBoard(players);
+            const { code, playerCount } = encodeCurrentBoard(players, scoringFormat);
 
             if (activeBoard) {
                 await api.updateBoard(activeBoard.id, { code, playerCount });
@@ -212,7 +212,7 @@ const CloudBoardSync = ({ darkMode, players }) => {
             darkMode ? 'border-white/[0.06] bg-slate-900/50' : 'border-slate-200/80 bg-white/90'
         }`}>
             <div className="min-w-0">
-                {activeBoard ? (
+                {activeBoard && (
                     <>
                         <p className={`truncate text-sm font-semibold ${ui.heading(darkMode)}`}>
                             {activeBoard.name}
@@ -221,12 +221,6 @@ const CloudBoardSync = ({ darkMode, players }) => {
                             Last saved {formatBoardTimestamp(activeBoard.updatedAt)} · changes are not saved automatically
                         </p>
                     </>
-                ) : (
-                    <p className={`text-sm ${ui.muted(darkMode)}`}>
-                        {boardCount > 0
-                            ? 'Working on an unsaved board. Save it, or load one from your profile.'
-                            : 'Nothing saved to your account yet.'}
-                    </p>
                 )}
 
                 {status && (

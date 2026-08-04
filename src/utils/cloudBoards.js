@@ -22,8 +22,8 @@ const UPLOAD_PROMPT_KEY = 'cloud-upload-prompted';
 export const DEFAULT_BOARD_NAME = 'My Draft Board';
 
 /** Serialises the live board into the string the API stores. */
-export const encodeCurrentBoard = (players) => ({
-    code: encodeBoardForShare(players, getTierNames()),
+export const encodeCurrentBoard = (players, scoringFormat) => ({
+    code: encodeBoardForShare(players, getTierNames(), scoringFormat),
     playerCount: players.length,
 });
 

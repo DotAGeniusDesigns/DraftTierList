@@ -41,6 +41,11 @@ import { ui } from './utils/uiTheme';
 import { LEGACY_HASH_ROUTES } from './utils/routes';
 import { decodeSharedBoard, SHARE_PARAM } from './utils/exportImport';
 import { decodeCloudBoard, setActiveBoardId } from './utils/cloudBoards';
+import {
+    DEFAULT_SCORING_FORMAT,
+    getScoringFormatLabel,
+    SCORING_FORMAT_OPTIONS,
+} from './utils/scoringFormats';
 import { useAuth } from './context/AuthContext';
 
 const DraftLottery = React.lazy(() => import('./components/DraftLottery'));
@@ -162,7 +167,13 @@ function App() {
     // Flag filter state - any of the user-set flags, matched as an OR
     const [flagFilters, setFlagFilters] = useLocalStorage('flag-filters', []);
 
+    const [scoringFormat, setScoringFormat] = useLocalStorage(
+        'scoring-format',
+        DEFAULT_SCORING_FORMAT,
+    );
+
     // Dropdown open state
+    const [isScoringDropdownOpen, setIsScoringDropdownOpen] = useState(false);
     const [isPositionDropdownOpen, setIsPositionDropdownOpen] = useState(false);
     const [isFlagDropdownOpen, setIsFlagDropdownOpen] = useState(false);
 
@@ -185,12 +196,16 @@ function App() {
     const [shareError, setShareError] = useState(null);
 
     // Refs for the dropdown containers
+    const scoringDropdownRef = useRef(null);
     const dropdownRef = useRef(null);
     const flagDropdownRef = useRef(null);
 
     // Click outside handler
     useEffect(() => {
         const handleClickOutside = (event) => {
+            if (scoringDropdownRef.current && !scoringDropdownRef.current.contains(event.target)) {
+                setIsScoringDropdownOpen(false);
+            }
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsPositionDropdownOpen(false);
             }
@@ -199,14 +214,14 @@ function App() {
             }
         };
 
-        if (isPositionDropdownOpen || isFlagDropdownOpen) {
+        if (isScoringDropdownOpen || isPositionDropdownOpen || isFlagDropdownOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         }
 
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [isPositionDropdownOpen, isFlagDropdownOpen]);
+    }, [isScoringDropdownOpen, isPositionDropdownOpen, isFlagDropdownOpen]);
 
     // Redirect old hash URLs (e.g. #draft-range) to real routes
     useEffect(() => {
@@ -372,11 +387,12 @@ function App() {
         createBackup(players, 'before applying shared board');
         setPlayers(sharedBoard.players);
         replaceTierNames(sharedBoard.tierNames);
+        if (sharedBoard.scoringFormat) setScoringFormat(sharedBoard.scoringFormat);
         setActiveBoardId(null);
 
         setSharedBoard(null);
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, [sharedBoard, players, setPlayers]);
+    }, [sharedBoard, players, setPlayers, setScoringFormat]);
 
     // Load a board saved to the user's account. Same shape as adopting a
     // shared board — including the safety backup — since the incoming board
@@ -387,14 +403,16 @@ function App() {
         createBackup(players, `before loading "${boardName || 'saved board'}"`);
         setPlayers(decoded.players);
         replaceTierNames(decoded.tierNames);
+        if (decoded.scoringFormat) setScoringFormat(decoded.scoringFormat);
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, [players, setPlayers]);
+    }, [players, setPlayers, setScoringFormat]);
 
     // Handle importing players
-    const handleImportPlayers = (importedPlayers) => {
+    const handleImportPlayers = (importedPlayers, importedScoringFormat = null) => {
         createBackup(players, 'before importing board');
         setPlayers(importedPlayers);
+        if (importedScoringFormat) setScoringFormat(importedScoringFormat);
         replaceTierNames();
         setActiveBoardId(null);
         setShowExportImport(false);
@@ -543,7 +561,11 @@ function App() {
                     path="/draft-board"
                     element={(
                 <div className="container mx-auto max-w-7xl px-3 py-5 sm:px-4 sm:py-8">
-                    <CloudBoardSync darkMode={darkMode} players={players} />
+                    <CloudBoardSync
+                        darkMode={darkMode}
+                        players={players}
+                        scoringFormat={scoringFormat}
+                    />
 
                     <SharedBoardBanner
                         darkMode={darkMode}
@@ -601,6 +623,50 @@ function App() {
                             />
 
                             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+                            <div className="relative" ref={scoringDropdownRef}>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsScoringDropdownOpen(!isScoringDropdownOpen)}
+                                    className={ui.btn(darkMode)}
+                                >
+                                    <span>{getScoringFormatLabel(scoringFormat)}</span>
+                                    <svg className={`h-4 w-4 transition-transform ${isScoringDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+
+                                {isScoringDropdownOpen && (
+                                    <div className={`absolute left-0 top-full z-20 mt-2 w-52 p-2 ${ui.dropdown(darkMode)}`}>
+                                        {SCORING_FORMAT_OPTIONS.map((option) => (
+                                            <label
+                                                key={option.id}
+                                                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition ${
+                                                    option.enabled
+                                                        ? (darkMode ? 'cursor-pointer hover:bg-white/5' : 'cursor-pointer hover:bg-slate-50')
+                                                        : 'cursor-not-allowed opacity-45'
+                                                }`}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    name="scoring-format"
+                                                    checked={scoringFormat === option.id}
+                                                    disabled={!option.enabled}
+                                                    onChange={() => {
+                                                        if (!option.enabled) return;
+                                                        setScoringFormat(option.id);
+                                                        setIsScoringDropdownOpen(false);
+                                                    }}
+                                                    className="h-4 w-4 border-slate-300 text-emerald-500 focus:ring-emerald-500/30 disabled:cursor-not-allowed"
+                                                />
+                                                <span className={`text-sm font-medium ${ui.heading(darkMode)}`}>
+                                                    {option.label}
+                                                </span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
                             <div className="relative" ref={dropdownRef}>
                                 <button
                                     onClick={() => setIsPositionDropdownOpen(!isPositionDropdownOpen)}
@@ -826,6 +892,7 @@ function App() {
                             <ProfilePage
                                 darkMode={darkMode}
                                 players={players}
+                                scoringFormat={scoringFormat}
                                 onLoadBoard={handleLoadCloudBoard}
                             />
                         </RequireAuth>
@@ -848,6 +915,7 @@ function App() {
                     <div className="w-full max-w-md">
                         <ExportImport
                             players={players}
+                            scoringFormat={scoringFormat}
                             onImportPlayers={handleImportPlayers}
                             darkMode={darkMode}
                         />

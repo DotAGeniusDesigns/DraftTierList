@@ -35,7 +35,7 @@ const Section = ({ darkMode, title, description, children, tone = 'default' }) =
     </section>
 );
 
-const ProfilePage = ({ darkMode, players, onLoadBoard }) => {
+const ProfilePage = ({ darkMode, players, scoringFormat, onLoadBoard }) => {
     const { user, applyUser, logout, mustChangePassword } = useAuth();
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -309,6 +309,7 @@ const ProfilePage = ({ darkMode, players, onLoadBoard }) => {
                     <SavedBoardsPanel
                         darkMode={darkMode}
                         players={players}
+                        scoringFormat={scoringFormat}
                         onLoadBoard={onLoadBoard}
                     />
                 )}

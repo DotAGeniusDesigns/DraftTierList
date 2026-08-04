@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { exportTierList, importTierList, validateImportCode, getImportInfo, buildShareUrl } from '../utils/exportImport';
 import { getTierNames } from '../utils/tierNames';
 
-const ExportImport = ({ players, onImportPlayers, darkMode }) => {
+const ExportImport = ({ players, scoringFormat, onImportPlayers, darkMode }) => {
     const [importCode, setImportCode] = useState('');
     const [isExporting, setIsExporting] = useState(false);
     const [isSharing, setIsSharing] = useState(false);
@@ -17,7 +17,7 @@ const ExportImport = ({ players, onImportPlayers, darkMode }) => {
         setMessage('');
 
         try {
-            const exportCode = exportTierList(players);
+            const exportCode = exportTierList(players, scoringFormat);
             await navigator.clipboard.writeText(exportCode);
             setMessage('Tier list copied to clipboard!');
             setMessageType('success');
@@ -35,7 +35,7 @@ const ExportImport = ({ players, onImportPlayers, darkMode }) => {
 
         let link;
         try {
-            link = buildShareUrl(players, getTierNames());
+            link = buildShareUrl(players, getTierNames(), scoringFormat);
             setShareUrl(link.url);
         } catch (error) {
             setMessage('Failed to create share link: ' + error.message);
@@ -89,8 +89,8 @@ const ExportImport = ({ players, onImportPlayers, darkMode }) => {
                 throw new Error('Invalid import code format');
             }
 
-            const importedPlayers = importTierList(importCode);
-            onImportPlayers(importedPlayers);
+            const { players: importedPlayers, scoringFormat: importedScoringFormat } = importTierList(importCode);
+            onImportPlayers(importedPlayers, importedScoringFormat);
 
             setMessage(`Successfully imported ${importedPlayers.length} players!`);
             setMessageType('success');

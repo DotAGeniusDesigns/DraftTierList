@@ -8,6 +8,8 @@ import { TIER_NAMES_KEY } from '../utils/tierNames';
 const BOARD_KEYS = [
     'fantasy-football-players',
     'position-filters',
+    'flag-filters',
+    'scoring-format',
     'hide-drafted',
     'draft-lottery-order',
     TIER_NAMES_KEY,

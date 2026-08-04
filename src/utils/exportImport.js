@@ -1,5 +1,6 @@
 import LZString from 'lz-string';
 import { initialPlayers, migratePlayerId } from './playerData';
+import { DEFAULT_SCORING_FORMAT, normalizeScoringFormat } from './scoringFormats';
 
 // ---------------------------------------------------------------------------
 // Shareable board links
@@ -22,7 +23,7 @@ const FLAG_HANDCUFF = 8;
 // Links much longer than this get mangled by some chat clients.
 const SHARE_LENGTH_WARNING = 6000;
 
-export const encodeBoardForShare = (players, tierNames = {}) => {
+export const encodeBoardForShare = (players, tierNames = {}, scoringFormat = DEFAULT_SCORING_FORMAT) => {
     const byTier = new Map();
     const flags = {};
 
@@ -52,13 +53,14 @@ export const encodeBoardForShare = (players, tierNames = {}) => {
     const namedTiers = Object.entries(tierNames || {}).filter(([, name]) => name);
     if (namedTiers.length) payload.tn = Object.fromEntries(namedTiers);
     if (Object.keys(flags).length) payload.f = flags;
+    payload.sf = normalizeScoringFormat(scoringFormat);
 
     return LZString.compressToEncodedURIComponent(JSON.stringify(payload));
 };
 
 // Builds the full https URL for the current board.
-export const buildShareUrl = (players, tierNames = {}) => {
-    const code = encodeBoardForShare(players, tierNames);
+export const buildShareUrl = (players, tierNames = {}, scoringFormat = DEFAULT_SCORING_FORMAT) => {
+    const code = encodeBoardForShare(players, tierNames, scoringFormat);
     const url = `${window.location.origin}/draft-board?${SHARE_PARAM}=${code}`;
     return { url, isLong: url.length > SHARE_LENGTH_WARNING };
 };
@@ -119,6 +121,7 @@ export const decodeSharedBoard = (code) => {
     return {
         players,
         tierNames: data.tn || {},
+        scoringFormat: normalizeScoringFormat(data.sf),
         sharedAt: data.ts ? new Date(data.ts * 1000) : null,
         sharedCount: seen.size,
         addedCount: players.length - seen.size,
@@ -129,12 +132,12 @@ export const decodeSharedBoard = (code) => {
 };
 
 // Export tier list data to a compressed string
-export const exportTierList = (players) => {
+export const exportTierList = (players, scoringFormat = DEFAULT_SCORING_FORMAT) => {
     try {
-        // Create export data object
         const exportData = {
             version: '1.0',
             timestamp: new Date().toISOString(),
+            scoringFormat: normalizeScoringFormat(scoringFormat),
             players: players.map(player => ({
                 id: player.id,
                 name: player.name,
@@ -189,7 +192,12 @@ export const importTierList = (compressedString) => {
             throw new Error('No valid players found in import');
         }
 
-        return validPlayers;
+        return {
+            players: validPlayers,
+            scoringFormat: importData.scoringFormat
+                ? normalizeScoringFormat(importData.scoringFormat)
+                : null,
+        };
     } catch (error) {
         console.error('Import failed:', error);
         throw new Error('Failed to import tier list: ' + error.message);
@@ -219,7 +227,8 @@ export const getImportInfo = (compressedString) => {
         return {
             playerCount: importData.players?.length || 0,
             timestamp: importData.timestamp,
-            version: importData.version
+            version: importData.version,
+            scoringFormat: importData.scoringFormat || null,
         };
     } catch (error) {
         return null;

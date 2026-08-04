@@ -12,7 +12,7 @@ import {
 
 // Manages the boards saved to the account: save the current one, overwrite an
 // existing one, load, rename, delete.
-const SavedBoardsPanel = ({ darkMode, players, onLoadBoard }) => {
+const SavedBoardsPanel = ({ darkMode, players, scoringFormat, onLoadBoard }) => {
     const navigate = useNavigate();
 
     const [boards, setBoards] = useState([]);
@@ -58,7 +58,7 @@ const SavedBoardsPanel = ({ darkMode, players, onLoadBoard }) => {
         setError(null);
 
         try {
-            const { code, playerCount } = encodeCurrentBoard(players);
+            const { code, playerCount } = encodeCurrentBoard(players, scoringFormat);
             const data = await api.createBoard({ name: newBoardName.trim(), code, playerCount });
             setActiveBoardId(data.board.id);
             setNewBoardName(DEFAULT_BOARD_NAME);
@@ -77,7 +77,7 @@ const SavedBoardsPanel = ({ darkMode, players, onLoadBoard }) => {
         setError(null);
 
         try {
-            const { code, playerCount } = encodeCurrentBoard(players);
+            const { code, playerCount } = encodeCurrentBoard(players, scoringFormat);
             await api.updateBoard(board.id, { code, playerCount });
             setActiveBoardId(board.id);
             setConfirmOverwriteId(null);
