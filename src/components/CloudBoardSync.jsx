@@ -25,7 +25,6 @@ const CloudBoardSync = ({ darkMode, players, scoringFormat }) => {
     const { user, isAuthenticated, isLoading, isOffline } = useAuth();
 
     const [activeBoard, setActiveBoard] = useState(null);
-    const [boardCount, setBoardCount] = useState(0);
     const [checked, setChecked] = useState(false);
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState(null);
@@ -36,8 +35,6 @@ const CloudBoardSync = ({ darkMode, players, scoringFormat }) => {
         try {
             const data = await api.listBoards(signal);
             if (signal?.aborted) return;
-
-            setBoardCount(data.boards.length);
 
             const activeId = getActiveBoardId();
             const match = data.boards.find((board) => board.id === activeId) || null;
@@ -68,7 +65,6 @@ const CloudBoardSync = ({ darkMode, players, scoringFormat }) => {
     useEffect(() => {
         if (!isAuthenticated) {
             setActiveBoard(null);
-            setBoardCount(0);
             setShowUploadPrompt(false);
             setChecked(false);
             return undefined;
@@ -97,7 +93,6 @@ const CloudBoardSync = ({ darkMode, players, scoringFormat }) => {
             const data = await api.createBoard({ name: DEFAULT_BOARD_NAME, code, playerCount });
             setActiveBoardId(data.board.id);
             setActiveBoard(data.board);
-            setBoardCount((prev) => prev + 1);
             markPromptedToUpload(user.id);
             setShowUploadPrompt(false);
             setStatus({ tone: 'success', text: 'Board saved to your account.' });
@@ -128,7 +123,6 @@ const CloudBoardSync = ({ darkMode, players, scoringFormat }) => {
                 const data = await api.createBoard({ name: DEFAULT_BOARD_NAME, code, playerCount });
                 setActiveBoardId(data.board.id);
                 setActiveBoard(data.board);
-                setBoardCount((prev) => prev + 1);
                 setStatus({ tone: 'success', text: 'Board saved to your account.' });
             }
         } catch (error) {
