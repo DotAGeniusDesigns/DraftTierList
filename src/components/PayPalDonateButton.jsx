@@ -1,77 +1,42 @@
-import React, { useEffect, useRef } from 'react';
-import { PAYPAL_HOSTED_BUTTON_ID } from '../utils/routes';
+import React from 'react';
+import { PAYPAL_DONATE_URL } from '../utils/routes';
 
-const SCRIPT_ID = 'paypal-donate-sdk';
-const SCRIPT_SRC = 'https://www.paypalobjects.com/donate/sdk/donate-sdk.js';
+const POPUP = 'width=450,height=650,scrollbars=yes,resizable=yes';
 
-function loadPayPalDonateSdk() {
-    if (window.PayPal && window.PayPal.Donation) {
-        return Promise.resolve(window.PayPal);
-    }
-
-    const existing = document.getElementById(SCRIPT_ID);
-    if (existing) {
-        return new Promise((resolve, reject) => {
-            if (window.PayPal && window.PayPal.Donation) {
-                resolve(window.PayPal);
-                return;
-            }
-            existing.addEventListener('load', () => resolve(window.PayPal));
-            existing.addEventListener('error', reject);
-        });
-    }
-
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.id = SCRIPT_ID;
-        script.src = SCRIPT_SRC;
-        script.charset = 'UTF-8';
-        script.async = true;
-        script.onload = () => resolve(window.PayPal);
-        script.onerror = reject;
-        document.body.appendChild(script);
-    });
-}
-
-const PayPalDonateButton = ({ compact = false, className = '' }) => {
-    const containerRef = useRef(null);
-
-    useEffect(() => {
-        let cancelled = false;
-
-        loadPayPalDonateSdk()
-            .then((PayPal) => {
-                if (cancelled || !containerRef.current || !PayPal?.Donation?.Button) return;
-
-                containerRef.current.innerHTML = '';
-                PayPal.Donation.Button({
-                    env: 'production',
-                    hosted_button_id: PAYPAL_HOSTED_BUTTON_ID,
-                    image: {
-                        src: compact
-                            ? 'https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif'
-                            : 'https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif',
-                        alt: 'Donate with PayPal button',
-                        title: 'PayPal - The safer, easier way to pay online!',
-                    },
-                }).render(containerRef.current);
-            })
-            .catch(() => {
-                // SDK blocked or offline — container stays empty.
-            });
-
-        return () => {
-            cancelled = true;
-        };
-    }, [compact]);
-
-    return (
-        <div
-            ref={containerRef}
-            className={`paypal-donate-button flex shrink-0 items-center ${className}`}
-            aria-label="Donate with PayPal"
-        />
+const openDonatePopup = () => {
+    const width = 450;
+    const height = 650;
+    const left = Math.round(window.screenX + (window.outerWidth - width) / 2);
+    const top = Math.round(window.screenY + (window.outerHeight - height) / 2);
+    const popup = window.open(
+        PAYPAL_DONATE_URL,
+        'paypal_donate',
+        `${POPUP},left=${left},top=${top}`,
     );
+    popup?.focus();
 };
+
+const DonateIcon = () => (
+    <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 shrink-0" aria-hidden="true">
+        <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+    </svg>
+);
+
+const PayPalDonateButton = ({ darkMode, compact = false, className = '' }) => (
+    <button
+        type="button"
+        onClick={openDonatePopup}
+        title="Support Fantasy Toolkit — opens PayPal in a popup"
+        className={`inline-flex shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl px-2.5 py-2 text-xs font-semibold transition sm:px-3 sm:text-sm ${
+            darkMode
+                ? 'bg-[#0070ba]/20 text-[#6ec3ff] ring-1 ring-[#0070ba]/35 hover:bg-[#0070ba]/30'
+                : 'bg-[#0070ba]/10 text-[#003087] ring-1 ring-[#0070ba]/25 hover:bg-[#0070ba]/15'
+        } ${className}`}
+    >
+        <DonateIcon />
+        {!compact && <span className="hidden sm:inline">Donate</span>}
+        {compact && <span className="sr-only">Donate</span>}
+    </button>
+);
 
 export default PayPalDonateButton;

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import BrandLogo from './BrandLogo';
 import AccountMenu from './AccountMenu';
 import PayPalDonateButton from './PayPalDonateButton';
@@ -41,20 +41,6 @@ const NavIcon = ({ name }) => {
                 />
             </svg>
         ),
-        streams: (
-            <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 shrink-0">
-                <path d="M11.983 1.907a.75.75 0 00-1.292-.657l-8.5 9.5A.75.75 0 002.75 12h6.572l-1.305 6.093a.75.75 0 001.292.657l8.5-9.5A.75.75 0 0017.25 8h-6.572l1.305-6.093z" />
-            </svg>
-        ),
-        watch: (
-            <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 shrink-0">
-                <path
-                    fillRule="evenodd"
-                    d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"
-                    clipRule="evenodd"
-                />
-            </svg>
-        ),
     };
     return icons[name] || null;
 };
@@ -70,25 +56,90 @@ const ThemeIcon = ({ darkMode }) =>
         </svg>
     );
 
+const BurgerIcon = ({ open }) => (
+    <svg viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5" aria-hidden="true">
+        {open ? (
+            <path
+                fillRule="evenodd"
+                d="M4.28 4.28a.75.75 0 011.06 0L10 8.94l4.66-4.66a.75.75 0 111.06 1.06L11.06 10l4.66 4.66a.75.75 0 11-1.06 1.06L10 11.06l-4.66 4.66a.75.75 0 01-1.06-1.06L8.94 10 4.28 5.34a.75.75 0 010-1.06z"
+                clipRule="evenodd"
+            />
+        ) : (
+            <path
+                fillRule="evenodd"
+                d="M2 5.75A.75.75 0 012.75 5h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 5.75zm0 4.5a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75zm0 4.5a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75z"
+                clipRule="evenodd"
+            />
+        )}
+    </svg>
+);
+
 const Navbar = ({ darkMode, onToggleDarkMode }) => {
-    const themeButtonClass = `flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl transition sm:h-10 sm:w-10 ${
-        darkMode
-            ? 'bg-slate-800/90 text-amber-300 ring-1 ring-white/10 hover:bg-slate-700'
-            : 'bg-white text-slate-600 ring-1 ring-slate-200/80 shadow-sm hover:bg-slate-50'
+    const location = useLocation();
+    const [menuOpen, setMenuOpen] = useState(false);
+    const navRef = useRef(null);
+
+    const iconButtonClass = darkMode
+        ? 'bg-slate-800/90 text-slate-200 ring-1 ring-white/10 hover:bg-slate-700'
+        : 'bg-white text-slate-600 ring-1 ring-slate-200/80 shadow-sm hover:bg-slate-50';
+
+    const themeButtonClass = `flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl transition sm:h-10 sm:w-10 ${iconButtonClass}`;
+
+    const burgerButtonClass = `flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl transition lg:hidden sm:h-10 sm:w-10 ${
+        menuOpen
+            ? darkMode
+                ? 'bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/30'
+                : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
+            : iconButtonClass
     }`;
 
-    const renderNavLink = (item, compact = false) => (
+    useEffect(() => {
+        setMenuOpen(false);
+    }, [location.pathname]);
+
+    useEffect(() => {
+        if (!menuOpen) return undefined;
+
+        const handlePointerDown = (event) => {
+            if (navRef.current && !navRef.current.contains(event.target)) {
+                setMenuOpen(false);
+            }
+        };
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') setMenuOpen(false);
+        };
+
+        document.addEventListener('mousedown', handlePointerDown);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('mousedown', handlePointerDown);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [menuOpen]);
+
+    const renderNavLink = (item, { mobileMenu = false } = {}) => (
         <NavLink
             key={item.path}
             to={item.path}
+            onClick={() => setMenuOpen(false)}
             className={({ isActive }) =>
-                `${ui.navPill(darkMode, isActive)} ${compact ? 'w-full flex-col gap-1 px-1 py-2.5' : ''}`
+                mobileMenu
+                    ? `flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition ${
+                        isActive
+                            ? darkMode
+                                ? 'bg-emerald-500/15 text-emerald-300'
+                                : 'bg-emerald-50 text-emerald-700'
+                            : darkMode
+                                ? 'text-slate-300 hover:bg-white/5 hover:text-white'
+                                : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+                    }`
+                    : ui.navPill(darkMode, isActive)
             }
             title={item.label}
         >
             <NavIcon name={item.icon} />
-            {compact ? (
-                <span className="text-[10px] font-semibold leading-none">{item.shortLabel}</span>
+            {mobileMenu ? (
+                <span>{item.label}</span>
             ) : (
                 <>
                     <span className="hidden xl:inline">{item.label}</span>
@@ -99,9 +150,9 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
     );
 
     return (
-        <nav className={`${ui.nav(darkMode)} overscroll-x-none`}>
+        <nav ref={navRef} className={`${ui.nav(darkMode)} overscroll-x-none`}>
             <div className="container mx-auto max-w-7xl px-3 sm:px-4">
-                <div className="flex items-center justify-between gap-3 py-3 sm:py-3.5">
+                <div className="flex items-center justify-between gap-2 py-3 sm:gap-3 sm:py-3.5">
                     <Link to="/draft-board" className="flex min-w-0 items-center gap-2.5 sm:gap-3">
                         <div className="relative shrink-0">
                             <BrandLogo className="h-9 w-9 sm:h-11 sm:w-11" darkMode={darkMode} />
@@ -127,11 +178,11 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                         <div className={ui.navSegment(darkMode)}>
                             {NAV_ROUTES.map((item) => renderNavLink(item))}
                         </div>
-                        <PayPalDonateButton />
+                        <PayPalDonateButton darkMode={darkMode} />
                         <button
                             type="button"
                             onClick={onToggleDarkMode}
-                            className={themeButtonClass}
+                            className={`${themeButtonClass} ${darkMode ? 'text-amber-300' : ''}`}
                             aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
                             title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
                         >
@@ -140,29 +191,41 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                         <AccountMenu darkMode={darkMode} />
                     </div>
 
-                    <div className="flex items-center gap-2 lg:hidden">
-                        <PayPalDonateButton compact />
+                    <div className="flex items-center gap-1.5 sm:gap-2 lg:hidden">
+                        <PayPalDonateButton darkMode={darkMode} compact />
                         <button
                             type="button"
                             onClick={onToggleDarkMode}
-                            className={themeButtonClass}
+                            className={`${themeButtonClass} ${darkMode ? 'text-amber-300' : ''}`}
                             aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
                             title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
                         >
                             <ThemeIcon darkMode={darkMode} />
                         </button>
+                        <button
+                            type="button"
+                            onClick={() => setMenuOpen((prev) => !prev)}
+                            className={burgerButtonClass}
+                            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+                            aria-expanded={menuOpen}
+                            aria-controls="mobile-nav-menu"
+                        >
+                            <BurgerIcon open={menuOpen} />
+                        </button>
                         <AccountMenu darkMode={darkMode} compact />
                     </div>
                 </div>
 
-                <div className={`lg:hidden border-t pb-3 pt-2.5 ${darkMode ? 'border-white/5' : 'border-slate-200/70'}`}>
+                {menuOpen && (
                     <div
-                        className="grid gap-1"
-                        style={{ gridTemplateColumns: `repeat(${NAV_ROUTES.length}, minmax(0, 1fr))` }}
+                        id="mobile-nav-menu"
+                        className={`border-t pb-3 pt-2 lg:hidden ${darkMode ? 'border-white/5' : 'border-slate-200/70'}`}
                     >
-                        {NAV_ROUTES.map((item) => renderNavLink(item, true))}
+                        <div className="flex flex-col gap-1">
+                            {NAV_ROUTES.map((item) => renderNavLink(item, { mobileMenu: true }))}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </nav>
     );
