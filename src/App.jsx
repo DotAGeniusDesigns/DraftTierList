@@ -10,7 +10,6 @@ import NewPage from './components/NewPage';
 import DraftRange from './components/DraftRange';
 import Streamers from './components/Streamers';
 import OffseasonHub from './components/OffseasonHub';
-import DraftLottery from './components/DraftLottery';
 import InterestingPlayers from './components/InterestingPlayers';
 import BackupManager from './components/BackupManager';
 import BurgerMenu from './components/BurgerMenu';
@@ -31,7 +30,9 @@ import TermsOfService from './components/legal/TermsOfService';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers, migratePlayerId } from './utils/playerData';
 import { getTeamLogo } from './utils/teamData';
-import { createBackup, shouldCreateBackup } from './utils/backupSystem';
+import {
+    createBackup, flushScheduledBackup, scheduleBackup, shouldCreateBackup,
+} from './utils/backupSystem';
 import { getPositionFilterTagClass } from './utils/playerStyles';
 import {
     saveTierName, clearTierNames, getTierNames, replaceTierNames,
@@ -41,6 +42,8 @@ import { LEGACY_HASH_ROUTES } from './utils/routes';
 import { decodeSharedBoard, SHARE_PARAM } from './utils/exportImport';
 import { decodeCloudBoard, setActiveBoardId } from './utils/cloudBoards';
 import { useAuth } from './context/AuthContext';
+
+const DraftLottery = React.lazy(() => import('./components/DraftLottery'));
 
 // The three user-set flags, in the order they appear on a player row.
 const FLAG_FILTERS = {
@@ -61,7 +64,11 @@ function App() {
     const [searchParams, setSearchParams] = useSearchParams();
     const { mustChangePassword } = useAuth();
     // Use localStorage hook to persist player data
-    const [players, setPlayers] = useLocalStorage('fantasy-football-players', initialPlayers);
+    const [players, setPlayers] = useLocalStorage(
+        'fantasy-football-players',
+        initialPlayers,
+        { writeDelayMs: 300 },
+    );
 
     // A reset-only session cannot use account APIs until it chooses a real
     // password. Keep navigation aligned with that server-side restriction.
@@ -237,6 +244,21 @@ function App() {
         return () => window.removeEventListener('tier-names-updated', handleTierNamesUpdated);
     }, []);
 
+    useEffect(() => {
+        const flushBackup = () => flushScheduledBackup();
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'hidden') flushBackup();
+        };
+
+        window.addEventListener('pagehide', flushBackup);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => {
+            window.removeEventListener('pagehide', flushBackup);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            flushBackup();
+        };
+    }, []);
+
     // Sync dark mode to <html> for global CSS hooks
     useEffect(() => {
         document.documentElement.classList.toggle('dark', darkMode);
@@ -291,7 +313,7 @@ function App() {
             const otherPlayers = without.filter(p => p.tier !== newTier);
             const updated = [...otherPlayers, ...targetTierPlayers];
 
-            createBackup(updated, 'player reorder');
+            scheduleBackup(updated, 'player reorder');
             return updated;
         });
     }, [setPlayers]);
@@ -308,24 +330,20 @@ function App() {
 
     // Add a new tier
     const handleAddTier = useCallback(() => {
-        setPlayers(prev => {
-            const tierNames = getTierNames();
-            const tiersFromPlayers = prev.map(p => p.tier);
-            const tiersFromNames = Object.keys(tierNames).map(Number);
-            const allTiers = [...tiersFromPlayers, ...tiersFromNames];
-            const maxTier = allTiers.length > 0 ? Math.max(...allTiers) : 0;
-            const newTierNumber = maxTier + 1;
+        const tierNames = getTierNames();
+        const tiersFromPlayers = players.map(p => p.tier);
+        const tiersFromNames = Object.keys(tierNames).map(Number);
+        const allTiers = [...tiersFromPlayers, ...tiersFromNames];
+        const maxTier = allTiers.length > 0 ? Math.max(...allTiers) : 0;
+        const newTierNumber = maxTier + 1;
 
-            saveTierName(newTierNumber, `Tier ${newTierNumber}`);
-            return [...prev];
-        });
-    }, [setPlayers]);
+        saveTierName(newTierNumber, `Tier ${newTierNumber}`);
+    }, [players]);
 
     // Rename a tier
     const handleRenameTier = useCallback((tierNumber, newName) => {
         saveTierName(tierNumber, newName);
-        setPlayers(prev => [...prev]);
-    }, [setPlayers]);
+    }, []);
 
     // Handle position filter checkbox changes
     const handlePositionFilterChange = useCallback((position) => {
@@ -375,6 +393,7 @@ function App() {
 
     // Handle importing players
     const handleImportPlayers = (importedPlayers) => {
+        createBackup(players, 'before importing board');
         setPlayers(importedPlayers);
         replaceTierNames();
         setActiveBoardId(null);
@@ -383,6 +402,7 @@ function App() {
 
     // Handle restore from backup
     const handleRestoreFromBackup = (restoredPlayers) => {
+        createBackup(players, 'before restoring board');
         setPlayers(restoredPlayers);
         replaceTierNames();
         setActiveBoardId(null);
@@ -391,18 +411,22 @@ function App() {
 
     // Reset all drafted players
     const handleResetDrafted = useCallback(() => {
-        setPlayers(prev => prev.map(player => ({
-            ...player,
-            drafted: false
-        })));
+        setPlayers(prev => {
+            createBackup(prev, 'before resetting drafted players');
+            return prev.map(player => ({
+                ...player,
+                drafted: false
+            }));
+        });
     }, [setPlayers]);
 
     // Reset to default database order
     const handleResetToDefault = () => {
+        createBackup(players, 'before resetting to default');
         clearTierNames();
         setActiveBoardId(null);
-        localStorage.removeItem('fantasy-football-players');
-        window.location.reload();
+        setPlayers(initialPlayers);
+        window.setTimeout(() => window.location.reload(), 0);
     };
 
     // Toggle risky status for a player
@@ -762,7 +786,19 @@ function App() {
                 />
                 <Route
                     path="/draft-lottery"
-                    element={<DraftLottery darkMode={darkMode} />}
+                    element={(
+                        <React.Suspense
+                            fallback={(
+                                <div className="container mx-auto max-w-7xl px-4 py-12">
+                                    <p className={`text-sm ${ui.muted(darkMode)}`} role="status">
+                                        Loading draft lottery…
+                                    </p>
+                                </div>
+                            )}
+                        >
+                            <DraftLottery darkMode={darkMode} />
+                        </React.Suspense>
+                    )}
                 />
                 <Route
                     path="/streamers"

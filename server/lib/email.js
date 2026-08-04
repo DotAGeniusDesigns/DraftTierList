@@ -1,6 +1,7 @@
 // Transactional email via Resend's REST API.
 
 const RESEND_ENDPOINT = 'https://api.resend.com/emails';
+const EMAIL_TIMEOUT_MS = 8_000;
 
 const isProduction = process.env.VERCEL_ENV === 'production';
 const configuredFromAddress = process.env.EMAIL_FROM;
@@ -30,14 +31,22 @@ const sendEmail = async ({ to, subject, html, text }) => {
         return;
     }
 
-    const response = await fetch(RESEND_ENDPOINT, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ from: FROM_ADDRESS, to: [to], subject, html, text }),
-    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), EMAIL_TIMEOUT_MS);
+    let response;
+    try {
+        response = await fetch(RESEND_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ from: FROM_ADDRESS, to: [to], subject, html, text }),
+            signal: controller.signal,
+        });
+    } finally {
+        clearTimeout(timeout);
+    }
 
     if (!response.ok) {
         const detail = await response.text().catch(() => '');

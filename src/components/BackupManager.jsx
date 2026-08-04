@@ -13,6 +13,7 @@ const BackupManager = ({ players, onRestorePlayers, darkMode, onClose }) => {
     const [showRestoreConfirm, setShowRestoreConfirm] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [showSaveDraftBoard, setShowSaveDraftBoard] = useState(false);
+    const [confirmClearAll, setConfirmClearAll] = useState(false);
     const [newDraftBoardName, setNewDraftBoardName] = useState('');
     const [newDraftBoardDescription, setNewDraftBoardDescription] = useState('');
 
@@ -21,6 +22,36 @@ const BackupManager = ({ players, onRestorePlayers, darkMode, onClose }) => {
         setBackups(getBackupSummary());
         setDraftBoards(getDraftBoardSummary());
     }, []);
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key !== 'Escape') return;
+            if (showSaveDraftBoard) {
+                setShowSaveDraftBoard(false);
+            } else if (showRestoreConfirm) {
+                setShowRestoreConfirm(false);
+                setSelectedBackup(null);
+                setSelectedDraftBoard(null);
+            } else if (showDeleteConfirm) {
+                setShowDeleteConfirm(false);
+                setSelectedBackup(null);
+                setSelectedDraftBoard(null);
+            } else if (confirmClearAll) {
+                setConfirmClearAll(false);
+            } else {
+                onClose();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [
+        confirmClearAll,
+        onClose,
+        showDeleteConfirm,
+        showRestoreConfirm,
+        showSaveDraftBoard,
+    ]);
 
     const handleRestore = (backup) => {
         setSelectedBackup(backup);
@@ -61,6 +92,7 @@ const BackupManager = ({ players, onRestorePlayers, darkMode, onClose }) => {
         if (clearAllBackups()) {
             setBackups([]);
         }
+        setConfirmClearAll(false);
     };
 
     // Draft Board Management
@@ -109,15 +141,22 @@ const BackupManager = ({ players, onRestorePlayers, darkMode, onClose }) => {
 
     return (
         <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-            <div className={`max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-lg shadow-xl ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+            <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="backup-manager-title"
+                className={`max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-lg shadow-xl ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+            >
                 {/* Header */}
                 <div className={`px-6 py-4 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                     <div className="flex items-center justify-between">
-                        <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        <h2 id="backup-manager-title" className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                             Saved Boards
                         </h2>
                         <button
+                            type="button"
                             onClick={onClose}
+                            aria-label="Close saved boards"
                             className={`p-2 rounded-md hover:bg-gray-100 ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
                         >
                             ✕
@@ -154,8 +193,8 @@ const BackupManager = ({ players, onRestorePlayers, darkMode, onClose }) => {
 
                 {/* Content */}
                 <div className="p-6">
-                    {activeTab === 'draftboards' ? (
-                        // Draft Boards Tab
+                    {activeTab === 'backups' ? (
+                        // Backups Tab
                         <>
                             {backups.length === 0 ? (
                                 <div className="text-center py-8">
@@ -215,21 +254,47 @@ const BackupManager = ({ players, onRestorePlayers, darkMode, onClose }) => {
 
                                     {/* Clear All Button */}
                                     <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                                        <button
-                                            onClick={handleClearAll}
-                                            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
-                                                ? 'bg-gray-600 hover:bg-gray-700 text-white'
-                                                : 'bg-gray-500 hover:bg-gray-600 text-white'
-                                                }`}
-                                        >
-                                            Clear All Backups
-                                        </button>
+                                        {confirmClearAll ? (
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <span className={`text-sm ${darkMode ? 'text-rose-300' : 'text-rose-700'}`}>
+                                                    Permanently clear every backup?
+                                                </span>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleClearAll}
+                                                    className="px-4 py-2 rounded-md text-sm font-medium bg-red-600 hover:bg-red-700 text-white transition-colors"
+                                                >
+                                                    Yes, clear all
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setConfirmClearAll(false)}
+                                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
+                                                        ? 'bg-gray-600 hover:bg-gray-700 text-white'
+                                                        : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
+                                                        }`}
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={() => setConfirmClearAll(true)}
+                                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${darkMode
+                                                    ? 'bg-gray-600 hover:bg-gray-700 text-white'
+                                                    : 'bg-gray-500 hover:bg-gray-600 text-white'
+                                                    }`}
+                                            >
+                                                Clear All Backups
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             )}
                         </>
                     ) : (
-                        // Draft Boards Tab
+                        // Saved Boards Tab
                         <>
                             {/* Save Current Draft Board Button */}
                             <div className="mb-6">
@@ -313,9 +378,14 @@ const BackupManager = ({ players, onRestorePlayers, darkMode, onClose }) => {
 
             {/* Restore Confirmation Modal */}
             {showRestoreConfirm && (
-                <div className={`fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    <div className={`max-w-md w-full p-6 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                        <h3 className={`text-lg font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                <div className={`fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60] ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="restore-board-title"
+                        className={`max-w-md w-full p-6 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+                    >
+                        <h3 id="restore-board-title" className={`text-lg font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                             {selectedDraftBoard ? 'Load Draft Board?' : 'Restore Backup?'}
                         </h3>
                         <p className={`mb-6 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -347,9 +417,14 @@ const BackupManager = ({ players, onRestorePlayers, darkMode, onClose }) => {
 
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && (
-                <div className={`fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    <div className={`max-w-md w-full p-6 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                        <h3 className={`text-lg font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                <div className={`fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60] ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="delete-board-title"
+                        className={`max-w-md w-full p-6 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+                    >
+                        <h3 id="delete-board-title" className={`text-lg font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                             {selectedDraftBoard ? 'Delete Draft Board?' : 'Delete Backup?'}
                         </h3>
                         <p className={`mb-6 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -381,9 +456,14 @@ const BackupManager = ({ players, onRestorePlayers, darkMode, onClose }) => {
 
             {/* Save Draft Board Modal */}
             {showSaveDraftBoard && (
-                <div className={`fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-60 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    <div className={`max-w-md w-full p-6 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                        <h3 className={`text-lg font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                <div className={`fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[60] ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="save-board-title"
+                        className={`max-w-md w-full p-6 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
+                    >
+                        <h3 id="save-board-title" className={`text-lg font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                             Save Draft Board
                         </h3>
                         <div className="space-y-4">

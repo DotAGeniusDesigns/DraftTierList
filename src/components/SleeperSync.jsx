@@ -1,4 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+    useCallback, useMemo, useRef, useState,
+} from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useSleeperDraftSync } from '../hooks/useSleeperDraftSync';
 import { buildPlayerIndex, describePick, matchPick, parseDraftId } from '../utils/sleeperSync';
@@ -19,6 +21,15 @@ const formatAgo = (timestamp) => {
     return `${Math.round(seconds / 60)}m ago`;
 };
 
+const pickSignature = (picks) => picks.map((pick, index) => [
+    pick.pick_no ?? index,
+    pick.player_id ?? '',
+    pick.metadata?.first_name ?? '',
+    pick.metadata?.last_name ?? '',
+    pick.metadata?.position ?? '',
+    pick.metadata?.team ?? '',
+].join(':')).join('|');
+
 const SleeperSync = ({ players, darkMode, onMarkDrafted }) => {
     // Persisted so a refresh mid-draft reconnects instead of losing the session.
     const [draftId, setDraftId] = useLocalStorage('sleeper-draft-id', '');
@@ -29,9 +40,27 @@ const SleeperSync = ({ players, darkMode, onMarkDrafted }) => {
     const [inputError, setInputError] = useState(null);
     const [matchedCount, setMatchedCount] = useState(0);
     const [unmatched, setUnmatched] = useState([]);
-    const [tick, setTick] = useState(0);
 
-    const index = useMemo(() => buildPlayerIndex(players), [players]);
+    // Drafted/tier/flag changes do not affect matching. Keeping the index stable
+    // lets unchanged Sleeper payloads reuse their previous matching result.
+    const playerIdentityKey = useMemo(
+        () => players.map((player) => [
+            player.id,
+            player.name,
+            player.position,
+            player.team,
+            player.photo,
+        ].join(':')).join('|'),
+        [players],
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const index = useMemo(() => buildPlayerIndex(players), [playerIdentityKey]);
+    const matchCacheRef = useRef({
+        index: null,
+        signature: null,
+        matched: [],
+        missed: [],
+    });
 
     // Compared against each poll so that "Reset drafted" re-applies cleanly on
     // the next tick rather than the sync going permanently quiet.
@@ -41,25 +70,41 @@ const SleeperSync = ({ players, darkMode, onMarkDrafted }) => {
     );
 
     const handlePicks = useCallback((picks) => {
-        const matched = [];
-        const missed = [];
+        const signature = pickSignature(picks);
+        let { matched, missed } = matchCacheRef.current;
 
-        picks.forEach((pick) => {
-            const playerId = matchPick(pick, index);
-            if (playerId) {
-                matched.push(playerId);
-            } else {
-                missed.push(describePick(pick));
-            }
-        });
+        if (
+            matchCacheRef.current.index !== index
+            || matchCacheRef.current.signature !== signature
+        ) {
+            matched = [];
+            missed = [];
 
-        setMatchedCount(matched.length);
+            picks.forEach((pick) => {
+                const playerId = matchPick(pick, index);
+                if (playerId) {
+                    matched.push(playerId);
+                } else {
+                    missed.push(describePick(pick));
+                }
+            });
+
+            matchCacheRef.current = {
+                index,
+                signature,
+                matched,
+                missed,
+            };
+        }
+
+        setMatchedCount((previous) => (
+            previous === matched.length ? previous : matched.length
+        ));
         setUnmatched((prev) => {
             const unchanged =
                 prev.length === missed.length && prev.every((value, i) => value === missed[i]);
             return unchanged ? prev : missed;
         });
-        setTick((value) => value + 1);
 
         // Only ever adds. Players marked drafted by hand are never un-marked,
         // and writes are skipped entirely when nothing new has been picked.
@@ -70,6 +115,8 @@ const SleeperSync = ({ players, darkMode, onMarkDrafted }) => {
     const { status, error, draft, lastSyncedAt } = useSleeperDraftSync({
         draftId: enabled ? draftId : null,
         enabled,
+        intervalMs: 1500,
+        hiddenIntervalMs: 10_000,
         onPicks: handlePicks,
     });
 
@@ -93,8 +140,7 @@ const SleeperSync = ({ players, darkMode, onMarkDrafted }) => {
     };
 
     const meta = STATUS_META[status] || STATUS_META.idle;
-    // `tick` keeps the relative timestamp fresh without a dedicated interval.
-    const ago = useMemo(() => formatAgo(lastSyncedAt), [lastSyncedAt, tick]); // eslint-disable-line react-hooks/exhaustive-deps
+    const ago = formatAgo(lastSyncedAt);
 
     const inputClass = darkMode
         ? 'border-white/10 bg-slate-900/80 text-white placeholder:text-slate-500 focus:border-emerald-500/40 focus:ring-emerald-500/30'

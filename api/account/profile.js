@@ -30,7 +30,11 @@ const handler = async (req, res) => {
     const currentPassword = String(body.currentPassword ?? '');
 
     const rows = await sql`
-        SELECT id, username, email, password_hash FROM users WHERE id = ${sessionUser.id}
+        SELECT id, username, email, password_hash,
+               pending_email, pending_email_lower,
+               email_change_token_hash, email_change_expires_at
+        FROM users
+        WHERE id = ${sessionUser.id}
     `;
     const record = rows[0];
     if (!record) throw unauthorized();
@@ -85,14 +89,6 @@ const handler = async (req, res) => {
         emailChangeToken = generateActionToken();
         emailChangeTokenHash = hashActionToken(emailChangeToken);
 
-        // Deliver before storing the pending change. The email opens a page
-        // with an explicit confirmation button, so the tiny gap cannot trigger
-        // a change automatically.
-        await sendEmailChangeConfirmationEmail({
-            to: email,
-            username,
-            confirmUrl: `${siteUrlFrom(req)}/confirm-email?token=${encodeURIComponent(emailChangeToken)}`,
-        });
     }
 
     let updated;
@@ -128,6 +124,35 @@ const handler = async (req, res) => {
             throw conflict('An account already uses that email address.', 'email');
         }
         throw error;
+    }
+
+    if (emailChanged) {
+        try {
+            await sendEmailChangeConfirmationEmail({
+                to: email,
+                username,
+                confirmUrl: `${siteUrlFrom(req)}/confirm-email?token=${encodeURIComponent(emailChangeToken)}`,
+            });
+        } catch (error) {
+            // Store first so a successfully delivered message can never point
+            // at a token that does not exist. If delivery fails, restore the
+            // exact previous pending state and username, but only if this
+            // request still owns the token (a newer request wins).
+            await sql`
+                UPDATE users
+                SET username = ${record.username},
+                    username_lower = ${record.username.toLowerCase()},
+                    pending_email = ${record.pending_email},
+                    pending_email_lower = ${record.pending_email_lower},
+                    email_change_token_hash = ${record.email_change_token_hash},
+                    email_change_expires_at = ${record.email_change_expires_at},
+                    updated_at = NOW()
+                WHERE id = ${sessionUser.id}
+                  AND email_change_token_hash = ${emailChangeTokenHash}
+            `;
+            console.error('Failed to send email change confirmation:', error);
+            throw new Error('Email change confirmation could not be delivered');
+        }
     }
 
     res.status(200).json({

@@ -7,6 +7,8 @@ const BACKUP_KEY = 'fantasy-football-backups';
 const DRAFT_BOARDS_KEY = 'fantasy-football-draft-boards';
 const MAX_BACKUPS = 10; // Keep last 10 backups
 const BACKUP_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+let scheduledBackupTimer = null;
+let scheduledBackup = null;
 
 // Create a new backup
 export const createBackup = (players, reason = 'automatic') => {
@@ -51,6 +53,26 @@ export const createBackup = (players, reason = 'automatic') => {
         console.error('Failed to create backup:', error);
         return false;
     }
+};
+
+export const flushScheduledBackup = () => {
+    if (scheduledBackupTimer) {
+        window.clearTimeout(scheduledBackupTimer);
+        scheduledBackupTimer = null;
+    }
+    if (!scheduledBackup) return false;
+
+    const { players, reason } = scheduledBackup;
+    scheduledBackup = null;
+    return createBackup(players, reason);
+};
+
+// A series of reorders is one user action, not ten distinct recovery points.
+// Keep the latest board and write one backup once the interaction settles.
+export const scheduleBackup = (players, reason = 'automatic', delayMs = 2000) => {
+    scheduledBackup = { players, reason };
+    if (scheduledBackupTimer) window.clearTimeout(scheduledBackupTimer);
+    scheduledBackupTimer = window.setTimeout(flushScheduledBackup, delayMs);
 };
 
 // Get all available backups

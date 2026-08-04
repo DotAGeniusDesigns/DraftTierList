@@ -27,6 +27,8 @@ const Tier = ({
     const [tierName, setTierName] = useState(() => getTierDisplayName(tierNumber));
     const tierRef = useRef(null);
     const dropIndexRef = useRef(null);
+    const pendingDropIndexRef = useRef(null);
+    const dragFrameRef = useRef(null);
     const tierColor = TIER_HEX[tierNumber] || TIER_HEX[12];
 
     useEffect(() => {
@@ -52,6 +54,25 @@ const Tier = ({
         return Math.min(newIndex, players.length);
     }, [players.length]);
 
+    const queueDropIndex = useCallback((index) => {
+        dropIndexRef.current = index;
+        pendingDropIndexRef.current = index;
+        if (dragFrameRef.current) return;
+
+        dragFrameRef.current = window.requestAnimationFrame(() => {
+            dragFrameRef.current = null;
+            setDropIndex((previous) => (
+                previous === pendingDropIndexRef.current
+                    ? previous
+                    : pendingDropIndexRef.current
+            ));
+        });
+    }, []);
+
+    useEffect(() => () => {
+        if (dragFrameRef.current) window.cancelAnimationFrame(dragFrameRef.current);
+    }, []);
+
     const finalizeDrop = useCallback((playerId, sourceTier, index) => {
         let finalDropIndex = index !== null ? index : 0;
 
@@ -70,16 +91,18 @@ const Tier = ({
     const handleDragOver = (e) => {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
-        setIsDragOver(true);
+        if (!isDragOver) setIsDragOver(true);
 
         const rect = e.currentTarget.getBoundingClientRect();
         const y = e.clientY - rect.top;
-        setDropIndex(resolveDropIndex(y, rect.height));
+        queueDropIndex(resolveDropIndex(y, rect.height));
     };
 
     const handleDragLeave = (e) => {
         e.preventDefault();
         setIsDragOver(false);
+        dropIndexRef.current = null;
+        pendingDropIndexRef.current = null;
         setDropIndex(null);
     };
 
@@ -91,10 +114,12 @@ const Tier = ({
 
         try {
             const { playerId, sourceTier } = JSON.parse(dragData);
-            finalizeDrop(playerId, sourceTier, dropIndex);
+            finalizeDrop(playerId, sourceTier, dropIndexRef.current);
         } catch (error) {
             console.error('Error parsing drag data in tier:', error);
         }
+        dropIndexRef.current = null;
+        pendingDropIndexRef.current = null;
         setDropIndex(null);
     };
 
@@ -128,9 +153,19 @@ const Tier = ({
             const rect = tierRef.current?.getBoundingClientRect();
             if (!rect) return;
 
+            const withinX = touch.clientX === undefined
+                || (touch.clientX >= rect.left && touch.clientX <= rect.right);
+            const withinY = touch.clientY >= rect.top && touch.clientY <= rect.bottom;
+            if (!withinX || !withinY) {
+                if (isDragOver) setIsDragOver(false);
+                dropIndexRef.current = null;
+                queueDropIndex(null);
+                return;
+            }
+
             const y = touch.clientY - rect.top;
-            setDropIndex(resolveDropIndex(y, rect.height));
-            setIsDragOver(true);
+            queueDropIndex(resolveDropIndex(y, rect.height));
+            if (!isDragOver) setIsDragOver(true);
         };
 
         const handleTouchDragStart = () => {
@@ -146,6 +181,8 @@ const Tier = ({
 
             setIsTouchDragging(false);
             setIsDragOver(false);
+            dropIndexRef.current = null;
+            pendingDropIndexRef.current = null;
             setDropIndex(null);
         };
 
@@ -158,7 +195,7 @@ const Tier = ({
             document.removeEventListener('playerDragMove', handleTouchDragMove);
             document.removeEventListener('playerDragEnd', handleTouchDragEnd);
         };
-    }, [isTouchDragging, finalizeDrop, resolveDropIndex]);
+    }, [isDragOver, isTouchDragging, finalizeDrop, queueDropIndex, resolveDropIndex]);
 
     const headerClass = darkMode
         ? 'border-b border-white/5 bg-slate-900/80'

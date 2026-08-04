@@ -26,6 +26,7 @@ const SavedBoardsPanel = ({ darkMode, players, onLoadBoard }) => {
     const [renamingId, setRenamingId] = useState(null);
     const [renameValue, setRenameValue] = useState('');
     const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+    const [confirmOverwriteId, setConfirmOverwriteId] = useState(null);
 
     const activeBoardId = getActiveBoardId();
 
@@ -79,6 +80,7 @@ const SavedBoardsPanel = ({ darkMode, players, onLoadBoard }) => {
             const { code, playerCount } = encodeCurrentBoard(players);
             await api.updateBoard(board.id, { code, playerCount });
             setActiveBoardId(board.id);
+            setConfirmOverwriteId(null);
             setMessage(`Updated "${board.name}" with your current board.`);
             await refresh();
         } catch (err) {
@@ -246,15 +248,36 @@ const SavedBoardsPanel = ({ darkMode, players, onLoadBoard }) => {
                                             >
                                                 {isBusy ? '…' : 'Load'}
                                             </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => handleOverwrite(board)}
-                                                disabled={isBusy}
-                                                className={ui.btn(darkMode)}
-                                                title="Replace this saved board with the board you are working on now"
-                                            >
-                                                Update
-                                            </button>
+                                            {confirmOverwriteId === board.id ? (
+                                                <>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleOverwrite(board)}
+                                                        disabled={isBusy}
+                                                        className="inline-flex items-center justify-center rounded-xl bg-amber-600 px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-amber-500"
+                                                    >
+                                                        {isBusy ? 'Updating…' : 'Confirm update'}
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setConfirmOverwriteId(null)}
+                                                        disabled={isBusy}
+                                                        className={ui.btn(darkMode)}
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setConfirmOverwriteId(board.id)}
+                                                    disabled={isBusy}
+                                                    className={ui.btn(darkMode)}
+                                                    title="Replace this saved board with the board you are working on now"
+                                                >
+                                                    Update
+                                                </button>
+                                            )}
                                             <button
                                                 type="button"
                                                 onClick={() => {
