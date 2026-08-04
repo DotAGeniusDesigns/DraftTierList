@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import BrandLogo from './BrandLogo';
 import AccountMenu from './AccountMenu';
-import PayPalDonateButton from './PayPalDonateButton';
+import { DonateButton, DonatePanel } from './DonateDropdown';
 import { ui } from '../utils/uiTheme';
 import { NAV_ROUTES } from '../utils/routes';
 
@@ -77,6 +77,7 @@ const BurgerIcon = ({ open }) => (
 const Navbar = ({ darkMode, onToggleDarkMode }) => {
     const location = useLocation();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [donateOpen, setDonateOpen] = useState(false);
     const navRef = useRef(null);
 
     const iconButtonClass = darkMode
@@ -95,18 +96,23 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
 
     useEffect(() => {
         setMenuOpen(false);
+        setDonateOpen(false);
     }, [location.pathname]);
 
     useEffect(() => {
-        if (!menuOpen) return undefined;
+        if (!menuOpen && !donateOpen) return undefined;
 
         const handlePointerDown = (event) => {
             if (navRef.current && !navRef.current.contains(event.target)) {
                 setMenuOpen(false);
+                setDonateOpen(false);
             }
         };
         const handleKeyDown = (event) => {
-            if (event.key === 'Escape') setMenuOpen(false);
+            if (event.key === 'Escape') {
+                setMenuOpen(false);
+                setDonateOpen(false);
+            }
         };
 
         document.addEventListener('mousedown', handlePointerDown);
@@ -115,7 +121,7 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
             document.removeEventListener('mousedown', handlePointerDown);
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [menuOpen]);
+    }, [menuOpen, donateOpen]);
 
     const renderNavLink = (item, { mobileMenu = false } = {}) => (
         <NavLink
@@ -178,7 +184,14 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                         <div className={ui.navSegment(darkMode)}>
                             {NAV_ROUTES.map((item) => renderNavLink(item))}
                         </div>
-                        <PayPalDonateButton darkMode={darkMode} />
+                        <DonateButton
+                            darkMode={darkMode}
+                            open={donateOpen}
+                            onClick={() => {
+                                setDonateOpen((prev) => !prev);
+                                setMenuOpen(false);
+                            }}
+                        />
                         <button
                             type="button"
                             onClick={onToggleDarkMode}
@@ -192,7 +205,15 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                     </div>
 
                     <div className="flex items-center gap-1.5 sm:gap-2 lg:hidden">
-                        <PayPalDonateButton darkMode={darkMode} compact />
+                        <DonateButton
+                            darkMode={darkMode}
+                            compact
+                            open={donateOpen}
+                            onClick={() => {
+                                setDonateOpen((prev) => !prev);
+                                setMenuOpen(false);
+                            }}
+                        />
                         <button
                             type="button"
                             onClick={onToggleDarkMode}
@@ -204,7 +225,10 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                         </button>
                         <button
                             type="button"
-                            onClick={() => setMenuOpen((prev) => !prev)}
+                            onClick={() => {
+                                setMenuOpen((prev) => !prev);
+                                setDonateOpen(false);
+                            }}
                             className={burgerButtonClass}
                             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
                             aria-expanded={menuOpen}
@@ -215,6 +239,10 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                         <AccountMenu darkMode={darkMode} compact />
                     </div>
                 </div>
+
+                {donateOpen && (
+                    <DonatePanel darkMode={darkMode} onClose={() => setDonateOpen(false)} />
+                )}
 
                 {menuOpen && (
                     <div
