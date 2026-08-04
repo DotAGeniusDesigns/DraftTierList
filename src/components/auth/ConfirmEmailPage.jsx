@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import AuthShell from './AuthShell';
 import { useAuth } from '../../context/AuthContext';
@@ -9,8 +9,9 @@ const ConfirmEmailPage = ({ darkMode }) => {
     const [searchParams] = useSearchParams();
     const { applyUser } = useAuth();
     const token = searchParams.get('token') || '';
-    const [state, setState] = useState({
-        busy: false,
+    const startedRef = useRef(false);
+    const [state, setState] = React.useState({
+        busy: Boolean(token),
         error: token ? null : 'This confirmation link is incomplete.',
         message: null,
     });
@@ -27,6 +28,13 @@ const ConfirmEmailPage = ({ darkMode }) => {
         }
     };
 
+    useEffect(() => {
+        if (!token || startedRef.current) return;
+        startedRef.current = true;
+        confirm();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [token]);
+
     return (
         <AuthShell
             darkMode={darkMode}
@@ -41,14 +49,17 @@ const ConfirmEmailPage = ({ darkMode }) => {
             <div className="space-y-4">
                 {state.error && <div className={ui.alert(darkMode, 'error')} role="alert">{state.error}</div>}
                 {state.message && <div className={ui.alert(darkMode, 'success')} role="status">{state.message}</div>}
-                {!state.message && (
+                {state.busy && !state.message && !state.error && (
+                    <p className={`text-sm ${ui.muted(darkMode)}`} role="status">Confirming your email…</p>
+                )}
+                {!state.message && !state.busy && token && (
                     <button
                         type="button"
                         onClick={confirm}
-                        disabled={!token || state.busy}
+                        disabled={!token}
                         className={`${ui.btnPrimary()} w-full py-2.5 disabled:cursor-not-allowed disabled:opacity-60`}
                     >
-                        {state.busy ? 'Confirming…' : 'Confirm email address'}
+                        Confirm email address
                     </button>
                 )}
             </div>

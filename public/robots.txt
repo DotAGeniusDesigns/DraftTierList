@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Disallow: /streamers
+Disallow: /interesting-players
+Disallow: /draft-scheduler
+Disallow: /confirm-email
+Disallow: /recover-email
+Disallow: /profile
+
+Sitemap: https://fantasy-toolkit.com/sitemap.xml

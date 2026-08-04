@@ -50,30 +50,42 @@ def diagonal_gradient(size, c1, c2):
     return small.resize(size, Image.LANCZOS)
 
 
+BG_SLATE = (15, 23, 42)  # #0f172a — logo tile background
+EMERALD_MARK = (16, 185, 129)  # #10b981 — F letter
+
+
 def brand_mark(size):
     """The Fantasy Toolkit logo mark as an RGBA tile (mirrors BrandLogo.jsx)."""
     s = size * SS
     tile = Image.new("RGBA", (s, s), (0, 0, 0, 0))
-
-    grad = diagonal_gradient((s, s), EMERALD, TEAL).convert("RGBA")
-    mask = Image.new("L", (s, s), 0)
-    ImageDraw.Draw(mask).rounded_rectangle([0, 0, s - 1, s - 1], radius=int(s * 0.26), fill=255)
-    tile.paste(grad, (0, 0), mask)
-
     d = ImageDraw.Draw(tile, "RGBA")
-    # football body — wider than tall so it doesn't read as a circle
-    cx, cy = s / 2, s * 0.55
-    rx, ry = s * 0.27, s * 0.155
-    d.ellipse([cx - rx, cy - ry, cx + rx, cy + ry], fill=(255, 255, 255, 250))
-    # laces: one spine plus short cross ticks
-    lw = max(1, int(s * 0.024))
-    d.line([(cx, cy - ry * 0.6), (cx, cy + ry * 0.6)], fill=TEAL + (255,), width=lw)
-    for k in (-0.3, 0.3):
-        y = cy + ry * k
-        d.line([(cx - rx * 0.3, y), (cx + rx * 0.3, y)], fill=TEAL + (255,), width=lw)
-    # small dot above the ball, echoing the SVG mark
-    dr = s * 0.045
-    d.ellipse([cx - dr, s * 0.185 - dr, cx + dr, s * 0.185 + dr], fill=(255, 255, 255, 230))
+
+    inset = int(s * (2 / 48))
+    radius = int(s * (11 / 48))
+    d.rounded_rectangle([inset, inset, s - inset - 1, s - inset - 1], radius=radius, fill=BG_SLATE + (255,))
+    d.rounded_rectangle(
+        [inset, inset, s - inset - 1, s - inset - 1],
+        radius=radius,
+        outline=EMERALD_MARK + (89,),
+        width=max(1, int(s * (1.5 / 48))),
+    )
+
+    def box(x0, y0, x1, y1):
+        return [
+            int(s * (x0 / 48)),
+            int(s * (y0 / 48)),
+            int(s * (x1 / 48)),
+            int(s * (y1 / 48)),
+        ]
+
+    # F — emerald
+    d.rectangle(box(13, 11, 24, 14.5), fill=EMERALD_MARK + (255,))
+    d.rectangle(box(13, 11, 16.5, 36), fill=EMERALD_MARK + (255,))
+    d.rectangle(box(13, 22, 22, 25.25), fill=EMERALD_MARK + (255,))
+
+    # T — white
+    d.rectangle(box(27, 11, 39, 14.5), fill=INK + (255,))
+    d.rectangle(box(29.5, 14.5, 33.25, 32), fill=INK + (255,))
 
     return tile.resize((size, size), Image.LANCZOS)
 

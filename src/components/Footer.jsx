@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ui } from '../utils/uiTheme';
-import { SITE_NAME } from '../utils/legalConfig';
+import { SITE_NAME, CONTACT_EMAIL } from '../utils/legalConfig';
 
 // Site-wide footer. Its main job is making the policy pages reachable from
 // every page, which is expected once an app collects email addresses.
@@ -14,6 +14,14 @@ const Footer = ({ darkMode }) => (
                 </p>
 
                 <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+                    <a
+                        href={`mailto:${CONTACT_EMAIL}`}
+                        className={`text-xs font-medium transition ${
+                            darkMode ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-900'
+                        }`}
+                    >
+                        Contact
+                    </a>
                     <Link
                         to="/privacy"
                         className={`text-xs font-medium transition ${

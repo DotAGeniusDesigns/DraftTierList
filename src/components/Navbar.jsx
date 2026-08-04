@@ -161,7 +161,7 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                 <div className="flex items-center justify-between gap-2 py-3 sm:gap-3 sm:py-3.5">
                     <Link to="/draft-board" className="flex min-w-0 items-center gap-2.5 sm:gap-3">
                         <div className="relative shrink-0">
-                            <BrandLogo className="h-9 w-9 sm:h-11 sm:w-11" darkMode={darkMode} />
+                            <BrandLogo className="h-9 w-9 sm:h-11 sm:w-11" />
                             <div
                                 className={`absolute -inset-1 -z-10 rounded-2xl blur-md ${
                                     darkMode ? 'bg-emerald-500/20' : 'bg-emerald-400/25'

@@ -5,6 +5,7 @@ import {
     MINIMUM_AGE,
     PRIVACY_EFFECTIVE_DATE,
     SITE_NAME,
+    CONTACT_EMAIL,
     SUBPROCESSORS,
 } from '../../utils/legalConfig';
 
@@ -182,7 +183,27 @@ const PrivacyPolicy = ({ darkMode }) => (
             </p>
             <p>
                 No system is perfectly secure. Use a password you do not use anywhere else, and
-                tell us promptly if you think your account has been accessed by someone else.
+                email us at{' '}
+                <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="font-semibold text-emerald-500 hover:text-emerald-400"
+                >
+                    {CONTACT_EMAIL}
+                </a>
+                {' '}if you think your account has been accessed by someone else.
+            </p>
+        </LegalSection>
+
+        <LegalSection darkMode={darkMode} id="contact" title="Contact">
+            <p>
+                Questions about this policy or your data? Email{' '}
+                <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="font-semibold text-emerald-500 hover:text-emerald-400"
+                >
+                    {CONTACT_EMAIL}
+                </a>
+                . We do not sell personal information and we do not run advertising.
             </p>
         </LegalSection>
 

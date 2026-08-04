@@ -24,10 +24,11 @@ const TermsOfService = ({ darkMode }) => (
 
         <LegalSection darkMode={darkMode} id="service" title="2. What the service is">
             <p>
-                {SITE_NAME} provides draft preparation tools: tier lists, draft ranges, streaming
-                suggestions, a draft lottery, offseason information and optional live draft sync
-                with Sleeper. Most features work without an account. An account adds the ability to
-                save boards to our servers and access them from other devices.
+                {SITE_NAME} provides draft preparation tools: tier lists, draft ranges, offseason
+                team breakdowns, a draft lottery, and optional live draft sync with Sleeper.
+                Additional in-season tools may be added over time. Most features work without an
+                account. An account adds the ability to save boards to our servers and access
+                them from other devices.
             </p>
             <p>
                 We may add, change or remove features at any time. We may also suspend the service

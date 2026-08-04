@@ -5,7 +5,7 @@ import {
 import TierList from './components/TierList';
 import ExportImport from './components/ExportImport';
 import Navbar from './components/Navbar';
-import ScrollToTop from './components/ScrollToTop';
+import RouteHead from './components/RouteHead';
 import NewPage from './components/NewPage';
 import DraftRange from './components/DraftRange';
 import Streamers from './components/Streamers';
@@ -27,6 +27,7 @@ import RecoverEmailPage from './components/auth/RecoverEmailPage';
 import RequireAuth from './components/auth/RequireAuth';
 import PrivacyPolicy from './components/legal/PrivacyPolicy';
 import TermsOfService from './components/legal/TermsOfService';
+import NotFoundPage from './components/NotFoundPage';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { initialPlayers, migratePlayerId } from './utils/playerData';
 import { getTeamLogo } from './utils/teamData';
@@ -549,7 +550,7 @@ function App() {
 
     return (
         <div className={ui.page(darkMode)}>
-            <ScrollToTop />
+            <RouteHead />
             <Navbar
                 darkMode={darkMode}
                 onToggleDarkMode={() => setDarkMode(!darkMode)}
@@ -903,7 +904,7 @@ function App() {
                 <Route path="/privacy" element={<PrivacyPolicy darkMode={darkMode} />} />
                 <Route path="/terms" element={<TermsOfService darkMode={darkMode} />} />
 
-                <Route path="*" element={<Navigate to="/draft-board" replace />} />
+                <Route path="*" element={<NotFoundPage darkMode={darkMode} />} />
             </Routes>
 
             <Footer darkMode={darkMode} />

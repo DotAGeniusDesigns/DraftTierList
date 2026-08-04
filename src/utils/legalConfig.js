@@ -7,6 +7,8 @@
 
 export const SITE_NAME = 'Fantasy Toolkit';
 
+export const CONTACT_EMAIL = 'privacy@fantasy-toolkit.com';
+
 // Bump both when you materially change the documents.
 export const PRIVACY_EFFECTIVE_DATE = 'August 3, 2026';
 export const TERMS_EFFECTIVE_DATE = 'August 3, 2026';
