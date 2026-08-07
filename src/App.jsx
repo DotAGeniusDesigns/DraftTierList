@@ -455,12 +455,18 @@ function App() {
         });
     }, [setPlayers]);
 
-    // Reset to default database order
+    // Reset to default database order, ranked by ECR/ADP for whichever
+    // scoring format is currently selected — not always half-PPR.
     const handleResetToDefault = () => {
         createBackup(players, 'before resetting to default');
         clearTierNames();
         setActiveBoardId(null);
-        setPlayers(initialPlayers);
+        setPlayers(initialPlayers.map((player) => {
+            const databasePlayer = playerDatabase[player.id];
+            if (!databasePlayer) return player;
+            const { ecr, adp } = getRankingsForFormat(databasePlayer, scoringFormat);
+            return { ...player, ecr, adp };
+        }));
         window.setTimeout(() => window.location.reload(), 0);
     };
 
@@ -833,8 +839,9 @@ function App() {
                                         Reset to Default?
                                     </h3>
                                     <p className={`text-sm leading-relaxed ${ui.muted(darkMode)}`}>
-                                        This will clear all your custom tier arrangements and draft status,
-                                        then reload the default database order. This action cannot be undone.
+                                        Your scoring is set to <strong>{getScoringFormatLabel(scoringFormat)}</strong>.
+                                        Reset to the default ranking by ECR for this scoring? This will clear all
+                                        your custom tier arrangements and draft status. This action cannot be undone.
                                     </p>
                                 </div>
                                 <div className="flex justify-center gap-3">

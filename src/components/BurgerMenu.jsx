@@ -53,7 +53,7 @@ const BurgerMenu = ({
                         onClick={() => handleMenuItemClick(onShowResetConfirm)}
                         className={`${itemClass} ${darkMode ? 'text-rose-400 hover:bg-rose-500/10' : 'text-rose-600 hover:bg-rose-50'}`}
                     >
-                        ⚠️ Reset to Default
+                        ⚠️ Reset to Default (ranked by ECR)
                     </button>
                 </div>
             )}
