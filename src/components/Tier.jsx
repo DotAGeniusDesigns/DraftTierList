@@ -316,16 +316,17 @@ const Tier = ({
                             </div>
                         </div>
 
-                        <div className={`flex items-center px-3 py-2 text-[10px] font-bold uppercase tracking-wider sm:hidden ${darkMode
+                        <div className={`flex items-center gap-0.5 px-2 py-2 text-[10px] font-bold uppercase tracking-wider sm:hidden ${darkMode
                             ? 'border-b border-white/5 bg-slate-900/95 text-slate-500'
                             : 'border-b border-slate-100 bg-slate-50 text-slate-400'
                             }`}>
-                            <div className="w-8 text-center">#</div>
-                            <div className="w-10" />
-                            <div className="flex-1 px-2">Player</div>
-                            <ColumnHeader label="Pos" tooltip={BOARD_COLUMN_TOOLTIPS.pos} className="w-10" darkMode={darkMode} />
-                            <ColumnHeader label="Tm" tooltip={BOARD_COLUMN_TOOLTIPS.team} className="w-10" darkMode={darkMode} />
+                            <div className="w-6 text-center">#</div>
+                            <div className="w-9" />
+                            <div className="flex-1 px-1.5">Player</div>
+                            <ColumnHeader label="Pos" tooltip={BOARD_COLUMN_TOOLTIPS.pos} className="w-8" darkMode={darkMode} />
+                            <ColumnHeader label="Tm" tooltip={BOARD_COLUMN_TOOLTIPS.team} className="w-8" darkMode={darkMode} />
                             <ColumnHeader label="ADP" tooltip={BOARD_COLUMN_TOOLTIPS.adp} className="w-10" darkMode={darkMode} />
+                            <div className="w-6" />
                         </div>
 
                         {players.map((player, index) => (

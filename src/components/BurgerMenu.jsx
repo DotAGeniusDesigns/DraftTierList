@@ -32,7 +32,7 @@ const BurgerMenu = ({
             </button>
 
             {isOpen && (
-                <div className={`absolute right-0 z-50 mt-2 w-60 p-2 ${ui.dropdown(darkMode)}`}>
+                <div className={`absolute left-0 z-50 mt-2 w-60 max-w-[calc(100vw-2rem)] p-2 sm:left-auto sm:right-0 ${ui.dropdown(darkMode)}`}>
                     <div className={`px-3 py-2 text-[11px] font-bold uppercase tracking-wider ${ui.muted(darkMode)}`}>
                         Draft Board
                     </div>

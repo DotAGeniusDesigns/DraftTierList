@@ -1,6 +1,66 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Tier from './Tier';
 import { getTierNames } from '../utils/tierNames';
+
+// While a touch-drag is active, Player.jsx locks touchAction to 'none' so the
+// browser's native scroll gesture doesn't hijack the drag — which means
+// without this, a phone screen (showing ~1-2 tiers at a time) makes it
+// impossible to drag a player into a tier that isn't already on screen.
+// This nudges the window on our own via rAF whenever the touch point nears
+// the top/bottom edge, using the same custom playerDrag* events Tier.jsx
+// listens to for drop-index tracking.
+const EDGE_ZONE_PX = 72;
+const MAX_SCROLL_SPEED = 16;
+
+function useTouchDragAutoScroll() {
+    useEffect(() => {
+        let rafId = null;
+        let scrollSpeed = 0;
+
+        const tick = () => {
+            if (scrollSpeed !== 0) {
+                window.scrollBy(0, scrollSpeed);
+            }
+            rafId = window.requestAnimationFrame(tick);
+        };
+
+        const handleDragStart = () => {
+            if (rafId === null) rafId = window.requestAnimationFrame(tick);
+        };
+
+        const handleDragMove = (e) => {
+            const { clientY } = e.detail || {};
+            if (typeof clientY !== 'number') return;
+
+            if (clientY < EDGE_ZONE_PX) {
+                scrollSpeed = -Math.ceil(((EDGE_ZONE_PX - clientY) / EDGE_ZONE_PX) * MAX_SCROLL_SPEED);
+            } else if (clientY > window.innerHeight - EDGE_ZONE_PX) {
+                scrollSpeed = Math.ceil(((clientY - (window.innerHeight - EDGE_ZONE_PX)) / EDGE_ZONE_PX) * MAX_SCROLL_SPEED);
+            } else {
+                scrollSpeed = 0;
+            }
+        };
+
+        const stop = () => {
+            scrollSpeed = 0;
+            if (rafId !== null) {
+                window.cancelAnimationFrame(rafId);
+                rafId = null;
+            }
+        };
+
+        document.addEventListener('playerDragStart', handleDragStart);
+        document.addEventListener('playerDragMove', handleDragMove);
+        document.addEventListener('playerDragEnd', stop);
+
+        return () => {
+            document.removeEventListener('playerDragStart', handleDragStart);
+            document.removeEventListener('playerDragMove', handleDragMove);
+            document.removeEventListener('playerDragEnd', stop);
+            stop();
+        };
+    }, []);
+}
 
 const TierList = ({
     players,
@@ -16,6 +76,8 @@ const TierList = ({
     tierNamesVersion = 0,
     focusPlayerId = null,
 }) => {
+    useTouchDragAutoScroll();
+
     const tierNames = useMemo(() => {
         void tierNamesVersion;
         return getTierNames();
