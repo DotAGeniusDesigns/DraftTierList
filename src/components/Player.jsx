@@ -213,8 +213,8 @@ const Player = ({
 
     const deltaClass = (isPositive) =>
         isPositive
-            ? darkMode ? 'text-rose-400' : 'text-rose-600'
-            : darkMode ? 'text-emerald-400' : 'text-emerald-600';
+            ? darkMode ? 'text-emerald-400' : 'text-emerald-600'
+            : darkMode ? 'text-rose-400' : 'text-rose-600';
 
     return (
         <div
