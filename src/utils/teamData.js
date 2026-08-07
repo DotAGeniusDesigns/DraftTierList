@@ -1,7 +1,10 @@
 // Team data structure with logos, bye weeks, and other information.
 // Bye weeks reflect the 2026 NFL season.
-// O-line ranks (1 = best, 32 = worst) from USA Today, June 30 2026:
-// https://www.usatoday.com/story/sports/nfl/2026/06/30/nfl-offensive-line-rankings-2026/90450145007/
+// O-line ranks (1 = best, 32 = worst) — consensus average across three
+// sources, re-ranked to smooth out disagreements (refreshed 8/8/2026):
+//   Sharp Football Analysis (6/30/2026): https://www.sharpfootballanalysis.com/analysis/best-nfl-offensive-line-rankings/
+//   FantasyPros (7/18/2026): https://www.fantasypros.com/2026/07/nfl-offensive-line-rankings-2026-fantasy-football/
+//   StatRankings.com (7/23/2026): https://statrankings.com/nfl/offensive-line-rankings
 export const teamData = {
     'ARI': {
         name: 'Arizona Cardinals',
@@ -10,7 +13,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'West',
         primaryColor: '#97233F',
-        olineRank: 25
+        olineRank: 28
     },
     'ATL': {
         name: 'Atlanta Falcons',
@@ -19,7 +22,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'South',
         primaryColor: '#A71930',
-        olineRank: 10
+        olineRank: 16
     },
     'BAL': {
         name: 'Baltimore Ravens',
@@ -28,7 +31,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'North',
         primaryColor: '#241773',
-        olineRank: 19
+        olineRank: 23
     },
     'BUF': {
         name: 'Buffalo Bills',
@@ -46,7 +49,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'South',
         primaryColor: '#0085CA',
-        olineRank: 14
+        olineRank: 9
     },
     'CHI': {
         name: 'Chicago Bears',
@@ -55,7 +58,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'North',
         primaryColor: '#0B162A',
-        olineRank: 7
+        olineRank: 3
     },
     'CIN': {
         name: 'Cincinnati Bengals',
@@ -64,7 +67,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'North',
         primaryColor: '#FB4F14',
-        olineRank: 30
+        olineRank: 26
     },
     'CLE': {
         name: 'Cleveland Browns',
@@ -73,7 +76,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'North',
         primaryColor: '#311D00',
-        olineRank: 29
+        olineRank: 31
     },
     'DAL': {
         name: 'Dallas Cowboys',
@@ -82,7 +85,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'East',
         primaryColor: '#003594',
-        olineRank: 20
+        olineRank: 21
     },
     'DEN': {
         name: 'Denver Broncos',
@@ -91,7 +94,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'West',
         primaryColor: '#FB4F14',
-        olineRank: 2
+        olineRank: 1
     },
     'DET': {
         name: 'Detroit Lions',
@@ -100,7 +103,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'North',
         primaryColor: '#0076B6',
-        olineRank: 6
+        olineRank: 11
     },
     'GB': {
         name: 'Green Bay Packers',
@@ -109,7 +112,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'North',
         primaryColor: '#203731',
-        olineRank: 26
+        olineRank: 29
     },
     'HOU': {
         name: 'Houston Texans',
@@ -118,7 +121,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'South',
         primaryColor: '#03202F',
-        olineRank: 24
+        olineRank: 30
     },
     'IND': {
         name: 'Indianapolis Colts',
@@ -136,7 +139,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'South',
         primaryColor: '#006778',
-        olineRank: 28
+        olineRank: 17
     },
     'KC': {
         name: 'Kansas City Chiefs',
@@ -145,7 +148,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'West',
         primaryColor: '#E31837',
-        olineRank: 11
+        olineRank: 18
     },
     'LAC': {
         name: 'Los Angeles Chargers',
@@ -154,7 +157,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'West',
         primaryColor: '#0080C6',
-        olineRank: 12
+        olineRank: 6
     },
     'LAR': {
         name: 'Los Angeles Rams',
@@ -163,7 +166,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'West',
         primaryColor: '#003594',
-        olineRank: 3
+        olineRank: 5
     },
     'LV': {
         name: 'Las Vegas Raiders',
@@ -172,7 +175,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'West',
         primaryColor: '#000000',
-        olineRank: 16
+        olineRank: 25
     },
     'MIA': {
         name: 'Miami Dolphins',
@@ -181,7 +184,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'East',
         primaryColor: '#008E97',
-        olineRank: 32
+        olineRank: 27
     },
     'MIN': {
         name: 'Minnesota Vikings',
@@ -190,7 +193,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'North',
         primaryColor: '#4F2683',
-        olineRank: 17
+        olineRank: 10
     },
     'NE': {
         name: 'New England Patriots',
@@ -199,7 +202,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'East',
         primaryColor: '#002244',
-        olineRank: 22
+        olineRank: 15
     },
     'NO': {
         name: 'New Orleans Saints',
@@ -208,7 +211,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'South',
         primaryColor: '#D3BC8D',
-        olineRank: 9
+        olineRank: 12
     },
     'NYG': {
         name: 'New York Giants',
@@ -217,7 +220,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'East',
         primaryColor: '#0B2265',
-        olineRank: 18
+        olineRank: 20
     },
     'NYJ': {
         name: 'New York Jets',
@@ -226,7 +229,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'East',
         primaryColor: '#125740',
-        olineRank: 15
+        olineRank: 19
     },
     'PHI': {
         name: 'Philadelphia Eagles',
@@ -235,7 +238,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'East',
         primaryColor: '#004C54',
-        olineRank: 1
+        olineRank: 2
     },
     'PIT': {
         name: 'Pittsburgh Steelers',
@@ -244,7 +247,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'North',
         primaryColor: '#FFB612',
-        olineRank: 23
+        olineRank: 22
     },
     'SEA': {
         name: 'Seattle Seahawks',
@@ -253,7 +256,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'West',
         primaryColor: '#002244',
-        olineRank: 21
+        olineRank: 13
     },
     'SF': {
         name: 'San Francisco 49ers',
@@ -262,7 +265,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'West',
         primaryColor: '#AA0000',
-        olineRank: 13
+        olineRank: 14
     },
     'TB': {
         name: 'Tampa Bay Buccaneers',
@@ -271,7 +274,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'South',
         primaryColor: '#D50A0A',
-        olineRank: 5
+        olineRank: 7
     },
     'TEN': {
         name: 'Tennessee Titans',
@@ -280,7 +283,7 @@ export const teamData = {
         conference: 'AFC',
         division: 'South',
         primaryColor: '#0C2340',
-        olineRank: 31
+        olineRank: 32
     },
     'WAS': {
         name: 'Washington Commanders',
@@ -289,7 +292,7 @@ export const teamData = {
         conference: 'NFC',
         division: 'East',
         primaryColor: '#5A1414',
-        olineRank: 27
+        olineRank: 24
     },
     'FA': {
         name: 'Free Agent',
@@ -303,15 +306,16 @@ export const teamData = {
 };
 
 // Projected 2026 defense ranks (1 = best, 32 = worst). Consensus of two
-// preseason sources — The Gameday power rankings (updated 7/20/2026) and
-// Sportsnaut — averaged and re-ranked to smooth out disagreements.
+// preseason sources — The Gameday power rankings and Sportsnaut — averaged
+// and re-ranked to smooth out disagreements (refreshed 8/8/2026, pulling
+// The Gameday's 8/6/2026 update):
 //   https://thegameday.com/nfl/power-rankings/defense/
 //   https://sportsnaut.com/nfl/nfl-defense-rankings
 export const DEFENSE_RANK_2026 = {
-    SEA: 1, HOU: 2, LAR: 3, PHI: 4, DEN: 5, MIN: 6, JAX: 7, NE: 8,
-    BAL: 9, LAC: 10, DET: 11, GB: 12, KC: 13, PIT: 14, ATL: 15, SF: 16,
-    BUF: 17, IND: 18, CLE: 19, CHI: 20, NYG: 21, NO: 22, CAR: 23, TB: 24,
-    DAL: 25, LV: 26, TEN: 27, ARI: 28, CIN: 29, NYJ: 30, MIA: 31, WAS: 32,
+    HOU: 1, LAR: 2, SEA: 3, PHI: 4, DEN: 5, NE: 6, MIN: 7, JAX: 8,
+    BAL: 9, PIT: 10, GB: 11, CLE: 12, DET: 13, SF: 14, IND: 15, DAL: 16,
+    CHI: 17, NYG: 18, KC: 19, LAC: 20, BUF: 21, ATL: 22, TB: 23, CAR: 24,
+    CIN: 25, NO: 26, WAS: 27, NYJ: 28, TEN: 29, LV: 30, ARI: 31, MIA: 32,
 };
 
 // Fold the projected defense rank onto each team record so it sits alongside
