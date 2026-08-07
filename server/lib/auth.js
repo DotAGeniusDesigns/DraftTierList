@@ -103,7 +103,7 @@ const getSessionUser = async (req) => {
 
     let payload;
     try {
-        payload = jwt.verify(token, SESSION_SECRET);
+        payload = jwt.verify(token, SESSION_SECRET, { algorithms: ['HS256'] });
     } catch {
         return null;
     }

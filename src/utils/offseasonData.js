@@ -1,6 +1,9 @@
 // 2026 offseason tracker data — coaching changes, player movement, rookies,
 // and three key bullet points per team. Compiled July 2026 from offseason
-// reporting; key points refreshed August 2026 for training-camp intel.
+// reporting; key points refreshed 2026-08-07 against fresh camp reporting,
+// the ESPN injury/news feeds, and current fantasy-expert consensus (ADP,
+// depth-chart, and camp-battle coverage from FantasyPros, ESPN, SI/OnSI,
+// PFF, RotoBaller, Yahoo, CBS, and beat-reporter camp notes).
 // Live headlines/transactions: npm run offseason → offseasonNews.js
 // Depth charts are NOT stored here — they are computed from playerDatabase
 // so they always match the draft board rosters.
@@ -27,9 +30,9 @@ export const offseasonData = {
             { name: 'Carson Beck', pos: 'QB', detail: 'Developmental pick behind Brissett' },
         ],
         keyPoints: [
-            "Rookie Jeremiyah Love (No. 3 pick) flashing in camp as the early lead-back",
-            "Brissett running with the ones; Sweat and Garrett Williams start on PUP",
-            "Marvin Harrison Jr. the clear alpha in LaFleur's passing offense",
+            "Camp reps say timeshare, not bell cow — Allgeier is getting the early-down work Love was drafted for",
+            "James Conner is fully healthy again but stuck as Arizona's third back behind Love and Allgeier",
+            "Marvin Harrison Jr. remains the WR1 target hog, though drops and a cramping absence have cooled his year-2 breakout buzz",
         ],
     },
 
@@ -51,9 +54,9 @@ export const offseasonData = {
             { name: 'Zachariah Branch', pos: 'WR', detail: 'Explosive slot/return weapon' },
         ],
         keyPoints: [
-            "Bijan Robinson a top-2 fantasy pick in Stefanski's zone-run scheme",
-            "Tua vs. Penix QB battle still wide open with Cooper Rush in the mix",
-            "RB2 room behind Bijan thins out after Allgeier's exit",
+            "Bijan Robinson's camp holdout ended with a new long-term deal — still a locked-in top-2 overall fantasy back",
+            "Tua has pulled ahead of an ACL-limited Penix Jr. (Questionable) for the Week 1 job — no longer a true tossup",
+            "Drake London is the offense's alpha at 9+ targets a game regardless of who wins the QB competition",
         ],
     },
 
@@ -72,9 +75,9 @@ export const offseasonData = {
             { name: 'Ja\'Kobi Lane', pos: 'WR', detail: 'Big-bodied red-zone project' },
         ],
         keyPoints: [
-            "Jackson–Henry–Flowers–Andrews core returns intact under new HC Jesse Minter",
-            "Likely's exit hands the TE role fully back to Mark Andrews",
-            "Watch whether a defensive staff dials back the offense's aggression",
+            "Lamar Jackson is a rebound-value QB1 bet after a down 2025 — early camp is mixed, but the arm talent and rushing floor are unchanged",
+            "Derrick Henry, 32, still projects for 300+ carries; a camp rest day was veteran management, not an injury flag",
+            "Zay Flowers signed his extension and Mark Andrews is now the unquestioned TE1 with Likely gone",
         ],
     },
 
@@ -91,9 +94,9 @@ export const offseasonData = {
             { name: 'Skyler Bell', pos: 'WR', detail: 'Late-round slot depth' },
         ],
         keyPoints: [
-            "D.J. Moore trade gives Josh Allen his best No. 1 receiver since Diggs",
-            "Joe Brady promotion keeps scheme continuity after McDermott's exit",
-            "James Cook stays the bell cow; Shakir and Coleman get squeezed",
+            "James Cook's hold-in ended with a 4-year, $48M extension — the bell-cow role was never in doubt",
+            "D.J. Moore and Khalil Shakir are the clear top two; Keon Coleman is now winning the WR3 job over Joshua Palmer",
+            "Josh Allen has looked sharp building chemistry with Cook in camp — still a top-3 fantasy QB",
         ],
     },
 
@@ -109,9 +112,9 @@ export const offseasonData = {
             { name: 'Trevor Etienne', pos: 'RB', detail: 'Change-of-pace depth' },
         ],
         keyPoints: [
-            "Tetairoa McMillan is the clear No. 1 and a top-30 fantasy pick",
-            "Hubbard leads the backfield with Jonathon Brooks as the upside stash",
-            "Brazzell's camp injury removes the top vertical dart behind McMillan",
+            "Tetairoa McMillan added muscle and more slot usage in year two — trending toward borderline WR1 value",
+            "Hubbard is the healthy lead back, but a fully recovered Jonathon Brooks is one of the league's highest-upside handcuffs",
+            "Brazzell's season-ending knee injury leaves the WR2 job thin behind McMillan",
         ],
     },
 
@@ -126,9 +129,9 @@ export const offseasonData = {
         ],
         rookies: [],
         keyPoints: [
-            "D.J. Moore trade opens ~130 targets for Odunze, Burden, and Loveland",
-            "Colston Loveland set up for a year-2 TE breakout in Ben Johnson's scheme",
-            "It all hinges on a Caleb Williams leap; Swift/Monangai a camp battle",
+            "Colston Loveland is camp's biggest riser — now drafted behind only McBride and Bowers at tight end",
+            "Monangai's camp injury hands the lead-back reps back to Swift, at least to open the season",
+            "Caleb Williams (QB5 in 2025) is being drafted as low as QB7 — real value if the Ben Johnson leap continues",
         ],
     },
 
@@ -141,9 +144,9 @@ export const offseasonData = {
         departures: [],
         rookies: [],
         keyPoints: [
-            "Full continuity — Burrow–Chase–Higgins intact, Chase a top-3 pick",
-            "Chase Brown has the backfield essentially to himself",
-            "The entire fantasy ecosystem rides on Burrow's health",
+            "Joe Burrow enters healthy and motivated, with camp reports the offense wants him under center more to unlock play-action — top-5 QB1 range",
+            "Chase Brown's ADP has climbed into round 2 — Cincinnati added zero backfield competition behind him",
+            "Chase and Higgins remain the league's best WR duo; the whole offense still rides on Burrow staying upright",
         ],
     },
 
@@ -159,13 +162,13 @@ export const offseasonData = {
         ],
         rookies: [
             { name: 'Spencer Fano', pos: 'OT', detail: 'Round 1, No. 9 overall — anchors the rebuilt line' },
-            { name: 'KC Concepcion', pos: 'WR', detail: 'Dynamic slot weapon expected to play immediately' },
+            { name: 'KC Concepcion', pos: 'WR', detail: 'Dynamic slot weapon expected to play immediately; Questionable (shoulder) but still working in team drills' },
             { name: 'Denzel Boston', pos: 'WR', detail: 'Big X-receiver with red-zone chops' },
         ],
         keyPoints: [
-            "Open Sanders vs. Watson QB battle still unsettled after week one of camp",
-            "Judkins/Sampson backfield and Harold Fannin Jr. are the volume beneficiaries",
-            "Rookies Concepcion and Boston join a rebuilt line (Fano, No. 9)",
+            "The Sanders-Watson QB battle is trending Sanders' way early in camp, though Monken hasn't made it official",
+            "Harold Fannin Jr. is now the clean TE1 with Njoku gone — one of the better value plays in fantasy off his TE8-pace rookie year",
+            "Judkins (ankle, on track for Week 1) profiles as a volume RB2 with goal-line work; Sampson is the receiving-down flex piece",
         ],
     },
 
@@ -180,9 +183,9 @@ export const offseasonData = {
             { name: 'Caleb Downs', pos: 'S', detail: 'Round 1, No. 11 overall — instant defensive centerpiece' },
         ],
         keyPoints: [
-            "Lamb + Pickens one of the best WR duos — but they split the targets",
-            "Javonte Williams leads the backfield with Jaydon Blue as the handcuff",
-            "Defense-focused offseason points to more balanced game scripts",
+            "Javonte Williams re-signed and remains the lead back, but Jaydon Blue is camp's biggest riser and forcing a real passing-down role",
+            "Lamb and Pickens form a legit 1-2 punch, but the target split (roughly 28%/20%) keeps either one from being a clean top-5 WR",
+            "Line and scheme are fully intact under Schottenheimer — a low-variance, pass-heavy offense for Dak",
         ],
     },
 
@@ -200,9 +203,9 @@ export const offseasonData = {
             { name: 'Jonah Coleman', pos: 'RB', detail: 'Compact, contact-balance runner added to the committee' },
         ],
         keyPoints: [
-            "Jaylen Waddle trade gives Bo Nix a true field-tilting receiver",
-            "Courtland Sutton slides into a red-zone-heavy WR2 role",
-            "Backfield a frustrating Payton committee (Harvey/Dobbins/Coleman)",
+            "Waddle and Sutton are a confirmed 1-2 punch, with Marvin Mims Jr. drawing sleeper buzz for the No. 3 role",
+            "Payton has named Dobbins the lead back, with Harvey carved out for third-down/receiving work — a real hierarchy, not a pure committee",
+            "Bo Nix is fully healthy off last year's ankle issue and working unrestricted — no lingering QB1 concern",
         ],
     },
 
@@ -219,9 +222,9 @@ export const offseasonData = {
         ],
         rookies: [],
         keyPoints: [
-            "Montgomery traded out — Jahmyr Gibbs is the engine with No. 1 overall upside",
-            "St. Brown and LaPorta return to their usual high-value roles",
-            "No coaching turnover — one of the league's safest ecosystems",
+            "Jahmyr Gibbs just signed a 3-year, $67.5M extension as the NFL's highest-paid back — the presumptive 2026 overall RB1",
+            "Sam LaPorta is back at full strength after missing the back half of 2025 with a back injury — a clean TE1 bounce-back bet",
+            "Amon-Ra St. Brown remains the alpha target earner in one of the league's safest, most stable offenses",
         ],
     },
 
@@ -237,9 +240,9 @@ export const offseasonData = {
         ],
         rookies: [],
         keyPoints: [
-            "Tucker Kraft cleared from PUP and back as a top-5 fantasy TE",
-            "Thinner WR room finally consolidates roles around Watson and Golden",
-            "Josh Jacobs remains the workhorse behind a strong line",
+            "Tucker Kraft is off PUP and trending toward Week 1, but he's still tagged Questionable and limited to individual drills — not a lock yet",
+            "Matthew Golden is winning early reps opposite Christian Watson, stepping into 131 targets vacated by Doubs and Wicks",
+            "Josh Jacobs remains the unchallenged workhorse behind a strong offensive line",
         ],
     },
 
@@ -254,9 +257,9 @@ export const offseasonData = {
         departures: [],
         rookies: [],
         keyPoints: [
-            "David Montgomery trade adds a physical lead back next to Woody Marks",
-            "Nico Collins a top-5 fantasy WR when Stroud plays to his level",
-            "Fantasy fortunes hinge on a Stroud rebound behind a better line",
+            "Woody Marks and David Montgomery are a genuine tandem in camp — expect a real timeshare that caps both backs' ceilings",
+            "Tank Dell is fully cleared and flashing for the first time since his ACL/MCL tear, battling Jayden Higgins for the WR2 job behind Nico Collins",
+            "Nico Collins remains a top-5 WR when Stroud is on — the whole offense's fantasy value still hinges on his rebound",
         ],
     },
 
@@ -273,9 +276,9 @@ export const offseasonData = {
         ],
         rookies: [],
         keyPoints: [
-            "Jonathan Taylor remains the bankable workhorse centerpiece",
-            "Pierce ($116M) is the new No. 1 but opened camp on the PUP list",
-            "WR room wide open behind Pierce — camp competition clouds WR2 value",
+            "Jonathan Taylor just signed a 3-year, $44M extension — the largest third contract ever for a running back, and the bankable centerpiece here",
+            "Alec Pierce ($116M, the presumptive No. 1) remains on PUP recovering from ankle surgery, clouding his Week 1 status",
+            "Josh Downs is next in line for a bigger target share with Pittman gone — his floor rises further if Pierce's ankle lingers",
         ],
     },
 
@@ -285,23 +288,23 @@ export const offseasonData = {
             notes: 'Year two of the Coen offense with a fully turned-over backfield.',
         },
         additions: [
-            { name: 'Chris Rodriguez Jr.', pos: 'RB', detail: 'Signed to compete for early-down work' },
+            { name: 'Chris Rodriguez Jr.', pos: 'RB', detail: 'Signed to compete for early-down work; Questionable in camp but practicing well' },
         ],
         departures: [
             { name: 'Travis Etienne Jr.', pos: 'RB', detail: 'Signed with New Orleans' },
         ],
         rookies: [],
         keyPoints: [
-            "Bhayshul Tuten inherits the backfield with league-winner upside",
-            "Brian Thomas Jr. needs a bounce-back; Travis Hunter gets a bigger role",
-            "Pivotal year for Trevor Lawrence in Coen's scheme",
+            "Tuten's backfield lead isn't as clean as it looked — a healthy Chris Rodriguez Jr. and LeQuint Allen have turned it into a real three-way camp battle",
+            "Trevor Lawrence enters camp healthy off a stretch as fantasy's QB1 in points-per-game since last Week 5 — stock trending up in year two of Coen's system",
+            "Brian Thomas Jr. is flashing early, but Travis Hunter's offensive role remains light and inconsistent — still a boom-bust dart throw",
         ],
     },
 
     KC: {
         coaching: {
             hc: { name: 'Andy Reid', status: 'returning' },
-            notes: 'Kansas City replaced Pacheco with the offseason\'s first big RB splash.',
+            notes: 'Kansas City replaced Pacheco with the offseason\'s first big RB splash, while Mahomes rehabs a torn ACL/LCL suffered in December.',
         },
         additions: [
             { name: 'Kenneth Walker III', pos: 'RB', detail: 'Signed from Seattle as the workhorse RB1' },
@@ -311,19 +314,19 @@ export const offseasonData = {
             { name: 'Isiah Pacheco', pos: 'RB', detail: 'Signed with Detroit' },
         ],
         rookies: [
-            { name: 'Emmett Johnson', pos: 'RB', detail: 'Day 3 pass-catching depth' },
+            { name: 'Emmett Johnson', pos: 'RB', detail: 'Day 3 pass-catching depth; has fallen behind Walker, Brashard Smith and Demercado in camp reps' },
         ],
         keyPoints: [
-            "Kenneth Walker III signed as the true workhorse Reid has lacked",
-            "Worthy and rookie Cyrus Allen both banged up early in camp — monitor",
-            "Rice/Kelce hierarchy returns; Mahomes a bounce-back bet",
+            "Patrick Mahomes is rehabbing from a torn ACL/LCL suffered in December — he's targeting Week 1, but 'bounce-back' undersells the real injury risk here",
+            "Xavier Worthy (shoulder) and rookie Cyrus Allen (leg) are both banged up in camp but trending back by mid-August — monitor Week 1 status",
+            "Kenneth Walker III is the clear early-down RB1 Reid has lacked; the Rice/Kelce target hierarchy returns as before",
         ],
     },
 
     LAC: {
         coaching: {
             hc: { name: 'Jim Harbaugh', status: 'returning' },
-            notes: 'Continuity on the sideline, with veteran pass-catchers added around Herbert.',
+            notes: 'Continuity at head coach, but new OC Mike McDaniel\'s motion-heavy scheme is a real shift — veteran pass-catchers were added around Herbert too.',
         },
         additions: [
             { name: 'David Njoku', pos: 'TE', detail: 'Signed from Cleveland' },
@@ -332,9 +335,9 @@ export const offseasonData = {
         departures: [],
         rookies: [],
         keyPoints: [
-            "Omarion Hampton a top-10 three-down back, spelled by Keaton Mitchell",
-            "Ladd McConkey remains Herbert's target-share monster from the slot",
-            "David Njoku upgrades TE (dims Oronde Gadsden's outlook)",
+            "New OC Mike McDaniel's motion-heavy scheme is being sold as the unlock for both Justin Herbert and Ladd McConkey",
+            "Omarion Hampton is the clear bell-cow target after a 77% snap share through four games before last year's high-ankle sprain",
+            "McConkey profiles as a bounce-back candidate as McDaniel's primary motion receiver, despite a quieter 2025 on similar target volume",
         ],
     },
 
@@ -350,9 +353,9 @@ export const offseasonData = {
             { name: 'Max Klare', pos: 'TE', detail: 'Athletic pass-catching tight end' },
         ],
         keyPoints: [
-            "Stafford runs it back at 38 — Puka Nacua a top-5 overall pick",
-            "Ty Simpson drafted as the QB of the future",
-            "Stafford's health is the whole season; Kyren Williams a steady RB2",
+            "Puka Nacua is a top-3 overall pick coming off a league-leading 129-catch, 1,715-yard season — still Stafford's clear top target",
+            "Kyren Williams' workload is shrinking fast — Blake Corum is pushing for close to a 50/50 split, dropping Williams out of clean RB1 territory",
+            "Davante Adams trims Nacua's target share slightly, but both remain must-starts in one of the league's best offenses",
         ],
     },
 
@@ -363,18 +366,18 @@ export const offseasonData = {
         },
         additions: [
             { name: 'Jalen Nailor', pos: 'WR', detail: 'Signed for 3 yrs, $35M with a path to the No. 2 target role' },
-            { name: 'Kirk Cousins', pos: 'QB', detail: 'Veteran mentor/bridge for the rookie' },
+            { name: 'Kirk Cousins', pos: 'QB', detail: 'Named the Week 1 starter over Mendoza to open camp — a bridge year, not just a mentor role' },
         ],
         departures: [
             { name: 'Geno Smith', pos: 'QB', detail: 'Moved on after a tough 2025; landed with the Jets' },
         ],
         rookies: [
-            { name: 'Fernando Mendoza', pos: 'QB', detail: 'Round 1, No. 1 overall — Heisman winner and the new face of the franchise' },
+            { name: 'Fernando Mendoza', pos: 'QB', detail: 'Round 1, No. 1 overall — Heisman winner, opens camp as the QB2 behind Cousins' },
         ],
         keyPoints: [
-            "No. 1 overall pick Fernando Mendoza is the new franchise QB",
-            "Ashton Jeanty (top-5 RB) and Brock Bowers anchor the offense",
-            "Kubiak's wide-zone scheme; expect rookie-QB growing pains",
+            "Kirk Cousins was named the Week 1 starter to open camp, with Mendoza as the QB2 bridge — expect a run-first offense early, not immediate rookie-QB volatility",
+            "Ashton Jeanty carries real top-5 RB helium (ADP around pick 17 overall) behind a run-committed staff",
+            "A fully healthy Brock Bowers is drawing 'best fantasy TE in football' buzz ahead of Trey McBride",
         ],
     },
 
@@ -392,12 +395,12 @@ export const offseasonData = {
         ],
         rookies: [
             { name: 'Ollie Gordon II', pos: 'RB', detail: 'Second-year power back (2025 pick) expected to take on more work' },
-            { name: 'Chris Bell', pos: 'WR', detail: 'Day 2 pick with vertical juice, working back from an ACL' },
+            { name: 'Chris Bell', pos: 'WR', detail: 'Day 2 pick with vertical juice, still weeks out working back from an ACL' },
         ],
         keyPoints: [
-            "Biggest overhaul in the league — Tua and Waddle both gone, Hafley in",
-            "De'Von Achane is the survivor and centerpiece, still an RB1",
-            "Malik Willis brings a run-heavy script to a thin receiver room",
+            "De'Von Achane survives the roster overhaul as the clear centerpiece — still a consensus RB6",
+            "Malik Willis's own legs could be the real threat to Achane's goal-line work in a run-heavy offense",
+            "Rookie Chris Bell (ACL) remains weeks out, leaving a thin WR room behind Malik Washington to open camp",
         ],
     },
 
@@ -417,9 +420,9 @@ export const offseasonData = {
             { name: 'Demond Claiborne', pos: 'RB', detail: 'Speedy depth behind Jones and Mason' },
         ],
         keyPoints: [
-            "Kyler Murray has the inside track over J.J. McCarthy at QB",
-            "Justin Jefferson reclaims overall-WR1 upside with a steady passer",
-            "Aaron Jones / Jordan Mason committee caps both as flex plays",
+            "The Murray-McCarthy QB battle is genuinely unresolved, with a decision reportedly targeted for mid-August — not the formality many expected",
+            "Justin Jefferson is a locked-in WR1 either way, though his ceiling scenario clearly favors a Murray-led passing attack",
+            "Jordan Addison plays a prove-it year after a suspension-shortened 2025 — an extension is expected but still unsigned",
         ],
     },
 
@@ -437,9 +440,9 @@ export const offseasonData = {
             { name: 'Caleb Lomu', pos: 'OT', detail: 'Round 1, No. 28 overall — protects Maye\'s blind side' },
         ],
         keyPoints: [
-            "A.J. Brown trade gives Drake Maye a true alpha — Maye a top-5 QB",
-            "Brown should soak up 130+ targets as the unquestioned No. 1",
-            "Stevenson/Henderson backfield split — own the explosive Henderson",
+            "A.J. Brown and Drake Maye are visibly building chemistry in padded practices — Maye's top-5 QB range still holds",
+            "Rhamondre Stevenson is working with the first-team offense over Henderson early in camp — a real committee, not a clean Henderson lean",
+            "Romeo Doubs' rapport with Maye is developing slower than Brown's, leaving the WR2 role less settled than it looks",
         ],
     },
 
@@ -456,9 +459,9 @@ export const offseasonData = {
             { name: 'Jordyn Tyson', pos: 'WR', detail: 'Round 2 pick expected to start opposite Chris Olave immediately' },
         ],
         keyPoints: [
-            "Rookie Jordyn Tyson starts opposite Olave in a perfect scheme fit",
-            "Travis Etienne headlines the backfield; Kamara reduced to a change-up",
-            "Ceiling tied to Tyler Shough's year-2 development",
+            "Chris Olave signed a long-term extension and profiles as a legit high-end WR1 off a WR7 2025 finish",
+            "Travis Etienne now leads early-down work with Kamara restructured into a 1B passing-down role — real risk the two vulture each other",
+            "Rookie Jordyn Tyson starts opposite Olave with elite route-running separation, though durability is a real question mark",
         ],
     },
 
@@ -478,9 +481,9 @@ export const offseasonData = {
             { name: 'Arvell Reese', pos: 'LB', detail: 'Round 1, No. 5 overall — the defense\'s new tone-setter' },
         ],
         keyPoints: [
-            "John Harbaugh headlines the coaching carousel for a young roster",
-            "Malik Nabers a target-monopoly WR1; Likely a popular TE breakout",
-            "Jaxson Dart and lead back Cam Skattebo take full ownership",
+            "Malik Nabers (ACL) is trending toward a Week 1 return with no PUP expected — his ADP is climbing fast as confidence builds",
+            "Jaxson Dart projects as a low-end QB1 with real rushing equity; Cam Skattebo is expected full-go after his own injury",
+            "Outside of Nabers, nearly every receiving role is open — Mooney, Likely, and Odell Beckham Jr. are all competing for a thin target pool",
         ],
     },
 
@@ -497,13 +500,13 @@ export const offseasonData = {
         ],
         rookies: [
             { name: 'David Bailey', pos: 'EDGE', detail: 'Round 1, No. 2 overall — cornerstone pass rusher' },
-            { name: 'Kenyon Sadiq', pos: 'TE', detail: 'Athletic Day 2 tight end with immediate starter path' },
+            { name: 'Kenyon Sadiq', pos: 'TE', detail: 'Athletic Day 2 tight end dealing with a hernia setback in camp — Mason Taylor is the safer near-term TE play' },
             { name: 'Omar Cooper Jr.', pos: 'WR', detail: 'Polished route-runner added to a thin WR room' },
         ],
         keyPoints: [
-            "Geno Smith has looked sharp early — modest but real QB upgrade",
-            "Garrett Wilson and Breece Hall keep safe volume floors",
-            "Rookie TE Kenyon Sadiq is a sleeper on an open depth chart",
+            "Garrett Wilson is fully healthy after a season-ending knee injury cut his 2025 short — expect restored target volume",
+            "Breece Hall's new extension confirms him as the clear three-down back, with league-winner ceiling back in play",
+            "Rookie TE Kenyon Sadiq is dealing with a hernia setback and missing camp time — Mason Taylor is now the safer TE play here",
         ],
     },
 
@@ -523,9 +526,9 @@ export const offseasonData = {
             { name: 'Makai Lemon', pos: 'WR', detail: 'USC slot technician drafted to grow into a starting role' },
         ],
         keyPoints: [
-            "A.J. Brown traded — DeVonta Smith inherits clear No. 1 duties",
-            "Saquon Barkley still a top-3 pick in a run-heavy offense",
-            "Jalen Hurts keeps his elite rushing and tush-push floor",
+            "DeVonta Smith has posted 16.6 PPG in games without Brown the past two years — a real low-end WR1 case now that the trade is permanent",
+            "Saquon Barkley remains an early second-round RB despite a 'down' RB14 2025 — new OC Sean Mannion's more under-center scheme is the bull case for a bounce-back",
+            "Jalen Hurts keeps his rushing and tush-push floor, with the passing game expected to open up more under Mannion",
         ],
     },
 
@@ -536,16 +539,16 @@ export const offseasonData = {
         },
         additions: [
             { name: 'Michael Pittman Jr.', pos: 'WR', detail: 'Acquired from Indianapolis with a 3-yr, $59M extension' },
-            { name: 'Rico Dowdle', pos: 'RB', detail: 'Signed to lead the backfield, pushing Warren to a complementary role' },
+            { name: 'Rico Dowdle', pos: 'RB', detail: 'Signed to pair with Warren — camp reps say real committee, not a clear pecking order' },
         ],
         departures: [],
         rookies: [
             { name: 'Germie Bernard', pos: 'WR', detail: 'Day 2 pick with inside-outside versatility' },
         ],
         keyPoints: [
-            "McCarthy takes over for Tomlin around a 42-year-old Aaron Rodgers",
-            "Pittman added next to DK Metcalf; the boom-bust range is wide",
-            "Rico Dowdle is the value play as McCarthy's lead back",
+            "Dowdle and Warren are actually splitting first-team reps in camp — a real committee, not Dowdle running away with the job",
+            "Michael Pittman Jr. projects as the true WR1 by target share (111+ in 5 of his last 5 seasons) despite a lower ADP than Metcalf — a value flip worth knowing",
+            "DK Metcalf is coming off a career-low 850 yards and now faces more competition for looks under McCarthy's tempered offense",
         ],
     },
 
@@ -564,9 +567,9 @@ export const offseasonData = {
             { name: 'Jadarian Price', pos: 'RB', detail: 'Round 1, No. 32 overall — clear path to lead-back duties' },
         ],
         keyPoints: [
-            "Backfield reset — Walker out, rookie Jadarian Price the likely lead",
-            "Jaxon Smith-Njigba is the offense — a top-5 fantasy WR",
-            "Kupp/Shaheed support; Sam Darnold steady under center",
+            "Jaxon Smith-Njigba is a top-5 overall pick after a record-breaking 119-catch, 1,793-yard season and a new $168.6M extension",
+            "Jadarian Price is one of the draft's biggest fantasy landing-spot risers as the clear lead back; Charbonnet (ACL) isn't expected back until around November",
+            "Kupp and Shaheed round out a JSN-centric passing game behind a steady Sam Darnold",
         ],
     },
 
@@ -577,14 +580,17 @@ export const offseasonData = {
         },
         additions: [
             { name: 'Mike Evans', pos: 'WR', detail: 'Signed after 12 seasons in Tampa — instant red-zone alpha' },
-            { name: 'Christian Kirk', pos: 'WR', detail: 'Veteran slot insurance' },
+            { name: 'Christian Kirk', pos: 'WR', detail: 'Veteran slot insurance; Questionable in camp with a calf issue' },
+            { name: 'Deebo Samuel', pos: 'WR', detail: 'Signed a 1-year deal (up to $7M), returning to SF to fill the WR2/gadget role after Pearsall\'s injury' },
         ],
-        departures: [],
+        departures: [
+            { name: 'Ricky Pearsall', pos: 'WR', detail: 'Season-ending IR after PCL surgery (Aug 1) — out for all of 2026' },
+        ],
         rookies: [],
         keyPoints: [
-            "Mike Evans signing is a red-zone cheat code in Shanahan's scheme",
-            "Evans crowds the young SF WR room and pushes Aiyuk down the pecking order",
-            "CMC and Kittle keep their roles — health is the perennial asterisk",
+            "Ricky Pearsall is out for the season (PCL surgery); San Francisco immediately re-signed Deebo Samuel to fill the WR2/gadget role",
+            "Mike Evans (quad strain) has missed camp time, delaying his red-zone chemistry-building — not considered serious, but worth monitoring into Week 1",
+            "CMC remains a locked-in top-5 RB1, though SF is managing his reps carefully at 30; Aiyuk's unresolved situation keeps the WR room crowded",
         ],
     },
 
@@ -601,9 +607,9 @@ export const offseasonData = {
         ],
         rookies: [],
         keyPoints: [
-            "First season without Mike Evans — Emeka Egbuka steps in as WR1",
-            "Bucky Irving a top-8 dual-threat back with the job to himself",
-            "Godwin and McMillan restore depth around Baker Mayfield",
+            "Bucky Irving is fully cleared and full-go, but Kenneth Gainwell is being built into a real complementary role — call it a productive committee, not a clean bell cow",
+            "Emeka Egbuka has less target competition than ever post-Evans and is a strong bet for a WR2-or-better breakout",
+            "Chris Godwin looks fully explosive again, but Baker Mayfield is on his 4th offensive coordinator in 4 years — a real cap on the passing game's ceiling",
         ],
     },
 
@@ -621,9 +627,9 @@ export const offseasonData = {
             { name: 'Nicholas Singleton', pos: 'RB', detail: 'Day 3 pick with a clear runway behind Pollard' },
         ],
         keyPoints: [
-            "Rookie Carnell Tate (No. 4) is Cam Ward's true No. 1 — best WR landing spot",
-            "Wan'Dale Robinson reunites with new OC Brian Daboll",
-            "Tony Pollard leads the backfield; Singleton the camp name to watch",
+            "Rookie Carnell Tate has been 'one of the best' players in camp picking up the offense and already connected with Ward on a deep TD — the clear No. 1 target",
+            "Calvin Ridley has slipped to presumptive WR3 behind Tate and Wan'Dale Robinson after his season-ending 2025 fibula fracture",
+            "Offensive line uncertainty beyond the top three starters is a real risk to both Ward's protection and Pollard's rushing lanes",
         ],
     },
 
@@ -635,6 +641,7 @@ export const offseasonData = {
         additions: [
             { name: 'Rachaad White', pos: 'RB', detail: 'Signed to pair with Croskey-Merritt' },
             { name: 'Chig Okonkwo', pos: 'TE', detail: 'Signed from Tennessee — sneaky late-round stack with Daniels' },
+            { name: 'Stefon Diggs', pos: 'WR', detail: 'Signed a 1-year deal (up to $12M) — immediate WR2 behind McLaurin' },
         ],
         departures: [],
         rookies: [
@@ -643,9 +650,9 @@ export const offseasonData = {
             { name: 'Kaytron Allen', pos: 'RB', detail: 'Physical Day 3 back added to the committee' },
         ],
         keyPoints: [
-            "Jayden Daniels gets a healthier, deeper cast — still the prize when healthy",
-            "Terry McLaurin a volume-safe WR2; Okonkwo a sneaky Daniels stack",
-            "Backfield a frustrating White / Croskey-Merritt committee",
+            "Washington signed Stefon Diggs, immediately projected as a WR2 behind McLaurin — a real target bump for the passing game",
+            "Jayden Daniels enters camp fully healthy behind a more protective, under-center scheme — still a top-5 fantasy QB when right",
+            "The White/Croskey-Merritt/Allen backfield remains a muddled committee with no clear lead-back signal from camp",
         ],
     },
 };

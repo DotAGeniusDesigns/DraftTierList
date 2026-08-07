@@ -1,6 +1,18 @@
 import { getByeWeek, getOlineRank, getTeamLogo } from './teamData';
 import { getAllPlayers } from './playerDatabase';
 import { getInjury } from './injuryReport';
+import { DEFAULT_SCORING_FORMAT } from './scoringFormats';
+
+// A database player's ECR/ADP for a given scoring format. Falls back to the
+// half-PPR numbers (the app default) if the requested format is somehow
+// unrecognized — every player in playerDatabase carries all four formats
+// under `rankings`, populated at generation time (see generatePlayerDatabase.js).
+export const getRankingsForFormat = (databasePlayer, scoringFormat) => (
+    databasePlayer?.rankings?.[scoringFormat] || databasePlayer?.rankings?.[DEFAULT_SCORING_FORMAT] || {
+        ecr: databasePlayer?.ecr,
+        adp: databasePlayer?.adp,
+    }
+);
 
 // Player ids that changed after the database was generated, mapped old -> new.
 // Saved boards, backups and share links all encode ids, so anything reading a

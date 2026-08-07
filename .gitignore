@@ -104,3 +104,8 @@ scripts/playerPhotoMap.json
 .vercel
 .env*
 !.env.example
+
+# FantasyPros export snapshots used to seed rankings (scripts/generatePlayerDatabase.js) —
+# not meant for redistribution, and go stale fast. Re-export from FantasyPros when needed.
+FantasyPros/
+*:Zone.Identifier

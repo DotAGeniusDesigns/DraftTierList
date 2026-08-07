@@ -3,7 +3,7 @@ export const SCORING_FORMATS = {
         id: 'standard',
         label: 'Standard',
         shortLabel: 'Standard',
-        enabled: false,
+        enabled: true,
     },
     'half-ppr': {
         id: 'half-ppr',
@@ -15,7 +15,13 @@ export const SCORING_FORMATS = {
         id: 'ppr',
         label: 'PPR',
         shortLabel: 'PPR',
-        enabled: false,
+        enabled: true,
+    },
+    'superflex-ppr': {
+        id: 'superflex-ppr',
+        label: 'Superflex PPR',
+        shortLabel: 'SF PPR',
+        enabled: true,
     },
 };
 

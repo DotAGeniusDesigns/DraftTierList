@@ -29,7 +29,8 @@ import PrivacyPolicy from './components/legal/PrivacyPolicy';
 import TermsOfService from './components/legal/TermsOfService';
 import NotFoundPage from './components/NotFoundPage';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { initialPlayers, migratePlayerId } from './utils/playerData';
+import { initialPlayers, migratePlayerId, getRankingsForFormat } from './utils/playerData';
+import { playerDatabase } from './utils/playerDatabase';
 import { getTeamLogo } from './utils/teamData';
 import {
     createBackup, flushScheduledBackup, scheduleBackup, shouldCreateBackup,
@@ -172,6 +173,21 @@ function App() {
         'scoring-format',
         DEFAULT_SCORING_FORMAT,
     );
+
+    // Re-derive each player's ECR/ADP for the active scoring format. The board
+    // itself (tiers, order, drafted status) never changes — only these two
+    // numbers do. Runs on mount too, which corrects a returning visitor's
+    // non-default stored format immediately after the initial database merge.
+    useEffect(() => {
+        setPlayers((prev) => prev.map((player) => {
+            const databasePlayer = playerDatabase[player.id];
+            if (!databasePlayer) return player;
+            const { ecr, adp } = getRankingsForFormat(databasePlayer, scoringFormat);
+            if (player.ecr === ecr && player.adp === adp) return player;
+            return { ...player, ecr, adp };
+        }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [scoringFormat]);
 
     // Dropdown open state
     const [isScoringDropdownOpen, setIsScoringDropdownOpen] = useState(false);
