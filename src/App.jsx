@@ -18,7 +18,6 @@ import DraftBoardGrid from './components/DraftBoardGrid';
 import DraftBoardSearch from './components/DraftBoardSearch';
 import SharedBoardBanner from './components/SharedBoardBanner';
 import SleeperSync from './components/SleeperSync';
-import CloudBoardSync from './components/CloudBoardSync';
 import Footer from './components/Footer';
 import ProfilePage from './components/ProfilePage';
 import LoginPage from './components/auth/LoginPage';
@@ -668,12 +667,6 @@ function App() {
                     path="/draft-board"
                     element={(
                 <div className="container mx-auto max-w-7xl px-3 py-5 sm:px-4 sm:py-8">
-                    <CloudBoardSync
-                        darkMode={darkMode}
-                        players={players}
-                        scoringFormat={scoringFormat}
-                    />
-
                     <SharedBoardBanner
                         darkMode={darkMode}
                         board={sharedBoard}
@@ -705,17 +698,16 @@ function App() {
                     )}
 
                     <div className="mb-6">
-                        <div className="mb-5">
-                            <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-500">
-                                2026 Season
-                            </p>
-                            <h1 className={`font-display text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl ${ui.heading(darkMode)}`}>
-                                <span className="text-gradient-brand">Draft Board</span>
-                            </h1>
-                            <p className={`mt-2 max-w-2xl text-sm sm:text-base ${ui.muted(darkMode)}`}>
-                                Drag players between tiers, mark picks as drafted, and flag upside, risky or handcuff players.
-                            </p>
-                            <div className="mt-4 flex flex-wrap gap-2">
+                        <div className="mb-4 flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
+                            <div>
+                                <h1 className={`font-display text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl ${ui.heading(darkMode)}`}>
+                                    <span className="text-gradient-brand">Draft Board</span>
+                                </h1>
+                                <p className={`mt-1.5 max-w-2xl text-sm sm:text-base ${ui.muted(darkMode)}`}>
+                                    Drag players between tiers, mark picks as drafted, and flag upside, risky or handcuff players.
+                                </p>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
                                 <span className={ui.statPill(darkMode, 'default')}>{draftStats.total} total</span>
                                 <span className={ui.statPill(darkMode, 'success')}>{draftStats.available} available</span>
                                 <span className={ui.statPill(darkMode, 'muted')}>{draftStats.drafted} drafted</span>
@@ -723,13 +715,37 @@ function App() {
                         </div>
 
                         <div className={`${ui.toolbar(darkMode)} flex flex-col gap-3`}>
-                            <DraftBoardSearch
-                                players={players}
-                                darkMode={darkMode}
-                                onSelectPlayer={handleJumpToPlayer}
-                            />
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <DraftBoardSearch
+                                    players={players}
+                                    darkMode={darkMode}
+                                    onSelectPlayer={handleJumpToPlayer}
+                                />
 
-                            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+                                {!draftModeActive && (
+                                    <div className="flex items-center gap-2">
+                                        <select
+                                            value={draftModeTeams}
+                                            onChange={(e) => setDraftModeTeams(Number(e.target.value))}
+                                            className={ui.btn(darkMode)}
+                                            aria-label="Teams in your draft"
+                                        >
+                                            {DRAFT_MODE_TEAM_SIZES.map((size) => (
+                                                <option key={size} value={size}>{size} teams</option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            onClick={handleRequestStartDraftMode}
+                                            className={ui.btnPrimary()}
+                                        >
+                                            Start Draft Mode
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className={`flex flex-col gap-3 border-t pt-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between ${darkMode ? 'border-white/[0.06]' : 'border-slate-200/80'}`}>
+                            <div className="flex flex-wrap items-center gap-3">
                             <div className="relative" ref={scoringDropdownRef}>
                                 <button
                                     type="button"
@@ -850,6 +866,7 @@ function App() {
                                     </div>
                                 )}
                             </div>
+                            </div>
 
                             <div className="flex flex-wrap items-center gap-3">
                                 <div className="flex items-center gap-2.5">
@@ -875,27 +892,6 @@ function App() {
                                     onShowExportImport={() => setShowExportImport(true)}
                                     onShowResetConfirm={() => setShowResetConfirm(true)}
                                 />
-
-                                {!draftModeActive && (
-                                    <div className="flex items-center gap-2">
-                                        <select
-                                            value={draftModeTeams}
-                                            onChange={(e) => setDraftModeTeams(Number(e.target.value))}
-                                            className={ui.btn(darkMode)}
-                                            aria-label="Teams in your draft"
-                                        >
-                                            {DRAFT_MODE_TEAM_SIZES.map((size) => (
-                                                <option key={size} value={size}>{size} teams</option>
-                                            ))}
-                                        </select>
-                                        <button
-                                            onClick={handleRequestStartDraftMode}
-                                            className={ui.btnPrimary()}
-                                        >
-                                            Start Draft Mode
-                                        </button>
-                                    </div>
-                                )}
                             </div>
                             </div>
                         </div>
