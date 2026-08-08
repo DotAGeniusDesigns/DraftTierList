@@ -13,6 +13,7 @@ import OffseasonHub from './components/OffseasonHub';
 import InterestingPlayers from './components/InterestingPlayers';
 import BackupManager from './components/BackupManager';
 import BurgerMenu from './components/BurgerMenu';
+import DraftModeBar from './components/DraftModeBar';
 import DraftBoardSearch from './components/DraftBoardSearch';
 import SharedBoardBanner from './components/SharedBoardBanner';
 import SleeperSync from './components/SleeperSync';
@@ -58,6 +59,8 @@ const FLAG_FILTERS = {
     risky: { label: 'Risky', field: 'isRisky', tone: 'text-amber-500' },
     handcuff: { label: 'Handcuff', field: 'isHandcuff', tone: 'text-sky-500' },
 };
+
+const DRAFT_MODE_TEAM_SIZES = [8, 10, 12, 14, 16];
 
 const FLAG_ICONS = {
     upside: 'M12.577 4.878a.75.75 0 01.919-.53l4.78 1.281a.75.75 0 01.531.919l-1.281 4.78a.75.75 0 01-1.449-.387l.81-3.022a19.407 19.407 0 00-5.594 5.203.75.75 0 01-1.139.093L7 10.06l-4.72 4.72a.75.75 0 01-1.06-1.061l5.25-5.25a.75.75 0 011.06 0l3.074 3.073a20.923 20.923 0 015.545-4.931l-3.042-.815a.75.75 0 01-.53-.919z',
@@ -125,6 +128,7 @@ function App() {
                             injury: databasePlayer.injury || null,
                             // User-controlled flags stay on the saved board
                             drafted: player.drafted,
+                            draftedAt: player.draftedAt ?? null,
                             tier: player.tier,
                             isUpside: player.isUpside,
                             isHandcuff: player.isHandcuff,
@@ -162,6 +166,11 @@ function App() {
 
     // Hide drafted players state
     const [hideDrafted, setHideDrafted] = useLocalStorage('hide-drafted', false);
+
+    // Draft Mode: a live pick tracker for the board. Persisted so a page
+    // refresh mid-draft doesn't lose where things stand.
+    const [draftModeActive, setDraftModeActive] = useLocalStorage('draft-mode-active', false);
+    const [draftModeTeams, setDraftModeTeams] = useLocalStorage('draft-mode-teams', 12);
 
     // Position filter state - now an array of selected positions
     const [positionFilters, setPositionFilters] = useLocalStorage('position-filters', []);
@@ -205,6 +214,19 @@ function App() {
 
     // Bumps when tier names change so TierList re-reads localStorage
     const [tierNamesVersion, setTierNamesVersion] = useState(0);
+
+    // Monotonic clock for draftedAt stamps. Two picks landing in the same JS
+    // millisecond (two quick clicks, or a Sleeper poll batch-marking several
+    // players at once) would otherwise tie under plain Date.now(), and
+    // Draft Mode's "last pick" lookup would silently pick the wrong one.
+    const lastDraftedAtRef = useRef(0);
+    const nextDraftedAt = useCallback(() => {
+        const now = Date.now();
+        lastDraftedAtRef.current = now > lastDraftedAtRef.current
+            ? now
+            : lastDraftedAtRef.current + 1;
+        return lastDraftedAtRef.current;
+    }, []);
 
     const [focusPlayerId, setFocusPlayerId] = useState(null);
 
@@ -296,14 +318,19 @@ function App() {
         document.documentElement.classList.toggle('dark', darkMode);
     }, [darkMode]);
 
-    // Toggle draft status for a player
+    // Toggle draft status for a player. Stamps draftedAt so Draft Mode can
+    // tell which pick came last and derive the current pick number from it.
     const handleToggleDraft = useCallback((playerId) => {
         setPlayers(prev => prev.map(player =>
             player.id === playerId
-                ? { ...player, drafted: !player.drafted }
+                ? {
+                    ...player,
+                    drafted: !player.drafted,
+                    draftedAt: !player.drafted ? nextDraftedAt() : null,
+                }
                 : player
         ));
-    }, [setPlayers]);
+    }, [setPlayers, nextDraftedAt]);
 
     // Bulk-mark players drafted (Sleeper live sync). Additive only: a pick can
     // never un-draft a player the user checked off by hand. Bails out with the
@@ -311,20 +338,25 @@ function App() {
     // board or rewrite localStorage.
     const handleMarkDraftedByIds = useCallback((playerIds) => {
         if (!playerIds || playerIds.length === 0) return;
-        const idSet = new Set(playerIds);
+        // Index within the incoming array, not Date.now(), stamps the order —
+        // a single Sleeper poll can mark several picks at once, and they'd
+        // otherwise all land on the same millisecond and confuse Draft Mode's
+        // "last pick" lookup.
+        const orderById = new Map(playerIds.map((id, i) => [id, i]));
+        const base = nextDraftedAt();
 
         setPlayers(prev => {
             let changed = false;
             const next = prev.map(player => {
-                if (idSet.has(player.id) && !player.drafted) {
+                if (orderById.has(player.id) && !player.drafted) {
                     changed = true;
-                    return { ...player, drafted: true };
+                    return { ...player, drafted: true, draftedAt: base + orderById.get(player.id) };
                 }
                 return player;
             });
             return changed ? next : prev;
         });
-    }, [setPlayers]);
+    }, [setPlayers, nextDraftedAt]);
 
     // Move a player to another tier / position (drag and drop)
     const handleMovePlayer = useCallback((playerId, newTier, targetIndex = null) => {
@@ -450,7 +482,8 @@ function App() {
             createBackup(prev, 'before resetting drafted players');
             return prev.map(player => ({
                 ...player,
-                drafted: false
+                drafted: false,
+                draftedAt: null,
             }));
         });
     }, [setPlayers]);
@@ -569,6 +602,24 @@ function App() {
             available: players.length - drafted,
         };
     }, [players]);
+
+    // Draft Mode's live numbers. The "current" pick is one past the last
+    // drafted player, derived from the count rather than tracked separately
+    // so undoing a pick (un-drafting someone) self-corrects for free. "Last
+    // pick" is whichever drafted player has the newest draftedAt stamp —
+    // players drafted before this feature existed have no stamp and are
+    // excluded, so they just won't show up as the "last" one.
+    const draftModeStats = useMemo(() => {
+        let lastPick = null;
+        for (const player of players) {
+            if (!player.drafted || !player.draftedAt) continue;
+            if (!lastPick || player.draftedAt > lastPick.draftedAt) lastPick = player;
+        }
+        return {
+            draftedCount: draftStats.drafted,
+            lastPickName: lastPick ? lastPick.name : null,
+        };
+    }, [players, draftStats.drafted]);
 
     return (
         <div className={ui.page(darkMode)}>
@@ -791,10 +842,41 @@ function App() {
                                     onShowExportImport={() => setShowExportImport(true)}
                                     onShowResetConfirm={() => setShowResetConfirm(true)}
                                 />
+
+                                {!draftModeActive && (
+                                    <div className="flex items-center gap-2">
+                                        <select
+                                            value={draftModeTeams}
+                                            onChange={(e) => setDraftModeTeams(Number(e.target.value))}
+                                            className={ui.btn(darkMode)}
+                                            aria-label="Teams in your draft"
+                                        >
+                                            {DRAFT_MODE_TEAM_SIZES.map((size) => (
+                                                <option key={size} value={size}>{size} teams</option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            onClick={() => setDraftModeActive(true)}
+                                            className={ui.btnPrimary()}
+                                        >
+                                            Start Draft Mode
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                             </div>
                         </div>
                     </div>
+
+                    {draftModeActive && (
+                        <DraftModeBar
+                            darkMode={darkMode}
+                            teamCount={draftModeTeams}
+                            draftedCount={draftModeStats.draftedCount}
+                            lastPickName={draftModeStats.lastPickName}
+                            onEnd={() => setDraftModeActive(false)}
+                        />
+                    )}
 
                     <SleeperSync
                         players={players}
