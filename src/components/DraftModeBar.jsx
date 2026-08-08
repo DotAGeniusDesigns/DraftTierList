@@ -11,7 +11,7 @@ const formatPickLabel = (draftedCount, teamCount) => {
     return `${round}.${String(pickInRound).padStart(2, '0')}`;
 };
 
-const DraftModeBar = ({ darkMode, teamCount, draftedCount, lastPickName, onEnd }) => {
+const DraftModeBar = ({ darkMode, teamCount, draftedCount, lastPickName, onShowGrid, onEnd }) => {
     const pickLabel = formatPickLabel(draftedCount, teamCount);
 
     return (
@@ -49,6 +49,23 @@ const DraftModeBar = ({ darkMode, teamCount, draftedCount, lastPickName, onEnd }
                         {lastPickName || '—'}
                     </span>
                 </div>
+
+                <div className="h-6 w-px shrink-0 bg-current opacity-10" />
+
+                <button
+                    onClick={onShowGrid}
+                    className={`flex shrink-0 items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-semibold transition sm:px-2.5 sm:text-sm ${
+                        darkMode
+                            ? 'text-slate-300 hover:bg-white/5'
+                            : 'text-slate-600 hover:bg-slate-100'
+                    }`}
+                    title="View draft board"
+                >
+                    <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h18v18H3V3zm0 6h18M3 15h18M9 3v18M15 3v18" />
+                    </svg>
+                    <span className="hidden sm:inline">Board</span>
+                </button>
 
                 <button
                     onClick={onEnd}

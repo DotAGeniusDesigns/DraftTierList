@@ -14,6 +14,7 @@ import InterestingPlayers from './components/InterestingPlayers';
 import BackupManager from './components/BackupManager';
 import BurgerMenu from './components/BurgerMenu';
 import DraftModeBar from './components/DraftModeBar';
+import DraftBoardGrid from './components/DraftBoardGrid';
 import DraftBoardSearch from './components/DraftBoardSearch';
 import SharedBoardBanner from './components/SharedBoardBanner';
 import SleeperSync from './components/SleeperSync';
@@ -171,6 +172,7 @@ function App() {
     // refresh mid-draft doesn't lose where things stand.
     const [draftModeActive, setDraftModeActive] = useLocalStorage('draft-mode-active', false);
     const [draftModeTeams, setDraftModeTeams] = useLocalStorage('draft-mode-teams', 12);
+    const [showDraftModeGrid, setShowDraftModeGrid] = useState(false);
 
     // Position filter state - now an array of selected positions
     const [positionFilters, setPositionFilters] = useLocalStorage('position-filters', []);
@@ -211,6 +213,10 @@ function App() {
 
     // Reset to default confirmation modal state
     const [showResetConfirm, setShowResetConfirm] = useState(false);
+
+    // Draft Mode needs a clean slate to count picks accurately, so starting
+    // it while players are already marked drafted asks for confirmation first.
+    const [showDraftModeStartConfirm, setShowDraftModeStartConfirm] = useState(false);
 
     // Bumps when tier names change so TierList re-reads localStorage
     const [tierNamesVersion, setTierNamesVersion] = useState(0);
@@ -621,6 +627,33 @@ function App() {
         };
     }, [players, draftStats.drafted]);
 
+    // Entry point for the "Start Draft Mode" button: only interrupt with a
+    // confirmation if there's actually something to lose.
+    const handleRequestStartDraftMode = useCallback(() => {
+        if (draftStats.drafted > 0) {
+            setShowDraftModeStartConfirm(true);
+        } else {
+            setDraftModeActive(true);
+        }
+    }, [draftStats.drafted, setDraftModeActive]);
+
+    // Draft Mode's pick count and "last pick" both depend on every drafted
+    // player having a draftedAt stamp, so a pre-existing drafted player with
+    // none would silently throw off the numbering. Clearing drafted status
+    // (not tiers — those stay put) keeps pick tracking accurate from pick 1.
+    const handleConfirmStartDraftMode = useCallback(() => {
+        setPlayers(prev => {
+            createBackup(prev, 'before starting draft mode');
+            return prev.map(player => ({
+                ...player,
+                drafted: false,
+                draftedAt: null,
+            }));
+        });
+        setDraftModeActive(true);
+        setShowDraftModeStartConfirm(false);
+    }, [setPlayers, setDraftModeActive]);
+
     return (
         <div className={ui.page(darkMode)}>
             <RouteHead />
@@ -856,7 +889,7 @@ function App() {
                                             ))}
                                         </select>
                                         <button
-                                            onClick={() => setDraftModeActive(true)}
+                                            onClick={handleRequestStartDraftMode}
                                             className={ui.btnPrimary()}
                                         >
                                             Start Draft Mode
@@ -874,7 +907,17 @@ function App() {
                             teamCount={draftModeTeams}
                             draftedCount={draftModeStats.draftedCount}
                             lastPickName={draftModeStats.lastPickName}
+                            onShowGrid={() => setShowDraftModeGrid(true)}
                             onEnd={() => setDraftModeActive(false)}
+                        />
+                    )}
+
+                    {showDraftModeGrid && (
+                        <DraftBoardGrid
+                            darkMode={darkMode}
+                            players={players}
+                            teamCount={draftModeTeams}
+                            onClose={() => setShowDraftModeGrid(false)}
                         />
                     )}
 
@@ -935,6 +978,35 @@ function App() {
                                         className="inline-flex items-center justify-center rounded-xl bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-500"
                                     >
                                         Yes, reset
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Start Draft Mode Confirmation Modal */}
+                    {showDraftModeStartConfirm && (
+                        <div className={ui.modalOverlay}>
+                            <div className={ui.modal(darkMode)}>
+                                <div className="mb-6 text-center">
+                                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10 text-3xl">
+                                        ⚠️
+                                    </div>
+                                    <h3 className={`mb-2 text-lg font-bold ${ui.heading(darkMode)}`}>
+                                        Start Draft Mode?
+                                    </h3>
+                                    <p className={`text-sm leading-relaxed ${ui.muted(darkMode)}`}>
+                                        You already have <strong>{draftStats.drafted}</strong> player{draftStats.drafted !== 1 ? 's' : ''} marked drafted.
+                                        Draft Mode counts picks from a clean board, so starting it will mark all of them
+                                        undrafted again — your tiers and rankings won&apos;t change, only draft status.
+                                    </p>
+                                </div>
+                                <div className="flex justify-center gap-3">
+                                    <button onClick={() => setShowDraftModeStartConfirm(false)} className={ui.btn(darkMode)}>
+                                        Cancel
+                                    </button>
+                                    <button onClick={handleConfirmStartDraftMode} className={ui.btnPrimary()}>
+                                        Yes, start Draft Mode
                                     </button>
                                 </div>
                             </div>
