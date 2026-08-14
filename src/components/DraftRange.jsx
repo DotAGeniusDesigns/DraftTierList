@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ui } from '../utils/uiTheme';
-import { getPositionTagClass } from '../utils/playerStyles';
+import { getPositionTagProps } from '../utils/playerStyles';
+import { usePositionColors } from '../context/PositionColorsContext';
 
 const POSITION_ORDER = ['QB', 'RB', 'WR', 'TE', 'K', 'DST'];
 
@@ -11,6 +12,7 @@ const sortByAdp = (a, b) => {
 };
 
 const DraftRange = ({ darkMode, allPlayers = [] }) => {
+    const { colors: positionColors } = usePositionColors();
     const [leagueSize, setLeagueSize] = useState(12);
     const [pickPosition, setPickPosition] = useState(1);
     const [positionFilter, setPositionFilter] = useState([]);
@@ -133,7 +135,7 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
                         {player.name}
                     </h3>
                     <div className="mt-1 flex flex-wrap items-center gap-2">
-                        <span className={getPositionTagClass(player.position, { darkMode })}>
+                        <span {...getPositionTagProps(player.position, { darkMode, colors: positionColors })}>
                             {player.position}
                         </span>
                         {player.team && (
@@ -294,7 +296,7 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
                             {draftedByPosition.map(({ position, players }) => (
                                 <div key={position}>
                                     <div className={`mb-3 flex items-center gap-3 border-b pb-2 ${darkMode ? 'border-white/5' : 'border-slate-200'}`}>
-                                        <span className={getPositionTagClass(position, { darkMode })}>
+                                        <span {...getPositionTagProps(position, { darkMode, colors: positionColors })}>
                                             {position}
                                         </span>
                                         <span className={`text-sm font-semibold ${ui.heading(darkMode)}`}>
@@ -359,7 +361,7 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
                                                                 <h3 className={`truncate text-sm font-semibold ${ui.heading(darkMode)}`}>
                                                                     {player.name}
                                                                 </h3>
-                                                                <span className={getPositionTagClass(player.position, { darkMode })}>
+                                                                <span {...getPositionTagProps(player.position, { darkMode, colors: positionColors })}>
                                                                     {player.position}
                                                                 </span>
                                                             </div>

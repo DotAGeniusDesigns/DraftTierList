@@ -6,6 +6,7 @@ import './index.css';
 import App from './App';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider } from './context/AuthContext';
+import { PositionColorsProvider } from './context/PositionColorsContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,7 +16,9 @@ root.render(
                 sign-in, route guards), and outside App so every route can read
                 the session. */}
             <AuthProvider>
-                <App />
+                <PositionColorsProvider>
+                    <App />
+                </PositionColorsProvider>
             </AuthProvider>
             {/* Vercel Web Analytics. Inside the router so client-side route
                 changes are tracked as pageviews. No-ops off Vercel. */}

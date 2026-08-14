@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import InjuryBadge from './InjuryBadge';
 import { getOlineRank } from '../utils/teamData';
-import { getPositionTagClass } from '../utils/playerStyles';
+import { getPositionTagProps } from '../utils/playerStyles';
+import { usePositionColors } from '../context/PositionColorsContext';
 import { ui } from '../utils/uiTheme';
 
 const flagBtn = (active, activeClass, darkMode, idleHover) =>
@@ -28,6 +29,7 @@ const Player = ({
     const [showMobileFlags, setShowMobileFlags] = useState(false);
     const longPressTimerRef = useRef(null);
     const touchStartRef = useRef(null);
+    const { colors: positionColors } = usePositionColors();
 
     useEffect(() => {
         return () => {
@@ -285,7 +287,7 @@ const Player = ({
                 {/* Bucket 2 — team context: pos, team, OL, bye */}
                 <div className="contents sm:flex sm:flex-[4] sm:items-center sm:justify-center sm:gap-4">
                     <div className="w-8 shrink-0 text-center sm:w-16">
-                        <span className={getPositionTagClass(player.position, { drafted: player.drafted, darkMode })}>
+                        <span {...getPositionTagProps(player.position, { drafted: player.drafted, darkMode, colors: positionColors })}>
                             {player.position}
                         </span>
                     </div>

@@ -7,6 +7,7 @@ const BurgerMenu = ({
     onShowBackupManager,
     onShowExportImport,
     onShowResetConfirm,
+    onShowPositionColorPicker,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -49,6 +50,9 @@ const BurgerMenu = ({
                     <div className={`mt-2 px-3 py-2 text-[11px] font-bold uppercase tracking-wider ${ui.muted(darkMode)}`}>
                         Settings
                     </div>
+                    <button onClick={() => handleMenuItemClick(onShowPositionColorPicker)} className={itemClass}>
+                        🎨 Position Colors
+                    </button>
                     <button
                         onClick={() => handleMenuItemClick(onShowResetConfirm)}
                         className={`${itemClass} ${darkMode ? 'text-rose-400 hover:bg-rose-500/10' : 'text-rose-600 hover:bg-rose-50'}`}

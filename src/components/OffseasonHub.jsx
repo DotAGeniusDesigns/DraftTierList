@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ui } from '../utils/uiTheme';
-import { getPositionTagClass } from '../utils/playerStyles';
+import { getPositionTagProps } from '../utils/playerStyles';
+import { usePositionColors } from '../context/PositionColorsContext';
 import { offseasonData, NEW_HC_TEAMS } from '../utils/offseasonData';
 import { getOffseasonNews, OFFSEASON_NEWS_UPDATED_AT } from '../utils/offseasonNews';
 import { teamData } from '../utils/teamData';
@@ -61,7 +62,9 @@ const ChevronIcon = ({ open }) => (
     </svg>
 );
 
-const MoveList = ({ title, accent, moves, darkMode, emptyLabel }) => (
+const MoveList = ({ title, accent, moves, darkMode, emptyLabel }) => {
+    const { colors: positionColors } = usePositionColors();
+    return (
     <div className={`${ui.cardInset(darkMode)} p-4`}>
         <p className={`mb-3 text-[11px] font-bold uppercase tracking-[0.14em] ${accent}`}>
             {title}
@@ -72,7 +75,7 @@ const MoveList = ({ title, accent, moves, darkMode, emptyLabel }) => (
             <ul className="space-y-2.5">
                 {moves.map((move) => (
                     <li key={move.name} className="flex items-start gap-2.5">
-                        <span className={getPositionTagClass(move.pos, { darkMode })}>{move.pos}</span>
+                        <span {...getPositionTagProps(move.pos, { darkMode, colors: positionColors })}>{move.pos}</span>
                         <div className="min-w-0">
                             <p className={`text-sm font-semibold leading-snug ${ui.heading(darkMode)}`}>
                                 {move.name}
@@ -86,11 +89,14 @@ const MoveList = ({ title, accent, moves, darkMode, emptyLabel }) => (
             </ul>
         )}
     </div>
-);
+    );
+};
 
-const DepthChartRow = ({ slot, darkMode }) => (
+const DepthChartRow = ({ slot, darkMode }) => {
+    const { colors: positionColors } = usePositionColors();
+    return (
     <div className="flex items-start gap-3">
-        <span className={getPositionTagClass(slot.position, { darkMode })}>{slot.position}</span>
+        <span {...getPositionTagProps(slot.position, { darkMode, colors: positionColors })}>{slot.position}</span>
         <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 pt-0.5">
             {slot.players.length === 0 ? (
                 <span className={`text-sm ${ui.muted(darkMode)}`}>—</span>
@@ -114,7 +120,8 @@ const DepthChartRow = ({ slot, darkMode }) => (
             )}
         </div>
     </div>
-);
+    );
+};
 
 // Colour a 1–32 rank green (top third) / amber (middle) / rose (bottom third).
 const rankTone = (rank, darkMode) => {

@@ -3,6 +3,7 @@ import {
     Navigate, Route, Routes, useLocation, useNavigate, useSearchParams,
 } from 'react-router-dom';
 import TierList from './components/TierList';
+import PositionColorPicker from './components/PositionColorPicker';
 import ExportImport from './components/ExportImport';
 import Navbar from './components/Navbar';
 import RouteHead from './components/RouteHead';
@@ -36,7 +37,8 @@ import { getTeamLogo } from './utils/teamData';
 import {
     createBackup, flushScheduledBackup, scheduleBackup, shouldCreateBackup,
 } from './utils/backupSystem';
-import { getPositionFilterTagClass } from './utils/playerStyles';
+import { getPositionFilterTagProps } from './utils/playerStyles';
+import { usePositionColors } from './context/PositionColorsContext';
 import {
     saveTierName, clearTierNames, getTierNames, replaceTierNames,
 } from './utils/tierNames';
@@ -163,6 +165,10 @@ function App() {
 
     // Dark mode state
     const [darkMode, setDarkMode] = useLocalStorage('dark-mode', false);
+
+    // Position badge colors (user-editable, see PositionColorsContext)
+    const { colors: positionColors } = usePositionColors();
+    const [showPositionColorPicker, setShowPositionColorPicker] = useState(false);
 
     // Hide drafted players state
     const [hideDrafted, setHideDrafted] = useLocalStorage('hide-drafted', false);
@@ -534,7 +540,7 @@ function App() {
     }, [setPlayers]);
 
     // Get position tag styling
-    const getPositionTagStyle = getPositionFilterTagClass;
+    const getPositionTagStyle = (position) => getPositionFilterTagProps(position, positionColors);
 
     // Get display text for dropdown
     const getFlagFilterDisplay = () => {
@@ -814,7 +820,7 @@ function App() {
                                                     onChange={() => handlePositionFilterChange(position)}
                                                     className="h-4 w-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500/30"
                                                 />
-                                                <span className={getPositionTagStyle(position)}>
+                                                <span {...getPositionTagStyle(position)}>
                                                     {position}
                                                 </span>
                                             </label>
@@ -891,6 +897,7 @@ function App() {
                                     onShowBackupManager={() => setShowBackupManager(true)}
                                     onShowExportImport={() => setShowExportImport(true)}
                                     onShowResetConfirm={() => setShowResetConfirm(true)}
+                                    onShowPositionColorPicker={() => setShowPositionColorPicker(true)}
                                 />
                             </div>
                             </div>
@@ -945,6 +952,13 @@ function App() {
                             onRestorePlayers={handleRestoreFromBackup}
                             darkMode={darkMode}
                             onClose={() => setShowBackupManager(false)}
+                        />
+                    )}
+
+                    {showPositionColorPicker && (
+                        <PositionColorPicker
+                            darkMode={darkMode}
+                            onClose={() => setShowPositionColorPicker(false)}
                         />
                     )}
 

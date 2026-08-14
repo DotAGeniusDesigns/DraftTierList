@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { ui } from '../utils/uiTheme';
-import { getPositionCellClass } from '../utils/playerStyles';
+import { getPositionCellProps } from '../utils/playerStyles';
+import { usePositionColors } from '../context/PositionColorsContext';
 
 // Standard snake draft: within a round, pick-in-round counts up 1..teamCount
 // on odd rounds and counts DOWN from teamCount..1 on even rounds — the team
@@ -23,6 +24,8 @@ const lastNameOf = (fullName) => {
 };
 
 const Cell = ({ pickLabel, player, darkMode }) => {
+    const { colors: positionColors } = usePositionColors();
+
     if (!player) {
         return (
             <div
@@ -35,8 +38,13 @@ const Cell = ({ pickLabel, player, darkMode }) => {
         );
     }
 
+    const cellProps = getPositionCellProps(player.position, darkMode, positionColors);
+
     return (
-        <div className={`flex h-12 flex-col justify-between overflow-hidden rounded-md border px-1.5 py-1 sm:h-[72px] sm:rounded-lg sm:px-2 sm:py-1.5 ${getPositionCellClass(player.position, darkMode)}`}>
+        <div
+            className="flex h-12 flex-col justify-between overflow-hidden rounded-md border px-1.5 py-1 sm:h-[72px] sm:rounded-lg sm:px-2 sm:py-1.5"
+            style={cellProps.style}
+        >
             <div className="flex items-center justify-between text-[8px] font-bold uppercase tracking-wide opacity-70 sm:text-[10px]">
                 <span>{pickLabel}</span>
                 <span>{player.position}</span>
