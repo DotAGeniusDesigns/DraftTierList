@@ -81,6 +81,8 @@ export const boardHasCustomisations = (players) => (
         || player.isUpside
         || player.isRisky
         || player.isHandcuff
+        || player.isFavorite
+        || player.isDND
         || Number(player.tier) !== 1
         || player.id !== initialPlayers[index]?.id
     ))

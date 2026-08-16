@@ -19,6 +19,8 @@ const FLAG_DRAFTED = 1;
 const FLAG_RISKY = 2;
 const FLAG_UPSIDE = 4;
 const FLAG_HANDCUFF = 8;
+const FLAG_FAVORITE = 16;
+const FLAG_DND = 32;
 
 // Links much longer than this get mangled by some chat clients.
 const SHARE_LENGTH_WARNING = 6000;
@@ -38,6 +40,8 @@ export const encodeBoardForShare = (players, tierNames = {}, scoringFormat = DEF
         if (player.isRisky) mask |= FLAG_RISKY;
         if (player.isUpside) mask |= FLAG_UPSIDE;
         if (player.isHandcuff) mask |= FLAG_HANDCUFF;
+        if (player.isFavorite) mask |= FLAG_FAVORITE;
+        if (player.isDND) mask |= FLAG_DND;
         if (mask) flags[player.id] = mask;
     });
 
@@ -106,6 +110,8 @@ export const decodeSharedBoard = (code) => {
                     isRisky: Boolean(mask & FLAG_RISKY),
                     isUpside: Boolean(mask & FLAG_UPSIDE),
                     isHandcuff: Boolean(mask & FLAG_HANDCUFF),
+                    isFavorite: Boolean(mask & FLAG_FAVORITE),
+                    isDND: Boolean(mask & FLAG_DND),
                 });
             });
     });

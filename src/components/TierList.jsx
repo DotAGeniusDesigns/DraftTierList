@@ -70,6 +70,8 @@ const TierList = ({
     onToggleRisky,
     onToggleUpside,
     onToggleHandcuff,
+    onToggleFavorite,
+    onToggleDND,
     onRemoveTier,
     onRenameTier,
     darkMode,
@@ -131,6 +133,8 @@ const TierList = ({
                         onToggleRisky={onToggleRisky}
                         onToggleUpside={onToggleUpside}
                         onToggleHandcuff={onToggleHandcuff}
+                        onToggleFavorite={onToggleFavorite}
+                        onToggleDND={onToggleDND}
                         onRemoveTier={onRemoveTier}
                         onRenameTier={onRenameTier}
                         onMovePlayer={onMovePlayer}

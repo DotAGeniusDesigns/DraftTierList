@@ -58,7 +58,7 @@ const AccountMenu = ({ darkMode, compact = false }) => {
         return (
             <Link
                 to="/login"
-                className={compact ? `${ui.btn(darkMode)} px-3 py-1.5 text-xs` : ui.btn(darkMode)}
+                className={compact ? `${ui.btn(darkMode)} shrink-0 whitespace-nowrap px-3 py-1.5 text-xs` : `${ui.btn(darkMode)} shrink-0 whitespace-nowrap`}
             >
                 Sign in
             </Link>

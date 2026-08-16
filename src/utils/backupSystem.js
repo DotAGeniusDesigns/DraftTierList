@@ -25,6 +25,8 @@ export const createBackup = (players, reason = 'automatic') => {
                 isRisky: player.isRisky,
                 isUpside: player.isUpside,
                 isHandcuff: player.isHandcuff,
+                isFavorite: player.isFavorite,
+                isDND: player.isDND,
                 // Don't backup database properties that change
                 // Only backup user customizations
             })),
@@ -117,6 +119,8 @@ export const restoreFromBackup = (backup, currentPlayers) => {
                     isRisky: backupPlayer.isRisky,
                     isUpside: backupPlayer.isUpside,
                     isHandcuff: backupPlayer.isHandcuff,
+                    isFavorite: backupPlayer.isFavorite,
+                    isDND: backupPlayer.isDND,
                 };
             }
             // If player no longer exists in database, skip them
@@ -216,6 +220,8 @@ export const saveDraftBoard = (players, name, description = '') => {
                 isRisky: player.isRisky,
                 isUpside: player.isUpside,
                 isHandcuff: player.isHandcuff,
+                isFavorite: player.isFavorite,
+                isDND: player.isDND,
             })),
             playerCount: players.length
         };
@@ -278,6 +284,8 @@ export const loadDraftBoard = (boardId, currentPlayers) => {
                     isRisky: boardPlayer.isRisky,
                     isUpside: boardPlayer.isUpside,
                     isHandcuff: boardPlayer.isHandcuff,
+                    isFavorite: boardPlayer.isFavorite,
+                    isDND: boardPlayer.isDND,
                 };
             }
             // If player no longer exists in database, skip them

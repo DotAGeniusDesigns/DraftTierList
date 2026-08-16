@@ -21,6 +21,8 @@ const Player = ({
     onToggleRisky,
     onToggleUpside,
     onToggleHandcuff,
+    onToggleFavorite,
+    onToggleDND,
     darkMode,
     isFocused = false,
 }) => {
@@ -189,6 +191,18 @@ const Player = ({
         onToggleHandcuff?.(player.id, !player.isHandcuff);
     };
 
+    const handleToggleFavorite = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onToggleFavorite?.(player.id, !player.isFavorite);
+    };
+
+    const handleToggleDND = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onToggleDND?.(player.id, !player.isDND);
+    };
+
     const handleToggleMobileFlagsMenu = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -203,12 +217,32 @@ const Player = ({
     const isUpside = player.isUpside || false;
     const isRisky = player.isRisky || false;
     const isHandcuff = player.isHandcuff || false;
+    const isFavorite = player.isFavorite || false;
+    const isDND = player.isDND || false;
 
     const rowClass = player.drafted
         ? darkMode
             ? 'bg-slate-900/40 opacity-70'
             : 'bg-slate-50/80 opacity-75'
         : '';
+
+    // Favorite/DND are opposite calls on the same player, so only one border
+    // ever applies. Interaction feedback (drag, long-press, jump-to-focus)
+    // takes visual priority over it since those are transient states.
+    const flagRingClass = isDND
+        ? 'ring-2 ring-rose-500'
+        : isFavorite
+            ? 'ring-2 ring-amber-400'
+            : '';
+
+    // A faint background wash so the flag reads as "this whole card" rather
+    // than just a thin outline. Skipped on a drafted row, which already has
+    // its own dimmed background.
+    const flagTintClass = isDND
+        ? (darkMode ? 'bg-rose-500/10' : 'bg-rose-50')
+        : isFavorite
+            ? (darkMode ? 'bg-amber-400/10' : 'bg-amber-50')
+            : '';
 
     const valueClass = darkMode ? 'text-slate-400' : 'text-slate-500';
     const valueBold = darkMode ? 'font-semibold text-slate-300' : 'font-semibold text-slate-700';
@@ -234,6 +268,8 @@ const Player = ({
                 ${isDragging ? 'z-50 scale-[1.01] opacity-60' : ''}
                 ${isLongPressing ? 'ring-2 ring-emerald-400/40 ring-offset-0' : ''}
                 ${isFocused ? 'ring-2 ring-emerald-400/70 ring-offset-2 ring-offset-transparent bg-emerald-500/10' : ''}
+                ${!isFocused && !isLongPressing ? flagRingClass : ''}
+                ${!player.drafted ? flagTintClass : ''}
                 ${rowClass}
             `}
             onClick={handleClick}
@@ -241,7 +277,7 @@ const Player = ({
             data-player-id={player.id}
         >
             {player.drafted && (
-                <div className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-gradient-to-b from-emerald-400 to-teal-500" />
+                <div className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-gradient-to-b from-slate-400 to-slate-500" />
             )}
 
             <div className="flex items-center gap-0.5 sm:gap-0">
@@ -251,24 +287,38 @@ const Player = ({
                         {index}
                     </div>
 
-                    <div className="h-9 w-9 shrink-0 overflow-hidden rounded-full bg-slate-200 avatar-ring sm:h-11 sm:w-11 dark:bg-slate-800">
-                        <img
-                            src={player.photo}
-                            alt={player.name}
-                            loading="lazy"
-                            decoding="async"
-                            className="h-full w-full object-cover"
-                            onError={(e) => {
-                                e.target.style.display = 'none';
-                                e.target.nextSibling.style.display = 'flex';
-                            }}
-                        />
-                        <div
-                            className={`h-full w-full items-center justify-center text-[10px] font-bold sm:text-xs ${darkMode ? 'bg-slate-800 text-slate-500' : 'bg-slate-200 text-slate-500'}`}
-                            style={{ display: 'none' }}
-                        >
-                            {initials}
+                    <div className="relative h-9 w-9 shrink-0 sm:h-11 sm:w-11">
+                        <div className="h-full w-full overflow-hidden rounded-full bg-slate-200 avatar-ring dark:bg-slate-800">
+                            <img
+                                src={player.photo}
+                                alt={player.name}
+                                loading="lazy"
+                                decoding="async"
+                                className="h-full w-full object-cover"
+                                onError={(e) => {
+                                    e.target.style.display = 'none';
+                                    e.target.nextSibling.style.display = 'flex';
+                                }}
+                            />
+                            <div
+                                className={`h-full w-full items-center justify-center text-[10px] font-bold sm:text-xs ${darkMode ? 'bg-slate-800 text-slate-500' : 'bg-slate-200 text-slate-500'}`}
+                                style={{ display: 'none' }}
+                            >
+                                {initials}
+                            </div>
                         </div>
+                        {/* Team badge rides on the avatar corner on mobile, where the
+                            dedicated team column below is hidden to leave room for the name. */}
+                        {player.teamLogo && (
+                            <img
+                                src={player.teamLogo}
+                                alt=""
+                                aria-hidden="true"
+                                loading="lazy"
+                                decoding="async"
+                                className={`absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-white object-contain ring-2 sm:hidden ${darkMode ? 'ring-slate-950' : 'ring-white'} ${player.drafted ? 'grayscale' : ''}`}
+                            />
+                        )}
                     </div>
 
                     <div className="min-w-0 flex-1 px-1.5 sm:px-4">
@@ -292,7 +342,7 @@ const Player = ({
                         </span>
                     </div>
 
-                    <div className="flex w-8 shrink-0 justify-center sm:w-12">
+                    <div className="hidden w-8 shrink-0 justify-center sm:flex sm:w-12">
                         <div className="h-8 w-8 sm:h-10 sm:w-10">
                             {player.teamLogo ? (
                                 <img
@@ -300,7 +350,7 @@ const Player = ({
                                     alt={player.team}
                                     loading="lazy"
                                     decoding="async"
-                                    className="h-full w-full object-contain"
+                                    className={`h-full w-full object-contain ${player.drafted ? 'grayscale' : ''}`}
                                     onError={(e) => {
                                         e.target.style.display = 'none';
                                         e.target.nextSibling.style.display = 'flex';
@@ -353,7 +403,7 @@ const Player = ({
                         ) : '—'}
                     </div>
 
-                    <div className="hidden shrink-0 items-center justify-center gap-0.5 sm:flex sm:w-24">
+                    <div className="hidden shrink-0 items-center justify-center gap-0.5 sm:flex sm:w-40">
                         <button
                             onClick={handleToggleUpside}
                             className={flagBtn(isUpside, 'bg-emerald-500/15 text-emerald-500 ring-1 ring-emerald-500/25', darkMode, 'hover:text-emerald-500')}
@@ -383,13 +433,33 @@ const Player = ({
                                 <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                             </svg>
                         </button>
+
+                        <button
+                            onClick={handleToggleFavorite}
+                            className={flagBtn(isFavorite, 'bg-amber-400/15 text-amber-400 ring-1 ring-amber-400/25', darkMode, 'hover:text-amber-400')}
+                            title="Favorite"
+                        >
+                            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" clipRule="evenodd" />
+                            </svg>
+                        </button>
+
+                        <button
+                            onClick={handleToggleDND}
+                            className={flagBtn(isDND, 'bg-rose-500/15 text-rose-500 ring-1 ring-rose-500/25', darkMode, 'hover:text-rose-500')}
+                            title="Do Not Draft"
+                        >
+                            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+                            </svg>
+                        </button>
                     </div>
 
                     <div className="relative shrink-0 sm:hidden">
                         <button
                             onClick={handleToggleMobileFlagsMenu}
                             className={`relative -mr-0.5 flex h-6 w-6 items-center justify-center rounded-md transition ${
-                                isUpside || isRisky || isHandcuff
+                                isUpside || isRisky || isHandcuff || isFavorite || isDND
                                     ? darkMode ? 'bg-white/10 text-slate-200' : 'bg-slate-200 text-slate-700'
                                     : darkMode ? 'text-slate-500 hover:bg-white/5' : 'text-slate-400 hover:bg-slate-100'
                             }`}
@@ -399,10 +469,20 @@ const Player = ({
                             <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M4 3a1 1 0 00-1 1v13a1 1 0 102 0v-4.586l1.293-1.293a1 1 0 011.414 0l.586.586a3 3 0 004.242 0l.828-.828a1 1 0 011.414 0l.223.223a1 1 0 001.414-1.414l-.223-.223a3 3 0 00-4.242 0l-.828.828a1 1 0 01-1.414 0l-.586-.586a3 3 0 00-4.242 0L5 10.586V4a1 1 0 00-1-1z" clipRule="evenodd" />
                             </svg>
-                            {(isUpside || isRisky || isHandcuff) && (
+                            {(isUpside || isRisky || isHandcuff || isFavorite || isDND) && (
                                 <span
                                     className={`absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full ring-2 ${darkMode ? 'ring-slate-950' : 'ring-white'}`}
-                                    style={{ backgroundColor: isRisky ? '#f59e0b' : isHandcuff ? '#0ea5e9' : '#10b981' }}
+                                    style={{
+                                        backgroundColor: isDND
+                                            ? '#f43f5e'
+                                            : isFavorite
+                                                ? '#fbbf24'
+                                                : isRisky
+                                                    ? '#f59e0b'
+                                                    : isHandcuff
+                                                        ? '#0ea5e9'
+                                                        : '#10b981',
+                                    }}
                                 />
                             )}
                         </button>
@@ -452,6 +532,32 @@ const Player = ({
                                             <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                                         </svg>
                                         Handcuff
+                                    </button>
+                                    <button
+                                        onClick={handleToggleFavorite}
+                                        className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium transition ${
+                                            isFavorite
+                                                ? 'bg-amber-400/15 text-amber-400'
+                                                : darkMode ? 'text-slate-300 hover:bg-white/5' : 'text-slate-700 hover:bg-slate-50'
+                                        }`}
+                                    >
+                                        <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" clipRule="evenodd" />
+                                        </svg>
+                                        Favorite
+                                    </button>
+                                    <button
+                                        onClick={handleToggleDND}
+                                        className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium transition ${
+                                            isDND
+                                                ? 'bg-rose-500/15 text-rose-500'
+                                                : darkMode ? 'text-slate-300 hover:bg-white/5' : 'text-slate-700 hover:bg-slate-50'
+                                        }`}
+                                    >
+                                        <svg className="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+                                        </svg>
+                                        Do Not Draft
                                     </button>
                                 </div>
                             </>

@@ -12,6 +12,8 @@ const Tier = ({
     onToggleRisky,
     onToggleUpside,
     onToggleHandcuff,
+    onToggleFavorite,
+    onToggleDND,
     onRemoveTier,
     onRenameTier,
     onMovePlayer,
@@ -312,7 +314,7 @@ const Tier = ({
                             <div className="flex flex-[4] items-center justify-center gap-4">
                                 <ColumnHeader label="ECR" tooltip={BOARD_COLUMN_TOOLTIPS.ecr} className="w-14 shrink-0" darkMode={darkMode} />
                                 <ColumnHeader label="ADP" tooltip={BOARD_COLUMN_TOOLTIPS.adp} className="w-16 shrink-0" darkMode={darkMode} />
-                                <ColumnHeader label="Flags" tooltip={BOARD_COLUMN_TOOLTIPS.flags} className="w-24 shrink-0" darkMode={darkMode} />
+                                <ColumnHeader label="Flags" tooltip={BOARD_COLUMN_TOOLTIPS.flags} className="w-40 shrink-0" darkMode={darkMode} />
                             </div>
                         </div>
 
@@ -324,7 +326,6 @@ const Tier = ({
                             <div className="w-9" />
                             <div className="flex-1 px-1.5">Player</div>
                             <ColumnHeader label="Pos" tooltip={BOARD_COLUMN_TOOLTIPS.pos} className="w-8" darkMode={darkMode} />
-                            <ColumnHeader label="Tm" tooltip={BOARD_COLUMN_TOOLTIPS.team} className="w-8" darkMode={darkMode} />
                             <ColumnHeader label="ADP" tooltip={BOARD_COLUMN_TOOLTIPS.adp} className="w-10" darkMode={darkMode} />
                             <div className="w-6" />
                         </div>
@@ -341,6 +342,8 @@ const Tier = ({
                                     onToggleRisky={onToggleRisky}
                                     onToggleUpside={onToggleUpside}
                                     onToggleHandcuff={onToggleHandcuff}
+                                    onToggleFavorite={onToggleFavorite}
+                                    onToggleDND={onToggleDND}
                                     onMovePlayer={onMovePlayer}
                                     isFocused={focusPlayerId === player.id}
                                     darkMode={darkMode}

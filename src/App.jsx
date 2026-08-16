@@ -55,11 +55,13 @@ import { useAuth } from './context/AuthContext';
 
 const DraftLottery = React.lazy(() => import('./components/DraftLottery'));
 
-// The three user-set flags, in the order they appear on a player row.
+// The five user-set flags, in the order they appear on a player row.
 const FLAG_FILTERS = {
     upside: { label: 'Upside', field: 'isUpside', tone: 'text-emerald-500' },
     risky: { label: 'Risky', field: 'isRisky', tone: 'text-amber-500' },
     handcuff: { label: 'Handcuff', field: 'isHandcuff', tone: 'text-sky-500' },
+    favorite: { label: 'Favorite', field: 'isFavorite', tone: 'text-yellow-500' },
+    dnd: { label: 'Do Not Draft', field: 'isDND', tone: 'text-rose-500' },
 };
 
 const DRAFT_MODE_TEAM_SIZES = [8, 10, 12, 14, 16];
@@ -68,6 +70,8 @@ const FLAG_ICONS = {
     upside: 'M12.577 4.878a.75.75 0 01.919-.53l4.78 1.281a.75.75 0 01.531.919l-1.281 4.78a.75.75 0 01-1.449-.387l.81-3.022a19.407 19.407 0 00-5.594 5.203.75.75 0 01-1.139.093L7 10.06l-4.72 4.72a.75.75 0 01-1.06-1.061l5.25-5.25a.75.75 0 011.06 0l3.074 3.073a20.923 20.923 0 015.545-4.931l-3.042-.815a.75.75 0 01-.53-.919z',
     risky: 'M10 18a8 8 0 100-16 8 8 0 000 16zM8.736 6.979C9.208 6.193 9.696 6 10 6c.304 0 .792.193 1.264.979.446.743.736 1.79.736 3.021 0 1.23-.29 2.278-.736 3.021C10.792 13.807 10.304 14 10 14c-.304 0-.792-.193-1.264-.979C8.29 12.278 8 11.23 8 10c0-1.231.29-2.278.736-3.021zM10 16a1 1 0 100-2 1 1 0 000 2z',
     handcuff: 'M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z',
+    favorite: 'M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z',
+    dnd: 'M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z',
 };
 
 function App() {
@@ -135,6 +139,8 @@ function App() {
                             isUpside: player.isUpside,
                             isHandcuff: player.isHandcuff,
                             isRisky: player.isRisky,
+                            isFavorite: player.isFavorite,
+                            isDND: player.isDND,
                             injuryNote: player.injuryNote || databasePlayer.injuryNote || null,
                             riskyReason: player.riskyReason || databasePlayer.riskyReason || null,
                         };
@@ -539,6 +545,24 @@ function App() {
         ));
     }, [setPlayers]);
 
+    // Favorite and Do Not Draft are opposite calls on the same player, so
+    // setting one clears the other rather than letting a row carry both.
+    const handleToggleFavorite = useCallback((playerId, isFavorite) => {
+        setPlayers(prev => prev.map(player =>
+            player.id === playerId
+                ? { ...player, isFavorite, isDND: isFavorite ? false : player.isDND }
+                : player
+        ));
+    }, [setPlayers]);
+
+    const handleToggleDND = useCallback((playerId, isDND) => {
+        setPlayers(prev => prev.map(player =>
+            player.id === playerId
+                ? { ...player, isDND, isFavorite: isDND ? false : player.isFavorite }
+                : player
+        ));
+    }, [setPlayers]);
+
     // Get position tag styling
     const getPositionTagStyle = (position) => getPositionFilterTagProps(position, positionColors);
 
@@ -939,6 +963,8 @@ function App() {
                         onToggleRisky={handleToggleRisky}
                         onToggleUpside={handleToggleUpside}
                         onToggleHandcuff={handleToggleHandcuff}
+                        onToggleFavorite={handleToggleFavorite}
+                        onToggleDND={handleToggleDND}
                         onRemoveTier={handleRemoveTier}
                         onRenameTier={handleRenameTier}
                         darkMode={darkMode}

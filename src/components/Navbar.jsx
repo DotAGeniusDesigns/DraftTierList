@@ -170,11 +170,11 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                             />
                         </div>
                         <div className="min-w-0 leading-tight">
-                            <p className="font-display text-base font-bold tracking-tight sm:text-xl">
+                            <p className="truncate font-display text-base font-bold tracking-tight sm:text-xl">
                                 <span className="text-gradient-brand">Fantasy</span>
                                 <span className={darkMode ? 'text-white' : 'text-slate-900'}> Toolkit</span>
                             </p>
-                            <p className={`text-[10px] font-medium uppercase tracking-[0.18em] sm:text-[11px] ${ui.muted(darkMode)}`}>
+                            <p className={`truncate text-[10px] font-medium uppercase tracking-[0.18em] sm:text-[11px] ${ui.muted(darkMode)}`}>
                                 2026 Draft Suite
                             </p>
                         </div>
@@ -204,7 +204,7 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                         <AccountMenu darkMode={darkMode} />
                     </div>
 
-                    <div className="flex items-center gap-1.5 sm:gap-2 lg:hidden">
+                    <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 lg:hidden">
                         <DonateButton
                             darkMode={darkMode}
                             compact
