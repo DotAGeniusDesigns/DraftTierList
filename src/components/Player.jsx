@@ -264,7 +264,7 @@ const Player = ({
             onTouchEnd={handleTouchEnd}
             onTouchCancel={handleTouchCancel}
             className={`
-                player-row-hover relative cursor-grab px-2 py-2.5 hover:z-30 focus-within:z-30 active:cursor-grabbing sm:px-4 sm:py-3
+                player-row-hover relative cursor-grab px-1 py-2.5 hover:z-30 focus-within:z-30 active:cursor-grabbing sm:px-4 sm:py-3
                 ${isDragging ? 'z-50 scale-[1.01] opacity-60' : ''}
                 ${isLongPressing ? 'ring-2 ring-emerald-400/40 ring-offset-0' : ''}
                 ${isFocused ? 'ring-2 ring-emerald-400/70 ring-offset-2 ring-offset-transparent bg-emerald-500/10' : ''}
@@ -280,14 +280,14 @@ const Player = ({
                 <div className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-gradient-to-b from-slate-400 to-slate-500" />
             )}
 
-            <div className="flex items-center gap-0.5 sm:gap-0">
+            <div className="flex items-center gap-0">
                 {/* Bucket 1 — identity: rank, photo, player */}
                 <div className="contents sm:flex sm:min-w-0 sm:flex-[5] sm:items-center">
                     <div className={`w-6 shrink-0 text-center text-xs font-bold tabular-nums sm:w-14 sm:text-sm ${valueBold}`}>
                         {index}
                     </div>
 
-                    <div className="relative h-9 w-9 shrink-0 sm:h-11 sm:w-11">
+                    <div className="relative h-8 w-8 shrink-0 sm:h-11 sm:w-11">
                         <div className="h-full w-full overflow-hidden rounded-full bg-slate-200 avatar-ring dark:bg-slate-800">
                             <img
                                 src={player.photo}
@@ -316,12 +316,12 @@ const Player = ({
                                 aria-hidden="true"
                                 loading="lazy"
                                 decoding="async"
-                                className={`absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-white object-contain ring-2 sm:hidden ${darkMode ? 'ring-slate-950' : 'ring-white'} ${player.drafted ? 'grayscale' : ''}`}
+                                className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-white object-contain ring-2 sm:hidden ${darkMode ? 'ring-slate-950' : 'ring-white'} ${player.drafted ? 'grayscale' : ''}`}
                             />
                         )}
                     </div>
 
-                    <div className="min-w-0 flex-1 px-1.5 sm:px-4">
+                    <div className="min-w-0 flex-1 px-0.5 sm:px-4">
                         {/* Positioning context for the injury hover card: anchored
                             to the name rather than to the chip, which on a phone
                             sits far enough right to push the card off screen. */}
@@ -390,12 +390,12 @@ const Player = ({
                         ) : '—'}
                     </div>
 
-                    <div className={`w-10 shrink-0 text-center text-xs sm:w-16 ${valueClass}`}>
+                    <div className={`w-8 shrink-0 text-center text-xs sm:w-16 ${valueClass}`}>
                         {player.adp ? (
                             <>
                                 <span className={valueBold}>{player.adp.toFixed(1)}</span>
                                 {Math.abs(index - player.adp) > 0.1 && (
-                                    <span className={`ml-0.5 text-[10px] ${deltaClass(index < player.adp)}`}>
+                                    <span className={`ml-0.5 hidden text-[10px] sm:inline ${deltaClass(index < player.adp)}`}>
                                         ({index < player.adp ? '+' : ''}{Math.abs(index - player.adp).toFixed(1)})
                                     </span>
                                 )}
@@ -458,7 +458,7 @@ const Player = ({
                     <div className="relative shrink-0 sm:hidden">
                         <button
                             onClick={handleToggleMobileFlagsMenu}
-                            className={`relative -mr-0.5 flex h-6 w-6 items-center justify-center rounded-md transition ${
+                            className={`relative -mr-1 flex h-5 w-5 items-center justify-center rounded-md transition ${
                                 isUpside || isRisky || isHandcuff || isFavorite || isDND
                                     ? darkMode ? 'bg-white/10 text-slate-200' : 'bg-slate-200 text-slate-700'
                                     : darkMode ? 'text-slate-500 hover:bg-white/5' : 'text-slate-400 hover:bg-slate-100'
