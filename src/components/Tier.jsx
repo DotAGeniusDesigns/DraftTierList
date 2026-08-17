@@ -288,7 +288,7 @@ const Tier = ({
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`border-t transition-all duration-200 ${bodyClass}`}
+                className={`overflow-x-auto border-t transition-all duration-200 ${bodyClass}`}
             >
                 {players.length === 0 ? (
                     <div className={`tier-empty-state ${ui.muted(darkMode)}`}>
@@ -296,24 +296,24 @@ const Tier = ({
                     </div>
                 ) : (
                     <div className="relative divide-y divide-slate-200/70 dark:divide-white/[0.04]">
-                        <div className={`sticky top-0 z-10 hidden items-center px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider sm:flex sm:px-4 sm:text-[11px] ${darkMode
+                        <div className={`sticky top-0 z-10 hidden items-center px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider sm:flex sm:gap-6 sm:px-4 sm:text-[11px] ${darkMode
                             ? 'border-b border-white/5 bg-slate-900/95 text-slate-500 backdrop-blur-md'
                             : 'border-b border-slate-100 bg-white/95 text-slate-400 backdrop-blur-md'
                             }`}>
-                            <div className="flex min-w-0 flex-[5] items-center">
+                            <div className="flex min-w-[320px] flex-1 items-center">
                                 <div className="w-14 shrink-0 text-center">Rank</div>
                                 <div className="w-11 shrink-0 text-center">Photo</div>
                                 <div className="min-w-0 flex-1 px-4">Player</div>
                             </div>
-                            <div className="flex flex-[4] items-center justify-center gap-4">
+                            <div className="flex flex-initial items-center justify-center gap-3">
                                 <ColumnHeader label="Pos" tooltip={BOARD_COLUMN_TOOLTIPS.pos} className="w-16 shrink-0" darkMode={darkMode} />
                                 <ColumnHeader label="Team" tooltip={BOARD_COLUMN_TOOLTIPS.team} className="w-12 shrink-0" darkMode={darkMode} />
-                                <ColumnHeader label="OL" tooltip={BOARD_COLUMN_TOOLTIPS.ol} className="w-10 shrink-0" darkMode={darkMode} />
-                                <ColumnHeader label="Bye" tooltip={BOARD_COLUMN_TOOLTIPS.bye} className="w-10 shrink-0" darkMode={darkMode} />
+                                <ColumnHeader label="OL" tooltip={BOARD_COLUMN_TOOLTIPS.ol} className="w-8 shrink-0" darkMode={darkMode} />
+                                <ColumnHeader label="Bye" tooltip={BOARD_COLUMN_TOOLTIPS.bye} className="w-8 shrink-0" darkMode={darkMode} />
                             </div>
-                            <div className="flex flex-[4] items-center justify-center gap-4">
-                                <ColumnHeader label="ECR" tooltip={BOARD_COLUMN_TOOLTIPS.ecr} className="w-14 shrink-0" darkMode={darkMode} />
-                                <ColumnHeader label="ADP" tooltip={BOARD_COLUMN_TOOLTIPS.adp} className="w-16 shrink-0" darkMode={darkMode} />
+                            <div className="flex flex-initial items-center justify-center gap-3">
+                                <ColumnHeader label="ECR" tooltip={BOARD_COLUMN_TOOLTIPS.ecr} className="w-12 shrink-0" darkMode={darkMode} />
+                                <ColumnHeader label="ADP" tooltip={BOARD_COLUMN_TOOLTIPS.adp} className="w-14 shrink-0" darkMode={darkMode} />
                                 <ColumnHeader label="Flags" tooltip={BOARD_COLUMN_TOOLTIPS.flags} className="w-40 shrink-0" darkMode={darkMode} />
                             </div>
                         </div>

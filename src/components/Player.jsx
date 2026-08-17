@@ -280,9 +280,9 @@ const Player = ({
                 <div className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-gradient-to-b from-slate-400 to-slate-500" />
             )}
 
-            <div className="flex items-center gap-0">
+            <div className="flex items-center gap-0 sm:gap-6">
                 {/* Bucket 1 — identity: rank, photo, player */}
-                <div className="contents sm:flex sm:min-w-0 sm:flex-[5] sm:items-center">
+                <div className="contents sm:flex sm:min-w-[320px] sm:flex-1 sm:items-center">
                     <div className={`w-6 shrink-0 text-center text-xs font-bold tabular-nums sm:w-14 sm:text-sm ${valueBold}`}>
                         {index}
                     </div>
@@ -335,7 +335,7 @@ const Player = ({
                 </div>
 
                 {/* Bucket 2 — team context: pos, team, OL, bye */}
-                <div className="contents sm:flex sm:flex-[4] sm:items-center sm:justify-center sm:gap-4">
+                <div className="contents sm:flex sm:flex-initial sm:items-center sm:justify-center sm:gap-3">
                     <div className="w-8 shrink-0 text-center sm:w-16">
                         <span {...getPositionTagProps(player.position, { drafted: player.drafted, darkMode, colors: positionColors })}>
                             {player.position}
@@ -366,18 +366,18 @@ const Player = ({
                         </div>
                     </div>
 
-                    <div className={`hidden shrink-0 text-center text-xs sm:block sm:w-10 ${valueClass}`}>
+                    <div className={`hidden shrink-0 text-center text-xs sm:block sm:w-8 ${valueClass}`}>
                         {player.olineRank || getOlineRank(player.team) || '—'}
                     </div>
 
-                    <div className={`hidden shrink-0 text-center text-xs sm:block sm:w-10 ${valueClass}`}>
+                    <div className={`hidden shrink-0 text-center text-xs sm:block sm:w-8 ${valueClass}`}>
                         {player.byeWeek ?? '—'}
                     </div>
                 </div>
 
                 {/* Bucket 3 — draft value: ECR, ADP, flags */}
-                <div className="contents sm:flex sm:flex-[4] sm:items-center sm:justify-center sm:gap-4">
-                    <div className={`hidden shrink-0 text-center text-xs sm:block sm:w-14 ${valueClass}`}>
+                <div className="contents sm:flex sm:flex-initial sm:items-center sm:justify-center sm:gap-3">
+                    <div className={`hidden shrink-0 text-center text-xs sm:block sm:w-12 ${valueClass}`}>
                         {player.ecr ? (
                             <>
                                 <span className={valueBold}>{player.ecr}</span>
@@ -390,7 +390,7 @@ const Player = ({
                         ) : '—'}
                     </div>
 
-                    <div className={`w-8 shrink-0 text-center text-xs sm:w-16 ${valueClass}`}>
+                    <div className={`w-8 shrink-0 text-center text-xs sm:w-14 ${valueClass}`}>
                         {player.adp ? (
                             <>
                                 <span className={valueBold}>{player.adp.toFixed(1)}</span>
