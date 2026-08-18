@@ -7,13 +7,15 @@ module.exports = {
     theme: {
         extend: {
             screens: {
-                // Narrower than `md` on purpose: the draft board's dense row
-                // layout only needs ~730px to fit without clipping, and using
-                // the standard 768px breakpoint would leave a wide dead zone
-                // where the mobile layout is still active but has far more
-                // room than it needs, stretching the name column into empty
-                // space instead of showing the full column table.
-                board: '740px',
+                // Narrower than `md` on purpose. The desktop row is a fixed
+                // CSS grid (see src/utils/boardGrid.js) that needs exactly
+                // 698px to render without any column shrinking; 710px adds a
+                // small safety margin. Below this, Player.jsx and Tier.jsx
+                // render an entirely separate, simpler single-line mobile
+                // layout — the two are not the same markup stretched by CSS,
+                // so there is no in-between zone where a flexible column
+                // stretches into empty space.
+                board: '710px',
             },
             fontFamily: {
                 sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
