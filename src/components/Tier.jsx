@@ -210,7 +210,7 @@ const Tier = ({
     return (
         <div className={`${ui.card(darkMode)} overflow-visible`}>
             <div
-                className={`flex items-center justify-between px-4 py-3 sm:px-5 ${headerClass}`}
+                className={`flex items-center justify-between px-4 py-3 board:px-5 ${headerClass}`}
                 style={{ boxShadow: `inset 4px 0 0 0 ${tierColor}` }}
             >
                 <div className="flex items-center gap-3">
@@ -249,7 +249,7 @@ const Tier = ({
                         </div>
                     ) : (
                         <div className="flex items-center gap-2">
-                            <h3 className={`text-base font-bold sm:text-lg ${ui.heading(darkMode)}`}>{tierName}</h3>
+                            <h3 className={`text-base font-bold board:text-lg ${ui.heading(darkMode)}`}>{tierName}</h3>
                             <button
                                 onClick={() => setIsEditingName(true)}
                                 className={`rounded-lg p-1.5 transition ${darkMode ? 'text-slate-500 hover:bg-white/5 hover:text-slate-300' : 'text-slate-400 hover:bg-slate-100 hover:text-slate-600'}`}
@@ -263,7 +263,7 @@ const Tier = ({
                     )}
                 </div>
                 <div className="flex items-center gap-3">
-                    <span className={`text-xs font-medium sm:text-sm ${ui.muted(darkMode)}`}>
+                    <span className={`text-xs font-medium board:text-sm ${ui.muted(darkMode)}`}>
                         {allTierPlayers.length} player{allTierPlayers.length !== 1 ? 's' : ''}
                         {players.length !== allTierPlayers.length && (
                             <span className="opacity-75"> · {players.length} shown</span>
@@ -296,7 +296,7 @@ const Tier = ({
                     </div>
                 ) : (
                     <div className="relative divide-y divide-slate-200/70 dark:divide-white/[0.04]">
-                        <div className={`sticky top-0 z-10 hidden items-center px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider lg:flex lg:gap-4 lg:px-4 lg:text-[11px] ${darkMode
+                        <div className={`sticky top-0 z-10 hidden items-center px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider board:flex board:gap-4 board:px-4 board:text-[11px] ${darkMode
                             ? 'border-b border-white/5 bg-slate-900/95 text-slate-500 backdrop-blur-md'
                             : 'border-b border-slate-100 bg-white/95 text-slate-400 backdrop-blur-md'
                             }`}>
@@ -314,11 +314,14 @@ const Tier = ({
                             <div className="flex flex-initial items-center justify-center gap-1.5">
                                 <ColumnHeader label="ECR" tooltip={BOARD_COLUMN_TOOLTIPS.ecr} className="w-12 shrink-0" darkMode={darkMode} />
                                 <ColumnHeader label="ADP" tooltip={BOARD_COLUMN_TOOLTIPS.adp} className="w-14 shrink-0" darkMode={darkMode} />
-                                <ColumnHeader label="Flags" tooltip={BOARD_COLUMN_TOOLTIPS.flags} className="w-40 shrink-0" darkMode={darkMode} />
+                                <div className="hidden w-40 shrink-0 lg:block">
+                                    <ColumnHeader label="Flags" tooltip={BOARD_COLUMN_TOOLTIPS.flags} darkMode={darkMode} />
+                                </div>
+                                <div className="w-5 shrink-0 lg:hidden" />
                             </div>
                         </div>
 
-                        <div className={`flex items-center gap-0.5 px-2 py-2 text-[10px] font-bold uppercase tracking-wider lg:hidden ${darkMode
+                        <div className={`flex items-center gap-0.5 px-2 py-2 text-[10px] font-bold uppercase tracking-wider board:hidden ${darkMode
                             ? 'border-b border-white/5 bg-slate-900/95 text-slate-500'
                             : 'border-b border-slate-100 bg-slate-50 text-slate-400'
                             }`}>

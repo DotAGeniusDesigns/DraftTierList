@@ -6,6 +6,15 @@ module.exports = {
     ],
     theme: {
         extend: {
+            screens: {
+                // Narrower than `md` on purpose: the draft board's dense row
+                // layout only needs ~730px to fit without clipping, and using
+                // the standard 768px breakpoint would leave a wide dead zone
+                // where the mobile layout is still active but has far more
+                // room than it needs, stretching the name column into empty
+                // space instead of showing the full column table.
+                board: '740px',
+            },
             fontFamily: {
                 sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
                 display: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],

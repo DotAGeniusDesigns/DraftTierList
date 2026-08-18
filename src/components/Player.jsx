@@ -264,7 +264,7 @@ const Player = ({
             onTouchEnd={handleTouchEnd}
             onTouchCancel={handleTouchCancel}
             className={`
-                player-row-hover relative cursor-grab px-1 py-2.5 hover:z-30 focus-within:z-30 active:cursor-grabbing lg:px-4 lg:py-3
+                player-row-hover relative cursor-grab px-1 py-2.5 hover:z-30 focus-within:z-30 active:cursor-grabbing board:px-4 board:py-3
                 ${isDragging ? 'z-50 scale-[1.01] opacity-60' : ''}
                 ${isLongPressing ? 'ring-2 ring-emerald-400/40 ring-offset-0' : ''}
                 ${isFocused ? 'ring-2 ring-emerald-400/70 ring-offset-2 ring-offset-transparent bg-emerald-500/10' : ''}
@@ -280,14 +280,14 @@ const Player = ({
                 <div className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-gradient-to-b from-slate-400 to-slate-500" />
             )}
 
-            <div className="flex items-center gap-0 lg:gap-4">
+            <div className="flex items-center gap-0 board:gap-4">
                 {/* Bucket 1 — identity: rank, photo, player */}
-                <div className="contents lg:flex lg:min-w-[300px] lg:flex-1 lg:items-center">
-                    <div className={`w-6 shrink-0 text-center text-xs font-bold tabular-nums lg:w-14 lg:text-sm ${valueBold}`}>
+                <div className="contents board:flex board:min-w-[300px] board:flex-1 board:items-center">
+                    <div className={`w-6 shrink-0 text-center text-xs font-bold tabular-nums board:w-14 board:text-sm ${valueBold}`}>
                         {index}
                     </div>
 
-                    <div className="relative h-8 w-8 shrink-0 lg:h-11 lg:w-11">
+                    <div className="relative h-8 w-8 shrink-0 board:h-11 board:w-11">
                         <div className="h-full w-full overflow-hidden rounded-full bg-slate-200 avatar-ring dark:bg-slate-800">
                             <img
                                 src={player.photo}
@@ -301,7 +301,7 @@ const Player = ({
                                 }}
                             />
                             <div
-                                className={`h-full w-full items-center justify-center text-[10px] font-bold lg:text-xs ${darkMode ? 'bg-slate-800 text-slate-500' : 'bg-slate-200 text-slate-500'}`}
+                                className={`h-full w-full items-center justify-center text-[10px] font-bold board:text-xs ${darkMode ? 'bg-slate-800 text-slate-500' : 'bg-slate-200 text-slate-500'}`}
                                 style={{ display: 'none' }}
                             >
                                 {initials}
@@ -316,17 +316,17 @@ const Player = ({
                                 aria-hidden="true"
                                 loading="lazy"
                                 decoding="async"
-                                className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-white object-contain ring-2 lg:hidden ${darkMode ? 'ring-slate-950' : 'ring-white'} ${player.drafted ? 'grayscale' : ''}`}
+                                className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-white object-contain ring-2 board:hidden ${darkMode ? 'ring-slate-950' : 'ring-white'} ${player.drafted ? 'grayscale' : ''}`}
                             />
                         )}
                     </div>
 
-                    <div className="min-w-0 flex-1 px-0.5 lg:px-4">
+                    <div className="min-w-0 max-w-md flex-1 px-0.5 board:max-w-none board:px-4">
                         {/* Positioning context for the injury hover card: anchored
                             to the name rather than to the chip, which on a phone
                             sits far enough right to push the card off screen. */}
                         <div className="relative flex min-w-0 items-center gap-1.5">
-                            <span className={`truncate text-sm font-semibold lg:text-[15px] ${player.drafted ? 'line-through opacity-70' : ''} ${ui.heading(darkMode)}`}>
+                            <span className={`truncate text-sm font-semibold board:text-[15px] ${player.drafted ? 'line-through opacity-70' : ''} ${ui.heading(darkMode)}`}>
                                 {player.name}
                             </span>
                             <InjuryBadge injury={player.injury} darkMode={darkMode} />
@@ -335,15 +335,15 @@ const Player = ({
                 </div>
 
                 {/* Bucket 2 — team context: pos, team, OL, bye */}
-                <div className="contents lg:flex lg:flex-initial lg:items-center lg:justify-center lg:gap-1.5">
-                    <div className="w-8 shrink-0 text-center lg:w-16">
+                <div className="contents board:flex board:flex-initial board:items-center board:justify-center board:gap-1.5">
+                    <div className="w-8 shrink-0 text-center board:w-16">
                         <span {...getPositionTagProps(player.position, { drafted: player.drafted, darkMode, colors: positionColors })}>
                             {player.position}
                         </span>
                     </div>
 
-                    <div className="hidden w-8 shrink-0 justify-center lg:flex lg:w-12">
-                        <div className="h-8 w-8 lg:h-10 lg:w-10">
+                    <div className="hidden w-8 shrink-0 justify-center board:flex board:w-12">
+                        <div className="h-8 w-8 board:h-10 board:w-10">
                             {player.teamLogo ? (
                                 <img
                                     src={player.teamLogo}
@@ -366,18 +366,18 @@ const Player = ({
                         </div>
                     </div>
 
-                    <div className={`hidden shrink-0 text-center text-xs lg:block lg:w-5 ${valueClass}`}>
+                    <div className={`hidden shrink-0 text-center text-xs board:block board:w-5 ${valueClass}`}>
                         {player.olineRank || getOlineRank(player.team) || '—'}
                     </div>
 
-                    <div className={`hidden shrink-0 text-center text-xs lg:block lg:w-5 ${valueClass}`}>
+                    <div className={`hidden shrink-0 text-center text-xs board:block board:w-5 ${valueClass}`}>
                         {player.byeWeek ?? '—'}
                     </div>
                 </div>
 
                 {/* Bucket 3 — draft value: ECR, ADP, flags */}
-                <div className="contents lg:flex lg:flex-initial lg:items-center lg:justify-center lg:gap-1.5">
-                    <div className={`hidden shrink-0 text-center text-xs lg:block lg:w-14 ${valueClass}`}>
+                <div className="contents board:flex board:flex-initial board:items-center board:justify-center board:gap-1.5">
+                    <div className={`hidden shrink-0 text-center text-xs board:block board:w-14 ${valueClass}`}>
                         {player.ecr ? (
                             <>
                                 <span className={valueBold}>{player.ecr}</span>
@@ -390,12 +390,12 @@ const Player = ({
                         ) : '—'}
                     </div>
 
-                    <div className={`w-8 shrink-0 text-center text-xs lg:w-16 ${valueClass}`}>
+                    <div className={`w-8 shrink-0 text-center text-xs board:w-16 ${valueClass}`}>
                         {player.adp ? (
                             <>
                                 <span className={valueBold}>{player.adp.toFixed(1)}</span>
                                 {Math.abs(index - player.adp) > 0.1 && (
-                                    <span className={`ml-0.5 hidden text-[10px] lg:inline ${deltaClass(index < player.adp)}`}>
+                                    <span className={`ml-0.5 hidden text-[10px] board:inline ${deltaClass(index < player.adp)}`}>
                                         ({index < player.adp ? '+' : ''}{Math.abs(index - player.adp).toFixed(1)})
                                     </span>
                                 )}
