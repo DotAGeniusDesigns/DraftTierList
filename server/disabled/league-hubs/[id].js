@@ -7,13 +7,13 @@
 // it and see the league. There's no external platform to live-fetch from —
 // everything returned here is exactly what the hub's owner entered.
 
-const { sql } = require('../../server/lib/db.js');
+const { sql } = require('../../../server/lib/db.js');
 const {
     withErrorHandling, allowMethods, readJsonBody, badRequest, notFound,
     clientIp, enforceRateLimit,
-} = require('../../server/lib/http.js');
-const { requireUser } = require('../../server/lib/auth.js');
-const { validateLeagueHubName, validateDescription } = require('../../server/lib/validate.js');
+} = require('../../../server/lib/http.js');
+const { requireUser } = require('../../../server/lib/auth.js');
+const { validateLeagueHubName, validateDescription } = require('../../../server/lib/validate.js');
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

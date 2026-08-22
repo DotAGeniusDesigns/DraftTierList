@@ -4,15 +4,15 @@
 // insert rather than a separate COUNT-then-INSERT, so two concurrent adds
 // can't both believe they got the last of 16 slots.
 
-const { sql } = require('../../../../server/lib/db.js');
+const { sql } = require('../../../../../server/lib/db.js');
 const {
     withErrorHandling, allowMethods, readJsonBody, badRequest, notFound, conflict,
     clientIp, enforceRateLimit,
-} = require('../../../../server/lib/http.js');
-const { requireUser } = require('../../../../server/lib/auth.js');
+} = require('../../../../../server/lib/http.js');
+const { requireUser } = require('../../../../../server/lib/auth.js');
 const {
     validateManagerName, validateDescription, validateImageData, validateRoster,
-} = require('../../../../server/lib/validate.js');
+} = require('../../../../../server/lib/validate.js');
 
 const MAX_MANAGERS_PER_HUB = 16;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

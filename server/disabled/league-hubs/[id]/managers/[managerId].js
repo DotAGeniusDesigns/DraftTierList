@@ -1,15 +1,15 @@
 // PUT    /api/league-hubs/:id/managers/:managerId — update a manager (owner only)
 // DELETE /api/league-hubs/:id/managers/:managerId — remove a manager (owner only)
 
-const { sql } = require('../../../../server/lib/db.js');
+const { sql } = require('../../../../../server/lib/db.js');
 const {
     withErrorHandling, allowMethods, readJsonBody, badRequest, notFound,
     clientIp, enforceRateLimit,
-} = require('../../../../server/lib/http.js');
-const { requireUser } = require('../../../../server/lib/auth.js');
+} = require('../../../../../server/lib/http.js');
+const { requireUser } = require('../../../../../server/lib/auth.js');
 const {
     validateManagerName, validateDescription, validateImageData, validateRoster,
-} = require('../../../../server/lib/validate.js');
+} = require('../../../../../server/lib/validate.js');
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

@@ -1,13 +1,13 @@
 // GET  /api/league-hubs — list the signed-in user's league hubs
 // POST /api/league-hubs — create a new hub (managers are added separately)
 
-const { sql } = require('../../server/lib/db.js');
+const { sql } = require('../../../server/lib/db.js');
 const {
     withErrorHandling, allowMethods, readJsonBody, badRequest, conflict,
     clientIp, enforceRateLimit,
-} = require('../../server/lib/http.js');
-const { requireUser } = require('../../server/lib/auth.js');
-const { validateLeagueHubName, validateDescription } = require('../../server/lib/validate.js');
+} = require('../../../server/lib/http.js');
+const { requireUser } = require('../../../server/lib/auth.js');
+const { validateLeagueHubName, validateDescription } = require('../../../server/lib/validate.js');
 
 const MAX_HUBS_PER_USER = 25;
 
