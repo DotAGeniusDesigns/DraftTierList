@@ -3,6 +3,18 @@ import { getAllPlayers } from './playerDatabase';
 import { getInjury } from './injuryReport';
 import { DEFAULT_SCORING_FORMAT } from './scoringFormats';
 
+// Default board tier sizes: 12 (×2), 20 (×4), 36 (×4), then remainder in tier 11.
+// Applied by rank position after sorting on the active format's ECR.
+export const DEFAULT_TIER_STARTS = [1, 13, 25, 45, 65, 85, 105, 141, 177, 213, 249];
+
+export const tierForRank = (rank) => {
+    let tier = 1;
+    for (let i = 0; i < DEFAULT_TIER_STARTS.length; i += 1) {
+        if (rank >= DEFAULT_TIER_STARTS[i]) tier = i + 1;
+    }
+    return tier;
+};
+
 // A database player's ECR/ADP for a given scoring format. Falls back to the
 // half-PPR numbers (the app default) if the requested format is somehow
 // unrecognized — every player in playerDatabase carries all four formats
@@ -24,9 +36,10 @@ const LEGACY_PLAYER_IDS = {
 
 export const migratePlayerId = (id) => LEGACY_PLAYER_IDS[id] || id;
 
-export const initialPlayers = getAllPlayers().map(player => ({
+const enrichPlayer = (player) => ({
     ...player,
     drafted: false,
+    draftedAt: null,
     byeWeek: getByeWeek(player.team),
     olineRank: getOlineRank(player.team),
     teamLogo: getTeamLogo(player.team),
@@ -34,7 +47,36 @@ export const initialPlayers = getAllPlayers().map(player => ({
     // takes this from the database on every load so a stale localStorage copy
     // can't outlive the injury.
     injury: getInjury(player.id),
-}));
+});
+
+/** Default board for a scoring format: sorted by that format's ECR, tiers by rank. */
+export const buildDefaultPlayers = (scoringFormat = DEFAULT_SCORING_FORMAT) => {
+    const entries = getAllPlayers().map((player) => {
+        const { ecr, adp } = getRankingsForFormat(player, scoringFormat);
+        return {
+            player,
+            ecr,
+            adp,
+            sortEcr: ecr ?? Number.MAX_SAFE_INTEGER,
+            sortAdp: adp ?? Number.MAX_SAFE_INTEGER,
+        };
+    });
+
+    entries.sort((a, b) => {
+        if (a.sortEcr !== b.sortEcr) return a.sortEcr - b.sortEcr;
+        if (a.sortAdp !== b.sortAdp) return a.sortAdp - b.sortAdp;
+        return a.player.name.localeCompare(b.player.name);
+    });
+
+    return entries.map(({ player, ecr, adp }, index) => ({
+        ...enrichPlayer(player),
+        ecr,
+        adp,
+        tier: tierForRank(index + 1),
+    }));
+};
+
+export const initialPlayers = buildDefaultPlayers(DEFAULT_SCORING_FORMAT);
 
 // One string per piece of news. The board remembers the last stamp it raised the
 // injured flag for, so clearing the flag by hand sticks until ESPN files an

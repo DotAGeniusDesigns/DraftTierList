@@ -106,6 +106,66 @@ const validateBoardCode = (value) => {
     return null;
 };
 
+// Sleeper league ids are bare numeric snowflake ids (same shape the frontend
+// already accepts for a draft id in src/utils/sleeperSync.js's parseDraftId).
+const SLEEPER_LEAGUE_ID_PATTERN = /^\d{6,}$/;
+
+const validateSleeperLeagueId = (value) => {
+    const id = String(value ?? '').trim();
+    if (!id) return 'Enter a Sleeper league ID.';
+    if (!SLEEPER_LEAGUE_ID_PATTERN.test(id)) return 'That doesn’t look like a Sleeper league ID.';
+    return null;
+};
+
+const MAX_LEAGUE_HUB_NAME = 60;
+const MAX_MANAGER_NAME = 60;
+const MAX_DESCRIPTION = 300;
+// A data: URL for a resized/compressed profile picture. ~525KB of raw image
+// data once base64's ~4/3 overhead is accounted for — generous for a
+// profile-photo-sized upload, small enough to keep the hub payload light.
+const MAX_IMAGE_DATA_URL = 700_000;
+const MAX_ROSTER_SIZE = 40;
+const MAX_ROSTER_ENTRY_LENGTH = 100;
+
+const validateLeagueHubName = (value) => {
+    const name = String(value ?? '').trim();
+    if (!name) return 'Give this league a name.';
+    if (name.length > MAX_LEAGUE_HUB_NAME) return `League names can be at most ${MAX_LEAGUE_HUB_NAME} characters.`;
+    return null;
+};
+
+const validateDescription = (value) => {
+    if (value === undefined || value === null || value === '') return null;
+    if (typeof value !== 'string') return 'That description is invalid.';
+    if (value.length > MAX_DESCRIPTION) return `Descriptions can be at most ${MAX_DESCRIPTION} characters.`;
+    return null;
+};
+
+const validateManagerName = (value) => {
+    const name = String(value ?? '').trim();
+    if (!name) return 'Give this manager a name.';
+    if (name.length > MAX_MANAGER_NAME) return `Manager names can be at most ${MAX_MANAGER_NAME} characters.`;
+    return null;
+};
+
+const validateImageData = (value) => {
+    if (value === undefined || value === null || value === '') return null;
+    if (typeof value !== 'string' || !value.startsWith('data:image/')) return 'That image is invalid.';
+    if (value.length > MAX_IMAGE_DATA_URL) return 'That image is too large. Try a smaller photo.';
+    return null;
+};
+
+const validateRoster = (value) => {
+    if (value === undefined || value === null) return null;
+    if (!Array.isArray(value)) return 'That roster is invalid.';
+    if (value.length > MAX_ROSTER_SIZE) return `A roster can have at most ${MAX_ROSTER_SIZE} players.`;
+    const invalid = value.some((entry) => (
+        typeof entry !== 'string' || !entry || entry.length > MAX_ROSTER_ENTRY_LENGTH
+    ));
+    if (invalid) return 'That roster is invalid.';
+    return null;
+};
+
 module.exports = {
     USERNAME_MIN,
     USERNAME_MAX,
@@ -117,4 +177,10 @@ module.exports = {
     validatePasswordConfirm,
     validateBoardName,
     validateBoardCode,
+    validateSleeperLeagueId,
+    validateLeagueHubName,
+    validateDescription,
+    validateManagerName,
+    validateImageData,
+    validateRoster,
 };

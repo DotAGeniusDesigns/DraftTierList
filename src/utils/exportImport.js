@@ -1,5 +1,5 @@
 import LZString from 'lz-string';
-import { initialPlayers, migratePlayerId } from './playerData';
+import { migratePlayerId, buildDefaultPlayers } from './playerData';
 import { DEFAULT_SCORING_FORMAT, normalizeScoringFormat } from './scoringFormats';
 
 // ---------------------------------------------------------------------------
@@ -83,7 +83,10 @@ export const decodeSharedBoard = (code) => {
         throw new Error('This share link was made by a different version of the site.');
     }
 
-    const databaseById = new Map(initialPlayers.map((player) => [player.id, player]));
+    const scoringFormat = normalizeScoringFormat(data.sf);
+    const databaseById = new Map(
+        buildDefaultPlayers(scoringFormat).map((player) => [player.id, player]),
+    );
     const players = [];
     const seen = new Set();
     let missing = 0;
@@ -120,14 +123,14 @@ export const decodeSharedBoard = (code) => {
         throw new Error('This share link does not contain any known players.');
     }
 
-    initialPlayers.forEach((player) => {
+    buildDefaultPlayers(scoringFormat).forEach((player) => {
         if (!seen.has(player.id)) players.push({ ...player });
     });
 
     return {
         players,
         tierNames: data.tn || {},
-        scoringFormat: normalizeScoringFormat(data.sf),
+        scoringFormat,
         sharedAt: data.ts ? new Date(data.ts * 1000) : null,
         sharedCount: seen.size,
         addedCount: players.length - seen.size,

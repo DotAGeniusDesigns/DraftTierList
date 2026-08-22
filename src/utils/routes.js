@@ -6,6 +6,9 @@ export const NAV_ROUTES = [
     { path: '/draft-range', label: 'Draft Range', shortLabel: 'Range', icon: 'range' },
     { path: '/offseason', label: 'Offseason HQ', shortLabel: 'Offseason', icon: 'offseason' },
     { path: '/draft-lottery', label: 'Draft Lottery', shortLabel: 'Lottery', icon: 'lottery' },
+    // League Hub (src/components/LeagueHub.jsx, LeagueHubCreate.jsx) is built
+    // but intentionally unlisted and unrouted — not ready to ship yet. Its
+    // routes are commented out in App.jsx rather than deleted.
 ];
 
 export const PAYPAL_HOSTED_BUTTON_ID = 'JBSDA3B82L9N4';

@@ -30,8 +30,12 @@ import RequireAuth from './components/auth/RequireAuth';
 import PrivacyPolicy from './components/legal/PrivacyPolicy';
 import TermsOfService from './components/legal/TermsOfService';
 import NotFoundPage from './components/NotFoundPage';
+// League Hub is not linked from the navbar yet (still being built out), but
+// its routes are live so it can be used and tested directly by URL.
+import LeagueHubCreate from './components/LeagueHubCreate';
+import LeagueHubManage from './components/LeagueHubManage';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { initialPlayers, migratePlayerId, getRankingsForFormat } from './utils/playerData';
+import { initialPlayers, migratePlayerId, getRankingsForFormat, buildDefaultPlayers } from './utils/playerData';
 import { playerDatabase } from './utils/playerDatabase';
 import { getTeamLogo } from './utils/teamData';
 import {
@@ -54,6 +58,7 @@ import {
 import { useAuth } from './context/AuthContext';
 
 const DraftLottery = React.lazy(() => import('./components/DraftLottery'));
+const LeagueHub = React.lazy(() => import('./components/LeagueHub'));
 
 // The five user-set flags, in the order they appear on a player row.
 const FLAG_FILTERS = {
@@ -505,19 +510,14 @@ function App() {
         });
     }, [setPlayers]);
 
-    // Reset to default database order, ranked by ECR/ADP for whichever
-    // scoring format is currently selected — not always half-PPR.
+    // Reset to the default ranking for the active scoring format: sorted by
+    // that format's ECR with shared tier boundaries applied by rank position.
     const handleResetToDefault = () => {
         createBackup(players, 'before resetting to default');
         clearTierNames();
         setActiveBoardId(null);
-        setPlayers(initialPlayers.map((player) => {
-            const databasePlayer = playerDatabase[player.id];
-            if (!databasePlayer) return player;
-            const { ecr, adp } = getRankingsForFormat(databasePlayer, scoringFormat);
-            return { ...player, ecr, adp };
-        }));
-        window.setTimeout(() => window.location.reload(), 0);
+        setPlayers(buildDefaultPlayers(scoringFormat));
+        setShowResetConfirm(false);
     };
 
     // Toggle risky status for a player
@@ -1091,6 +1091,40 @@ function App() {
                 <Route
                     path="/draft-scheduler"
                     element={<NewPage darkMode={darkMode} />}
+                />
+                {/* League Hub: live at these URLs, but intentionally not in
+                    NAV_ROUTES / the navbar yet — still being built out. */}
+                <Route
+                    path="/league/:id"
+                    element={(
+                        <React.Suspense
+                            fallback={(
+                                <div className="container mx-auto max-w-7xl px-4 py-12">
+                                    <p className={`text-sm ${ui.muted(darkMode)}`} role="status">
+                                        Loading league…
+                                    </p>
+                                </div>
+                            )}
+                        >
+                            <LeagueHub darkMode={darkMode} />
+                        </React.Suspense>
+                    )}
+                />
+                <Route
+                    path="/league-hub"
+                    element={(
+                        <RequireAuth darkMode={darkMode}>
+                            <LeagueHubCreate darkMode={darkMode} />
+                        </RequireAuth>
+                    )}
+                />
+                <Route
+                    path="/league-hub/:id"
+                    element={(
+                        <RequireAuth darkMode={darkMode}>
+                            <LeagueHubManage darkMode={darkMode} />
+                        </RequireAuth>
+                    )}
                 />
 
                 {/* Accounts */}

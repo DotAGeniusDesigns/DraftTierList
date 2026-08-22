@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 RAW_FILE = ROOT / 'scripts' / 'rawTierList2026.txt'
 
-TIER_STARTS = [1, 8, 16, 28, 48, 68, 96, 130, 166, 212, 274, 318]
+TIER_STARTS = [1, 13, 25, 45, 65, 85, 105, 141, 177, 213, 249]
 
 TEAM_ALIASES = {'JAC': 'JAX'}
 

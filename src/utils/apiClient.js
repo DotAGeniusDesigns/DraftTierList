@@ -93,4 +93,17 @@ export const api = {
     createBoard: (payload) => request('/boards', { method: 'POST', body: payload }),
     updateBoard: (id, payload) => request(`/boards/${id}`, { method: 'PUT', body: payload }),
     deleteBoard: (id) => request(`/boards/${id}`, { method: 'DELETE' }),
+
+    // --- league hubs ---
+    // getLeagueHub is unauthenticated on the server, so it works whether or
+    // not the visitor is signed in — it's the public "shareable link" half of
+    // this feature. Everything else requires being signed in as the owner.
+    listLeagueHubs: (signal) => request('/league-hubs', { signal }),
+    getLeagueHub: (id, signal) => request(`/league-hubs/${id}`, { signal }),
+    createLeagueHub: (payload) => request('/league-hubs', { method: 'POST', body: payload }),
+    updateLeagueHub: (id, payload) => request(`/league-hubs/${id}`, { method: 'PUT', body: payload }),
+    deleteLeagueHub: (id) => request(`/league-hubs/${id}`, { method: 'DELETE' }),
+    createLeagueHubManager: (hubId, payload) => request(`/league-hubs/${hubId}/managers`, { method: 'POST', body: payload }),
+    updateLeagueHubManager: (hubId, managerId, payload) => request(`/league-hubs/${hubId}/managers/${managerId}`, { method: 'PUT', body: payload }),
+    deleteLeagueHubManager: (hubId, managerId) => request(`/league-hubs/${hubId}/managers/${managerId}`, { method: 'DELETE' }),
 };

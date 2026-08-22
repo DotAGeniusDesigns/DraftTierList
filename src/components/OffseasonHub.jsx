@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { ui } from '../utils/uiTheme';
 import { getPositionTagProps } from '../utils/playerStyles';
 import { usePositionColors } from '../context/PositionColorsContext';
@@ -6,6 +6,8 @@ import { offseasonData, NEW_HC_TEAMS } from '../utils/offseasonData';
 import { getOffseasonNews, OFFSEASON_NEWS_UPDATED_AT } from '../utils/offseasonNews';
 import { teamData } from '../utils/teamData';
 import { playerDatabase } from '../utils/playerDatabase';
+import { getInjury } from '../utils/injuryReport';
+import InjuryBadge from './InjuryBadge';
 
 const DIVISIONS = [
     'AFC East', 'AFC North', 'AFC South', 'AFC West',
@@ -108,12 +110,15 @@ const DepthChartRow = ({ slot, darkMode }) => {
                                 ›
                             </span>
                         )}
-                        <span
-                            className={`text-sm ${index === 0
-                                ? `font-semibold ${ui.heading(darkMode)}`
-                                : `font-medium ${ui.muted(darkMode)}`}`}
-                        >
-                            {player.name}
+                        <span className="relative inline-flex items-center gap-1">
+                            <span
+                                className={`text-sm ${index === 0
+                                    ? `font-semibold ${ui.heading(darkMode)}`
+                                    : `font-medium ${ui.muted(darkMode)}`}`}
+                            >
+                                {player.name}
+                            </span>
+                            <InjuryBadge injury={getInjury(player.id)} darkMode={darkMode} />
                         </span>
                     </React.Fragment>
                 ))
@@ -219,11 +224,11 @@ const NewsBlock = ({ liveNews, darkMode }) => {
     );
 };
 
-const TeamCard = ({ abbr, team, info, liveNews, depthChart, darkMode, open, onToggle }) => {
+const TeamCard = ({ abbr, team, info, liveNews, depthChart, darkMode, open, onToggle, cardRef }) => {
     const isNewHc = info.coaching.hc.status === 'new';
 
     return (
-        <div className={`${ui.card(darkMode)} overflow-hidden`}>
+        <div ref={cardRef} className={`${ui.card(darkMode)} scroll-mt-24`}>
             <button
                 type="button"
                 onClick={onToggle}
@@ -343,6 +348,28 @@ const OffseasonHub = ({ darkMode }) => {
     const [divisionFilter, setDivisionFilter] = useState('All');
     const [search, setSearch] = useState('');
     const [openTeams, setOpenTeams] = useState(() => new Set());
+    const teamCardRefs = useRef(new Map());
+
+    const setTeamCardRef = useCallback((abbr, element) => {
+        if (element) teamCardRefs.current.set(abbr, element);
+        else teamCardRefs.current.delete(abbr);
+    }, []);
+
+    const scrollTeamUnderNav = useCallback((abbr) => {
+        const card = teamCardRefs.current.get(abbr);
+        if (!card) return;
+
+        const nav = document.querySelector('nav');
+        const navHeight = nav?.getBoundingClientRect().height ?? 72;
+        const gap = 12;
+        const targetTop = card.getBoundingClientRect().top + window.scrollY - navHeight - gap;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        window.scrollTo({
+            top: Math.max(0, targetTop),
+            behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        });
+    }, []);
 
     const teams = useMemo(() => {
         const query = search.trim().toLowerCase();
@@ -362,6 +389,7 @@ const OffseasonHub = ({ darkMode }) => {
     }, [divisionFilter, search]);
 
     const toggleTeam = (abbr) => {
+        const isOpening = !openTeams.has(abbr);
         setOpenTeams((prev) => {
             const next = new Set(prev);
             if (next.has(abbr)) {
@@ -371,6 +399,12 @@ const OffseasonHub = ({ darkMode }) => {
             }
             return next;
         });
+        if (isOpening) {
+            // Wait for the expanded panel to paint before scrolling.
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => scrollTeamUnderNav(abbr));
+            });
+        }
     };
 
     const allVisibleOpen = teams.length > 0 && teams.every(({ abbr }) => openTeams.has(abbr));
@@ -483,6 +517,7 @@ const OffseasonHub = ({ darkMode }) => {
                             darkMode={darkMode}
                             open={openTeams.has(abbr)}
                             onToggle={() => toggleTeam(abbr)}
+                            cardRef={(element) => setTeamCardRef(abbr, element)}
                         />
                     ))}
                 </div>

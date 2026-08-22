@@ -113,6 +113,48 @@ const createSchema = async () => {
     `;
     await sql`CREATE INDEX IF NOT EXISTS boards_user_id_idx ON boards(user_id, updated_at DESC)`;
 
+    // A shareable page a user builds by hand: a name/description plus up to 16
+    // managers (league_hub_managers below), each with their own manually
+    // entered roster. sleeper_league_id is kept nullable for a live-sync
+    // integration later — nothing currently sets it.
+    await sql`
+        CREATE TABLE IF NOT EXISTS league_hubs (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            sleeper_league_id TEXT,
+            name TEXT NOT NULL,
+            description TEXT,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+    `;
+    await sql`ALTER TABLE league_hubs ALTER COLUMN sleeper_league_id DROP NOT NULL`;
+    await sql`ALTER TABLE league_hubs ADD COLUMN IF NOT EXISTS description TEXT`;
+    await sql`CREATE INDEX IF NOT EXISTS league_hubs_user_id_idx ON league_hubs(user_id, updated_at DESC)`;
+
+    // `roster` is a JSONB array of this app's own player ids (chosen through
+    // the same search used on the draft board), not anything from an external
+    // platform — there's no live sync yet, so a manager's roster is exactly
+    // what the hub owner entered.
+    await sql`
+        CREATE TABLE IF NOT EXISTS league_hub_managers (
+            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            hub_id UUID NOT NULL REFERENCES league_hubs(id) ON DELETE CASCADE,
+            name TEXT NOT NULL,
+            description TEXT,
+            image_data TEXT,
+            roster JSONB NOT NULL DEFAULT '[]'::jsonb,
+            position SMALLINT NOT NULL,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+    `;
+    await sql`
+        CREATE UNIQUE INDEX IF NOT EXISTS league_hub_managers_hub_position_idx
+        ON league_hub_managers(hub_id, position)
+    `;
+    await sql`CREATE INDEX IF NOT EXISTS league_hub_managers_hub_id_idx ON league_hub_managers(hub_id, position)`;
+
     await sql`
         CREATE TABLE IF NOT EXISTS rate_limits (
             bucket TEXT NOT NULL,

@@ -1,0 +1,399 @@
+1	Jahmyr Gibbs (DET)	0
+2	Bijan Robinson (ATL)	0
+3	Ja'Marr Chase (CIN)	0
+4	Puka Nacua (LAR)	0
+5	Jaxon Smith-Njigba (SEA)	1
+6	Amon-Ra St. Brown (DET)	2
+7	Jonathan Taylor (IND)	0
+8	Christian McCaffrey (SF)	-3
+9	CeeDee Lamb (DAL)	2
+10	Justin Jefferson (MIN)	4
+11	James Cook III (BUF)	-2
+12	Ashton Jeanty (LV)	-2
+13	Drake London (ATL)	7
+14	Chase Brown (CIN)	1
+15	A.J. Brown (NE)	6
+16	Saquon Barkley (PHI)	-4
+17	Brock Bowers (LV)	5
+18	De'Von Achane (MIA)	-5
+19	Nico Collins (HOU)	5
+20	Omarion Hampton (LAC)	-4
+21	Kenneth Walker III (KC)	-4
+22	Derrick Henry (BAL)	-4
+23	George Pickens (DAL)	2
+24	Trey McBride (ARI)	-1
+25	Chris Olave (NO)	3
+26	Josh Allen (BUF)	-7
+27	Rashee Rice (KC)	5
+28	Malik Nabers (NYG)	1
+29	DeVonta Smith (PHI)	5
+30	Zay Flowers (BAL)	5
+31	Kyren Williams (LAR)	-4
+32	Tetairoa McMillan (CAR)	7
+33	Tee Higgins (CIN)	5
+34	Javonte Williams (DAL)	-3
+35	Breece Hall (NYJ)	-2
+36	Josh Jacobs (GB)	-6
+37	Garrett Wilson (NYJ)	8
+38	Ladd McConkey (LAC)	5
+39	Jaylen Waddle (DEN)	8
+40	Jeremiyah Love (ARI)	-14
+41	Lamar Jackson (BAL)	-4
+42	Emeka Egbuka (TB)	-2
+43	Colston Loveland (CHI)	-1
+44	Drake Maye (NE)	8
+45	Travis Etienne Jr. (NO)	-4
+46	Terry McLaurin (WAS)	10
+47	Davante Adams (LAR)	11
+48	D'Andre Swift (CHI)	2
+49	Joe Burrow (CIN)	4
+50	Luther Burden III (CHI)	4
+51	Cam Skattebo (NYG)	-15
+52	Jameson Williams (DET)	9
+53	Tyler Warren (IND)	-4
+54	Bucky Irving (TB)	-8
+55	Quinshon Judkins (CLE)	-11
+56	David Montgomery (HOU)	-8
+57	DJ Moore (BUF)	-6
+58	Christian Watson (GB)	8
+59	Mike Evans (SF)	4
+60	Rome Odunze (CHI)	4
+61	Jayden Daniels (WAS)	-2
+62	Jalen Hurts (PHI)	0
+63	Bhayshul Tuten (JAC)	-6
+64	TreVeyon Henderson (NE)	-9
+65	Jadarian Price (SEA)	-5
+66	Parker Washington (JAC)	4
+67	Caleb Williams (CHI)	4
+68	Tucker Kraft (GB)	-3
+69	Marvin Harrison Jr. (ARI)	7
+70	Carnell Tate (TEN)	2
+71	Jaylen Warren (PIT)	-3
+72	Justin Herbert (LAC)	5
+73	Rhamondre Stevenson (NE)	1
+74	Brian Thomas Jr. (JAC)	-1
+75	Trevor Lawrence (JAC)	9
+76	Tony Pollard (TEN)	3
+77	Harold Fannin Jr. (CLE)	-10
+78	DK Metcalf (PIT)	4
+79	Sam LaPorta (DET)	-10
+80	Dak Prescott (DAL)	0
+81	Rico Dowdle (PIT)	-3
+82	Kyle Pitts Sr. (ATL)	-7
+83	Chris Godwin Jr. (TB)	6
+84	Courtland Sutton (DEN)	4
+85	Jonathon Brooks (CAR)	2
+86	Michael Pittman Jr. (PIT)	23
+87	J.K. Dobbins (DEN)	-2
+88	Michael Wilson (ARI)	-2
+89	Quentin Johnston (LAC)	16
+90	Chuba Hubbard (CAR)	-9
+91	Blake Corum (LAR)	2
+92	Alec Pierce (IND)	2
+93	Brock Purdy (SF)	13
+94	RJ Harvey (DEN)	-11
+95	George Kittle (SF)	0
+96	Josh Downs (IND)	12
+97	Jaxson Dart (NYG)	-7
+98	Wan'Dale Robinson (TEN)	22
+99	Patrick Mahomes II (KC)	1
+100	Bo Nix (DEN)	4
+101	Jacory Croskey-Merritt (WAS)	-4
+102	Stefon Diggs (WAS)	9
+103	Kyle Monangai (CHI)	-11
+104	Travis Kelce (KC)	-8
+105	Jordan Addison (MIN)	5
+106	Kenny Gainwell (TB)	1
+107	Jordan Mason (MIN)	-8
+108	Jayden Reed (GB)	5
+109	Matthew Stafford (LAR)	-8
+110	Rachaad White (WAS)	4
+111	Jared Goff (DET)	4
+112	Makai Lemon (PHI)	-14
+113	Jakobi Meyers (JAC)	10
+114	Dalton Kincaid (BUF)	-12
+115	Aaron Jones Sr. (MIN)	2
+116	Kyler Murray (MIN)	8
+117	Dallas Goedert (PHI)	2
+118	Isaiah Likely (NYG)	-15
+119	Jake Ferguson (DAL)	-7
+120	Baker Mayfield (TB)	11
+121	Jordan Love (GB)	15
+122	Mark Andrews (BAL)	-6
+123	Chris Rodriguez Jr. (JAC)	26
+124	Xavier Worthy (KC)	6
+125	KC Concepcion (CLE)	9
+126	Tyler Shough (NO)	28
+127	Jalen Coker (CAR)	33
+128	Khalil Shakir (BUF)	25
+129	Jordyn Tyson (NO)	-38
+130	Matthew Golden (GB)	3
+131	Tyler Allgeier (ARI)	6
+132	Woody Marks (HOU)	15
+133	Juwan Johnson (NO)	24
+134	Tyrone Tracy Jr. (NYG)	1
+135	Romeo Doubs (NE)	7
+136	Malik Willis (MIA)	16
+137	Tyjae Spears (TEN)	22
+138	De'Zhaun Stribling (SF)	-12
+139	Zach Charbonnet (SEA)	-11
+140	Deebo Samuel Sr. (SF)	-11
+141	Keaton Mitchell (LAC)	22
+142	C.J. Stroud (HOU)	22
+143	Tank Bigsby (PHI)	19
+144	Brenton Strange (JAC)	11
+145	Alvin Kamara (NO)	-13
+146	Hunter Henry (NE)	-1
+147	Sam Darnold (SEA)	-3
+148	Jonah Coleman (DEN)	2
+149	Dylan Sampson (CLE)	49
+150	Chig Okonkwo (WAS)	6
+151	Denzel Boston (CLE)	16
+152	Daniel Jones (IND)	24
+153	Rashid Shaheed (SEA)	-15
+154	Cam Ward (TEN)	16
+155	Dalton Schultz (HOU)	29
+156	Brian Robinson Jr. (ATL)	-15
+157	Isiah Pacheco (DET)	-9
+158	Tre Tucker (LV)	61
+159	Adonai Mitchell (NYJ)	75
+160	Jalen McMillan (TB)	21
+161	Jauan Jennings (MIN)	14
+162	Jerry Jeudy (CLE)	49
+163	Bryce Young (CAR)	9
+164	Oronde Gadsden II (LAC)	-13
+165	T.J. Hockenson (MIN)	4
+166	Braelon Allen (NYJ)	42
+167	MarShawn Lloyd (GB)	7
+168	AJ Barner (SEA)	14
+169	Jalen Nailor (LV)	-11
+170	Tre' Harris (LAC)	53
+171	Omar Cooper Jr. (NYJ)	9
+172	Dontayvion Wicks (PHI)	49
+173	Houston Texans (HOU)	-52
+174	Jacoby Brissett (ARI)	55
+175	Ray Davis (BUF)	52
+176	Sean Tucker (TB)	68
+177	Denver Broncos (DEN)	-52
+178	Emmett Johnson (KC)	47
+179	Ryan Flournoy (DAL)	80
+180	Los Angeles Rams (LAR)	-58
+181	Seattle Seahawks (SEA)	-54
+182	Pat Bryant (DEN)	65
+183	Kenyon Sadiq (NYJ)	-12
+184	Terrance Ferguson (LAR)	4
+185	Nicholas Singleton (TEN)	33
+186	Philadelphia Eagles (PHI)	-43
+187	Travis Hunter (JAC)	-9
+188	Jaylin Noel (HOU)	133
+189	Kayshon Boutte (NE)	31
+190	Gunnar Helm (TEN)	48
+191	Kimani Vidal (LAC)	54
+192	Mike Washington Jr. (LV)	-24
+193	Tank Dell (HOU)	16
+194	Malik Washington (MIA)	16
+195	Jacksonville Jaguars (JAC)	-8
+196	Keenan Allen (IND)	52
+197	New England Patriots (NE)	-32
+198	Pittsburgh Steelers (PIT)	-9
+199	Calvin Ridley (TEN)	23
+200	Los Angeles Chargers (LAC)	-4
+201	Minnesota Vikings (MIN)	-24
+202	Brandon Aubrey (DAL)	-84
+203	Baltimore Ravens (BAL)	-12
+204	Kaytron Allen (WAS)	39
+205	Aaron Rodgers (PIT)	-26
+206	Rashod Bateman (BAL)	79
+207	James Conner (ARI)	-17
+208	Geno Smith (NYJ)	28
+209	Ka'imi Fairbairn (HOU)	-69
+210	Kansas City Chiefs (KC)	20
+211	Cameron Dicker (LAC)	-72
+212	Cade Otton (TB)	25
+213	Pat Freiermuth (PIT)	-20
+214	Cam Little (JAC)	-53
+215	Jason Myers (SEA)	-69
+216	Emanuel Wilson (SEA)	66
+217	Isaac TeSlaa (DET)	-25
+218	Jaydon Blue (DAL)	-35
+219	Tyler Loop (BAL)	-22
+220	Green Bay Packers (GB)	-17
+221	Oscar Delp (NO)	-
+222	Troy Franklin (DEN)	70
+223	Eddy Pineiro (SF)	-28
+224	Jake Bates (DET)	-38
+225	Buffalo Bills (BUF)	10
+226	Harrison Mevis (LAR)	-41
+227	Darnell Mooney (NYG)	53
+228	Cairo Santos (CHI)	11
+229	Fernando Mendoza (LV)	-63
+230	Jaylen Wright (MIA)	20
+231	Detroit Lions (DET)	-24
+232	George Holani (SEA)	32
+233	Chase McLaughlin (TB)	-21
+234	Cooper Kupp (SEA)	-40
+235	Ollie Gordon II (MIA)	99
+236	Evan McPherson (CIN)	-22
+237	Andy Borregales (NE)	-37
+238	Colby Parkinson (LAR)	34
+239	David Njoku (LAC)	-66
+240	Justice Hill (BAL)	-12
+241	Cleveland Browns (CLE)	8
+242	Evan Engram (DEN)	35
+243	Jack Bech (LV)	94
+244	Zachariah Branch (ATL)	-18
+245	Germie Bernard (PIT)	12
+246	Antonio Williams (WAS)	21
+247	Tua Tagovailoa (ATL)	-5
+248	Isaiah Davis (NYJ)	104
+249	Chris Brooks (GB)	98
+250	Harrison Butker (KC)	-46
+251	Chris Boswell (PIT)	-38
+252	Elic Ayomanor (TEN)	-
+253	Demond Claiborne (MIN)	-12
+254	Malachi Fields (NYG)	-22
+255	Wil Lutz (DEN)	1
+256	Tory Horton (SEA)	33
+257	Ted Hurst III (TB)	8
+258	Devaughn Vele (NO)	23
+259	Chimere Dike (TEN)	95
+260	Keon Coleman (BUF)	11
+261	Samaje Perine (CIN)	22
+262	LeQuint Allen Jr. (JAC)	82
+263	Chris Bell (MIA)	15
+264	Kirk Cousins (LV)	-4
+265	Jordan James (SF)	-11
+266	Kaelon Black (SF)	-42
+267	Ty Johnson (BUF)	1
+268	Michael Penix Jr. (ATL)	-5
+269	Ja'Kobi Lane (BAL)	-70
+270	Darius Slayton (NYG)	-
+271	Greg Dulcich (MIA)	-69
+272	Tyquan Thornton (KC)	68
+273	Mason Taylor (NYJ)	51
+274	Deshaun Watson (CLE)	-8
+275	DJ Giddens (IND)	71
+276	Elijah Sarratt (BAL)	8
+277	Christian Kirk (SF)	22
+278	Najee Harris (NYG)	9
+279	Shedeur Sanders (CLE)	-27
+280	Malik Davis (DAL)	-
+281	Trey Benson (ARI)	13
+282	Will Reichard (MIN)	-77
+283	Xavier Legette (CAR)	59
+284	San Francisco 49ers (SF)	-69
+285	Devin Neal (NO)	-
+286	Theo Johnson (NYG)	4
+287	Marvin Mims Jr. (DEN)	-
+288	Atlanta Falcons (ATL)	-30
+289	Eli Stowers (PHI)	-28
+290	Caleb Douglas (MIA)	-50
+291	Adam Randall (BAL)	48
+292	Brashard Smith (KC)	53
+293	Kendre Miller (NO)	-
+294	Seth McGowan (IND)	56
+295	Emari Demercado (KC)	56
+296	Devin Singletary (NYG)	-23
+297	New Orleans Saints (NO)	-2
+298	Mack Hollins (NE)	-
+299	Trevor Etienne (CAR)	-44
+300	Kaleb Johnson (PIT)	23
+301	Cyrus Allen (KC)	-84
+302	Tahj Brooks (CIN)	-
+303	Hollywood Brown (PHI)	27
+304	Kyle Williams (NE)	-
+305	Jerome Ford (WAS)	24
+306	Isaac Guerendo (SF)	-
+307	Isaiah Bond (CLE)	-
+308	Mike Gesicki (CIN)	-6
+309	Charlie Smyth (NO)	-3
+310	Jarquez Hunter (LAR)	-
+311	Brandon Aiyuk (SF)	-41
+312	Indianapolis Colts (IND)	-
+313	Jaleel McLaughlin (DEN)	-
+314	Skyler Bell (BUF)	39
+315	Will Shipley (PHI)	-
+316	Audric Estime (NO)	-
+317	Tyreek Hill (FA)	-111
+318	Andrei Iosivas (CIN)	23
+319	Jake Tonges (SF)	-57
+320	Chicago Bears (CHI)	-104
+321	Darnell Washington (PIT)	-
+322	Darren Waller (CAR)	14
+323	Kareem Hunt (FA)	-37
+324	Jahan Dotson (ATL)	19
+325	Joe Mixon (FA)	-
+326	Michael Mayer (LV)	12
+327	DeMario Douglas (NE)	-
+328	J.J. McCarthy (MIN)	-52
+329	Dallas Cowboys (DAL)	-128
+330	Carson Beck (ARI)	-56
+331	Elijah Arroyo (SEA)	-
+332	Jalen Tolbert (MIA)	-53
+333	Erick All Jr. (CIN)	-
+334	Cedric Tillman (CLE)	-
+335	Bryce Lance (NO)	-
+336	Konata Mumpfield (LAR)	-
+337	Calvin Austin III (NYG)	-
+338	Eli Raridon (NE)	-
+339	Chris Brazzell II (CAR)	-
+340	Cole Kmet (CHI)	-
+341	Tez Johnson (TB)	-
+342	Noah Gray (KC)	-
+343	Mac Jones (SF)	-
+344	Tyler Higbee (LAR)	-
+345	Dawson Knox (BUF)	-
+346	Xavier Hutchinson (HOU)	-
+347	Luke McCaffrey (WAS)	-
+348	Olamide Zaccheaus (ATL)	-
+349	Justin Fields (KC)	-61
+350	Brenen Thompson (LAC)	-1
+351	Jake Elliott (PHI)	-120
+352	Max Klare (LAR)	-
+353	Carolina Panthers (CAR)	-
+354	Bam Knight (ARI)	-
+355	Charlie Kolar (LAC)	-
+356	Jalen Royals (KC)	-
+357	Justin Joly (DEN)	-
+358	Eli Heidenreich (PIT)	-
+359	Joshua Palmer (BUF)	-11
+360	Ja'Tavion Sanders (CAR)	-
+361	Kendrick Bourne (ARI)	-
+362	Michael Carter (TEN)	-
+363	Ty Simpson (LAR)	-72
+364	Tyler Bass (BUF)	-111
+365	Anthony Richardson Sr. (IND)	-
+366	Treylon Burks (WAS)	-
+367	Jawhar Jordan (HOU)	-
+368	New York Giants (NYG)	-135
+369	Roman Wilson (PIT)	-
+370	Tampa Bay Buccaneers (TB)	-95
+371	Savion Williams (GB)	-
+372	KaVontae Turpin (DAL)	-
+373	Dont'e Thornton Jr. (LV)	-
+374	Kalif Raymond (CHI)	-
+375	Raheim Sanders (CLE)	-
+376	Nick Chubb (FA)	-
+377	Phil Mafah (DAL)	-
+378	Cincinnati Bengals (CIN)	-
+379	Jaylin Lane (WAS)	-
+380	John Metchie III (CAR)	-
+381	Zane Gonzalez (FA)	-
+382	Malik Benson (LV)	-
+383	Joe Flacco (CIN)	-90
+384	Kevin Coleman Jr. (MIA)	-
+385	Tommy Tremble (CAR)	-
+386	Jordan Whittington (LAR)	-
+387	Austin Ekeler (FA)	-118
+388	Jam Miller (NE)	-
+389	Luke Musgrave (GB)	-
+390	Noah Fant (NO)	-
+391	J'Mari Taylor (JAC)	-
+392	CJ Daniels (LAR)	-
+393	Roschon Johnson (CHI)	-
+394	Zavion Thomas (CHI)	-
+395	Joe Milton III (DAL)	-
+396	Demarcus Robinson (SF)	-
+397	Ben Sinnott (WAS)	-
+398	Nick Westbrook-Ikhine (IND)	-
+399	Trey Smack (GB)	-148
