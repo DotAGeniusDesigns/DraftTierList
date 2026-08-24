@@ -1,2 +1,21 @@
+# Derived data, not source. Everything here is rebuilt by a script in this
+# directory from the feeds under .cache/nflstats/, so committing it would mean
+# carrying a stale copy of something regenerable.
+#
+# The SCRIPTS are committed on purpose. They are the provenance for every lever
+# this project shipped or rejected, and README.md cites them by name — the whole
+# point of writing down why something was declined is that the code proving it
+# is still there to rerun.
+
+# corpus.py — the 2015-2025 player-season corpus
 corpus.json
+
+# composites.py — cached play-by-play scan, ~500KB
+composites_pbp.json
+
+# fit_model.py — superseded four-driver fit, deliberately not written into src/
+projectionModel.four-driver.js
+
+# Python bytecode
 __pycache__/
+*.py[cod]

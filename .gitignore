@@ -1,34 +1,100 @@
-# Dependencies
+# ---------------------------------------------------------------- dependencies
 node_modules/
+jspm_packages/
+.npm
+.yarn-integrity
+*.tgz
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Production builds
+# --------------------------------------------------------------------- secrets
+# .env* covers every local variant; the checked-in example is the one exception,
+# and it must stay tracked because it documents which variables /api needs.
+.env*
+!.env.example
+*.pem
+*.key
+.vercel
+
+# --------------------------------------------------------------- build output
 build/
 dist/
+coverage/
+.nyc_output
+.next
+.nuxt
+.vuepress/dist
+.serverless
+.dynamodb/
 
-# Stray build output from local/CI runs
+# Stray output from local and CI runs that has ended up here before.
 build-report.txt
 build-exit.txt
 ci-build.log
 nul
+logs
+*.log
+pids
+*.pid
+*.seed
+*.pid.lock
 
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# ------------------------------------------------------------------- tooling
+.eslintcache
+.node_repl_history
+.parcel-cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+.fusebox/
 
-# IDE and editor files
+# ------------------------------------------------------------------- python
+# scripts/analysis/ is Python. Its own .gitignore covers the data those scripts
+# generate; this covers interpreter and environment litter anywhere in the tree.
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --------------------------------------------------------------- data caches
+# Raw feed downloads: Sleeper, nflverse play-by-play, participation, NGS, PFR,
+# FTN, injuries, contracts. Several hundred MB, every byte of it re-fetchable by
+# the generator that wanted it. `npm run stats` and the scripts in
+# scripts/analysis/ all read through this directory and will refill it on demand.
+#
+# Listed explicitly rather than relying on the bare `.cache` entry that used to
+# sit under the parcel section — that caught this directory by accident, which is
+# a fragile way to keep a few hundred megabytes out of a repo.
+.cache/
+.cache
+
+# ------------------------------------------------------- generated, not source
+# Rebuild with scripts/buildPhotoMapFromSleeper.js.
+scripts/playerPhotoMap.json
+
+# FantasyPros export snapshots used to seed rankings
+# (scripts/generatePlayerDatabase.js) — not meant for redistribution, and they go
+# stale fast. Re-export from FantasyPros when needed.
+FantasyPros/
+
+# NOTE: src/utils/playerStats.js, injuryReport.js, offseasonNews.js,
+# playerDatabase.js and projectionModel.js are ALSO generated, and are tracked on
+# purpose — the app imports them at build time, so a clean checkout has to work
+# without anyone running a generator or holding an API key first.
+
+# -------------------------------------------------------------- editors and OS
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-
-# OS generated files
 .DS_Store
 .DS_Store?
 ._*
@@ -36,76 +102,5 @@ nul
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# Logs
-logs
-*.log
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-
-# nyc test coverage
-.nyc_output
-
-# Dependency directories
-jspm_packages/
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Microbundle cache
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
-
-# next.js build output
-.next
-
-# nuxt.js build output
-.nuxt
-
-# vuepress build output
-.vuepress/dist
-
-# Serverless directories
-.serverless
-
-# FuseBox cache
-.fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# Generated Sleeper photo lookup (rebuild with scripts/buildPhotoMapFromSleeper.js)
-scripts/playerPhotoMap.json
-.vercel
-.env*
-!.env.example
-
-# FantasyPros export snapshots used to seed rankings (scripts/generatePlayerDatabase.js) —
-# not meant for redistribution, and go stale fast. Re-export from FantasyPros when needed.
-FantasyPros/
+# WSL / Windows download marker files
 *:Zone.Identifier
