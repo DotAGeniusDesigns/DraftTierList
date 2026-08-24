@@ -14,7 +14,8 @@
         "test:preview:email": "node scripts/testPreviewEmailFlows.js",
         "eject": "react-scripts eject",
         "injuries": "node scripts/updateInjuries.js",
-        "offseason": "node scripts/updateOffseason.js"
+        "offseason": "node scripts/updateOffseason.js",
+        "stats": "node scripts/updateStats.js"
     },
     "dependencies": {
         "@neondatabase/serverless": "^1.1.0",

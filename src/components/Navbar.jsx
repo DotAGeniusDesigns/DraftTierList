@@ -46,6 +46,24 @@ const NavIcon = ({ name }) => {
                 <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
             </svg>
         ),
+        kit: (
+            <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 shrink-0">
+                <path
+                    d="M3 15.5l3.5-4.5 3 3L16 5.5"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+                <path
+                    d="M12.5 5.5H16v3.5"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+            </svg>
+        ),
     };
     return icons[name] || null;
 };
@@ -128,6 +146,18 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
         };
     }, [menuOpen, donateOpen]);
 
+    // Small enough not to change the pill's height, so flagging a tab as beta
+    // does not reflow the nav.
+    const BetaTag = ({ inMenu = false }) => (
+        <span
+            className={`rounded px-1 py-px text-[9px] font-bold uppercase leading-[1.4] tracking-wide ${
+                inMenu ? 'ml-auto' : ''
+            } ${darkMode ? 'bg-amber-400/15 text-amber-300' : 'bg-amber-100 text-amber-700'}`}
+        >
+            Beta
+        </span>
+    );
+
     const renderNavLink = (item, { mobileMenu = false } = {}) => (
         <NavLink
             key={item.path}
@@ -157,6 +187,7 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                     <span className="xl:hidden">{item.shortLabel}</span>
                 </>
             )}
+            {item.beta && <BetaTag inMenu={mobileMenu} />}
         </NavLink>
     );
 

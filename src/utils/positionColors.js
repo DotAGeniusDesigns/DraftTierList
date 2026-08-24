@@ -63,3 +63,60 @@ export const resetPositionColors = () => {
     localStorage.removeItem(POSITION_COLORS_KEY);
     window.dispatchEvent(new CustomEvent(POSITION_COLORS_UPDATED_EVENT));
 };
+
+// ---------------------------------------------------------------------------
+// Draft Kit colors.
+//
+// The Draft Kit reads the board's colors by default, which is what most people
+// want — one accent per position across the whole app. Unlinking gives the kit
+// its own map so the two pages can differ, and the kit's map survives being
+// re-linked, so toggling the box back and forth never loses a set of picks.
+
+export const DRAFTKIT_COLORS_KEY = 'fantasy-football-draftkit-position-colors';
+export const DRAFTKIT_LINK_KEY = 'fantasy-football-draftkit-match-board';
+
+export const getDraftKitColorsLinked = () => {
+    try {
+        // Absent means linked: sharing the board's colors is the default, and a
+        // user who has never touched this should not get a second palette.
+        return localStorage.getItem(DRAFTKIT_LINK_KEY) !== 'false';
+    } catch {
+        return true;
+    }
+};
+
+export const getDraftKitColors = () => {
+    try {
+        const stored = JSON.parse(localStorage.getItem(DRAFTKIT_COLORS_KEY) || 'null');
+        // Never written yet: seed from the board so unlinking changes nothing on
+        // screen until a swatch is actually picked.
+        return stored ? { ...DEFAULT_POSITION_COLORS, ...stored } : getPositionColors();
+    } catch {
+        return getPositionColors();
+    }
+};
+
+export const setDraftKitColorsLinked = (linked) => {
+    if (linked) {
+        localStorage.removeItem(DRAFTKIT_LINK_KEY);
+    } else {
+        localStorage.setItem(DRAFTKIT_LINK_KEY, 'false');
+        // Seed on the way out so the page holds still at the moment of unlinking.
+        if (!localStorage.getItem(DRAFTKIT_COLORS_KEY)) {
+            localStorage.setItem(DRAFTKIT_COLORS_KEY, JSON.stringify(getPositionColors()));
+        }
+    }
+    window.dispatchEvent(new CustomEvent(POSITION_COLORS_UPDATED_EVENT));
+};
+
+export const saveDraftKitColor = (position, hex) => {
+    const current = getDraftKitColors();
+    current[position] = hex;
+    localStorage.setItem(DRAFTKIT_COLORS_KEY, JSON.stringify(current));
+    window.dispatchEvent(new CustomEvent(POSITION_COLORS_UPDATED_EVENT));
+};
+
+export const resetDraftKitColors = () => {
+    localStorage.removeItem(DRAFTKIT_COLORS_KEY);
+    window.dispatchEvent(new CustomEvent(POSITION_COLORS_UPDATED_EVENT));
+};

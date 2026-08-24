@@ -20,6 +20,14 @@ export const getTierAccentStyle = (tierNumber) => ({
     boxShadow: `inset 4px 0 0 0 ${TIER_HEX[tierNumber] || TIER_HEX[12]}`,
 });
 
+const MODAL_WIDTHS = {
+    md: 'max-w-md',
+    lg: 'max-w-lg',
+    xl: 'max-w-xl',
+    '2xl': 'max-w-2xl',
+    '3xl': 'max-w-3xl',
+};
+
 export const ui = {
     page: (dark) =>
         dark
@@ -145,8 +153,19 @@ export const ui = {
 
     modalOverlay: 'fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm',
 
-    modal: (dark) =>
-        dark
-            ? 'w-full max-w-md rounded-2xl border border-white/10 bg-slate-900 p-6 shadow-2xl'
-            : 'w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl',
+    // `size` picks the max width. It is a parameter rather than a class the
+    // caller appends: appending `max-w-2xl` alongside this helper's own
+    // `max-w-md` is a coin toss, since both are the same specificity and
+    // whichever Tailwind emits later wins. It was emitting max-w-md, so the
+    // draft-kit modal had been rendering at 448px while asking for 672px.
+    //
+    // The widths are spelled out rather than interpolated because Tailwind only
+    // sees class names that appear literally in the source — a `max-w-${size}`
+    // template produces no CSS at all.
+    modal: (dark, size = 'md') => {
+        const width = MODAL_WIDTHS[size] || MODAL_WIDTHS.md;
+        return dark
+            ? `w-full ${width} rounded-2xl border border-white/10 bg-slate-900 p-6 shadow-2xl`
+            : `w-full ${width} rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl`;
+    },
 };

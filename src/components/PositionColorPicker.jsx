@@ -3,17 +3,30 @@ import { ui } from '../utils/uiTheme';
 import { usePositionColors } from '../context/PositionColorsContext';
 import { POSITIONS, POSITION_COLOR_PRESETS } from '../utils/positionColors';
 
-const PositionColorPicker = ({ darkMode, onClose }) => {
-    const { colors, setColor, resetColors } = usePositionColors();
+/**
+ * `controller` lets a page point the picker at a different set of colors than the
+ * board's — the Draft Kit passes its own when it has been unlinked. Omitted, it
+ * edits the board, which is what every existing caller wants.
+ * `subtitle` and `children` are for a caller that needs to explain or qualify
+ * what the swatches are about to change.
+ */
+const PositionColorPicker = ({ darkMode, onClose, controller, subtitle, children }) => {
+    const board = usePositionColors();
+    const { colors, setColor, resetColors } = controller || board;
 
     return (
-        <div className={ui.modalOverlay}>
-            <div className={`w-full max-w-2xl rounded-2xl border p-6 shadow-2xl ${darkMode ? 'border-white/10 bg-slate-900' : 'border-slate-200 bg-white'}`}>
+        <div className={ui.modalOverlay} onClick={onClose}>
+            <div
+                className={`max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-2xl border p-6 shadow-2xl ${darkMode ? 'border-white/10 bg-slate-900' : 'border-slate-200 bg-white'}`}
+                role="dialog"
+                aria-modal="true"
+                onClick={(event) => event.stopPropagation()}
+            >
                 <div className="mb-5 flex items-center justify-between">
                     <div>
                         <h3 className={`text-lg font-bold ${ui.heading(darkMode)}`}>Position Colors</h3>
                         <p className={`mt-1 text-sm ${ui.muted(darkMode)}`}>
-                            Pick an accent color for each position.
+                            {subtitle || 'Pick an accent color for each position.'}
                         </p>
                     </div>
                     <button
@@ -27,7 +40,9 @@ const PositionColorPicker = ({ darkMode, onClose }) => {
                     </button>
                 </div>
 
-                <div className="max-h-[60vh] space-y-5 overflow-y-auto pr-1">
+                {children}
+
+                <div className="space-y-5 pr-1">
                     {POSITIONS.map((position) => (
                         <div key={position}>
                             <div className="mb-2 flex items-center gap-2">

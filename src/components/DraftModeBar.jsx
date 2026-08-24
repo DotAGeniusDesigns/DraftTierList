@@ -1,26 +1,31 @@
 import React from 'react';
 
-// "Round.Pick" label for the next undrafted slot, e.g. 3 already drafted in
-// a 12-team league -> pick #4 overall -> round 1, slot 4 -> "1.04". This is
-// just a running count, not a snake-draft seat assignment — it doesn't need
-// to know which team is on the clock, only how many picks have happened.
-const formatPickLabel = (draftedCount, teamCount) => {
+// "Round.Pick" label for the next undrafted slot plus overall pick number.
+// e.g. 27 already drafted in a 10-team league -> overall #28 -> "3.08 (28)".
+const formatPickDisplay = (draftedCount, teamCount) => {
     const overallPick = draftedCount + 1;
     const round = Math.floor((overallPick - 1) / teamCount) + 1;
     const pickInRound = ((overallPick - 1) % teamCount) + 1;
-    return `${round}.${String(pickInRound).padStart(2, '0')}`;
+    const roundPick = `${round}.${String(pickInRound).padStart(2, '0')}`;
+    return { roundPick, overallPick };
 };
 
+const draftModeChrome = (darkMode) => (
+    darkMode
+        ? 'border-2 border-emerald-500/45 ring-1 ring-emerald-400/20'
+        : 'border-2 border-emerald-500/55 ring-1 ring-emerald-500/25'
+);
+
 const DraftModeBar = ({ darkMode, teamCount, draftedCount, lastPickName, onShowGrid, onEnd }) => {
-    const pickLabel = formatPickLabel(draftedCount, teamCount);
+    const { roundPick, overallPick } = formatPickDisplay(draftedCount, teamCount);
 
     return (
         <div className="pointer-events-none fixed inset-x-0 bottom-3 z-40 flex justify-center px-3 sm:bottom-4">
             <div
-                className={`pointer-events-auto flex max-w-full items-center gap-2.5 rounded-2xl border px-3.5 py-2.5 shadow-2xl backdrop-blur-xl sm:gap-4 sm:px-5 sm:py-3 ${
+                className={`pointer-events-auto flex max-w-full items-center gap-2.5 rounded-2xl px-3.5 py-2.5 shadow-2xl backdrop-blur-xl sm:gap-4 sm:px-5 sm:py-3 ${draftModeChrome(darkMode)} ${
                     darkMode
-                        ? 'border-white/10 bg-slate-900/95'
-                        : 'border-slate-200 bg-white/95'
+                        ? 'bg-slate-900/95'
+                        : 'bg-white/95'
                 }`}
             >
                 <span className="hidden shrink-0 items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-500 sm:inline-flex">
@@ -35,7 +40,10 @@ const DraftModeBar = ({ darkMode, teamCount, draftedCount, lastPickName, onShowG
                         Pick
                     </span>
                     <span className={`text-base font-bold tabular-nums sm:text-lg ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-                        {pickLabel}
+                        {roundPick}
+                        <span className={`ml-1 text-sm font-semibold tabular-nums sm:text-base ${darkMode ? 'text-emerald-400/80' : 'text-emerald-600'}`}>
+                            ({overallPick})
+                        </span>
                     </span>
                 </div>
 

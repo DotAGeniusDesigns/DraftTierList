@@ -23,7 +23,7 @@ const lastNameOf = (fullName) => {
     return parts[idx];
 };
 
-const Cell = ({ pickLabel, player, darkMode }) => {
+const Cell = ({ pickLabel, overallPick, player, darkMode }) => {
     const { colors: positionColors } = usePositionColors();
 
     if (!player) {
@@ -34,6 +34,7 @@ const Cell = ({ pickLabel, player, darkMode }) => {
                 }`}
             >
                 {pickLabel}
+                <span className="hidden font-semibold opacity-60 sm:inline"> ({overallPick})</span>
             </div>
         );
     }
@@ -45,8 +46,11 @@ const Cell = ({ pickLabel, player, darkMode }) => {
             className="flex h-12 flex-col justify-between overflow-hidden rounded-md border px-1.5 py-1 sm:h-[72px] sm:rounded-lg sm:px-2 sm:py-1.5"
             style={cellProps.style}
         >
-            <div className="flex items-center justify-between text-[8px] font-bold uppercase tracking-wide opacity-70 sm:text-[10px]">
-                <span>{pickLabel}</span>
+            <div className="flex items-center justify-between gap-0.5 text-[8px] font-bold uppercase tracking-wide opacity-70 sm:text-[10px]">
+                <span className="tabular-nums">
+                    {pickLabel}
+                    <span className="hidden font-semibold opacity-75 sm:inline"> ({overallPick})</span>
+                </span>
                 <span>{player.position}</span>
             </div>
             <div className="truncate text-[11px] font-bold leading-tight sm:text-[13px]" title={player.name}>
@@ -90,7 +94,11 @@ const DraftBoardGrid = ({ darkMode, players, teamCount, onClose }) => {
 
     return (
         <div className={ui.modalOverlay}>
-            <div className={`flex max-h-[88vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border shadow-2xl ${panelBg} ${darkMode ? 'border-white/10' : 'border-slate-200'}`}>
+            <div className={`flex max-h-[88vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl shadow-2xl ${panelBg} ${
+                darkMode
+                    ? 'border-2 border-emerald-500/45 ring-1 ring-emerald-400/20'
+                    : 'border-2 border-emerald-500/55 ring-1 ring-emerald-500/25'
+            }`}>
                 <div className={`flex shrink-0 items-center justify-between gap-3 border-b px-5 py-4 ${darkMode ? 'border-white/5' : 'border-slate-100'}`}>
                     <div>
                         <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-500">Draft Mode</p>
@@ -149,6 +157,7 @@ const DraftBoardGrid = ({ darkMode, players, teamCount, onClose }) => {
                                         <Cell
                                             key={`cell-${round}-${column}`}
                                             pickLabel={pickLabel}
+                                            overallPick={overallPick}
                                             player={player}
                                             darkMode={darkMode}
                                         />

@@ -59,6 +59,9 @@ import { useAuth } from './context/AuthContext';
 
 const DraftLottery = React.lazy(() => import('./components/DraftLottery'));
 const LeagueHub = React.lazy(() => import('./components/LeagueHub'));
+// Lazy on purpose: DraftKit pulls in playerStats.js (~700KB of season history),
+// which would otherwise more than double the main bundle for every visitor.
+const DraftKit = React.lazy(() => import('./components/DraftKit'));
 
 // The five user-set flags, in the order they appear on a player row.
 const FLAG_FILTERS = {
@@ -1077,6 +1080,22 @@ function App() {
                             )}
                         >
                             <DraftLottery darkMode={darkMode} />
+                        </React.Suspense>
+                    )}
+                />
+                <Route
+                    path="/draft-kit"
+                    element={(
+                        <React.Suspense
+                            fallback={(
+                                <div className="container mx-auto max-w-7xl px-4 py-12">
+                                    <p className={`text-sm ${ui.muted(darkMode)}`} role="status">
+                                        Loading draft kit…
+                                    </p>
+                                </div>
+                            )}
+                        >
+                            <DraftKit darkMode={darkMode} allPlayers={players} />
                         </React.Suspense>
                     )}
                 />
