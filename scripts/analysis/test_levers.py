@@ -17,7 +17,16 @@ DRIVERS = {
     "RB": ["ppg_half", "scrim_yd_pg", "tgt_pg", "age"],
     "QB": ["ppg_half", "pass_yd_pg", "rush_att_pg", "int_pg"],
 }
-BLEND = {"WR": (0.7, 0.3), "TE": (0.7, 0.3), "RB": (0.6, 0.3, 0.1), "QB": (0.6, 0.3, 0.1)}
+# Recency weights on the blended window. RB moved from (0.6, 0.3, 0.1) to
+# (0.7, 0.2, 0.1) after test_formfixes.py: the heavier anchor on the prior season
+# wins at 5/5 rolling origins, +0.007 to +0.009 each. TE (0.85, 0.15) and QB
+# (0.5, 0.3, 0.2) also looked better on the rolling MEAN and were rejected --
+# TE won 4/5 but with a gain decaying monotonically to negative at the last
+# origin, and QB only 3/5. This is the one source of truth: fit_wide.py imports
+# it rather than keeping a second copy, because the design matrix is built from
+# this while projectionModel.js ships whatever fit_wide writes, and the two
+# silently disagreeing would fit on one window and predict on another.
+BLEND = {"WR": (0.7, 0.3), "TE": (0.7, 0.3), "RB": (0.7, 0.2, 0.1), "QB": (0.6, 0.3, 0.1)}
 
 # ---- pedigree + durability, attached to every player-season -------------
 DP = "/home/dotagenius/DraftList/.cache/nflstats/draft_picks.csv"

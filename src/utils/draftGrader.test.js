@@ -2,7 +2,7 @@ import { playerDatabase } from './playerDatabase';
 import { SEASON } from './projectionModel';
 import { injuryReport } from './injuryReport';
 import {
-    DEFAULT_LEAGUE, MATCHUP_SWING, bestLineup, defenseAdjustments, gradeFor, gradeRoster,
+    DEFAULT_LEAGUE, MATCHUP_SWING, MAX_MATCHUP_SWING, bestLineup, defenseAdjustments, gradeFor, gradeRoster,
     isAvailable, leagueAverage, opponentFor, startingSlotCount, weeklyPoints,
 } from './draftGrader';
 
@@ -161,11 +161,23 @@ describe('grading', () => {
 describe('matchups', () => {
     const adjustments = defenseAdjustments(Object.values(playerDatabase));
 
-    it('ranks every board defence between -swing and +swing', () => {
+    it('ranks every board defence between -1 and +1 as a unitless share', () => {
         const values = Object.values(adjustments);
         expect(values.length).toBeGreaterThan(20);
-        expect(Math.min(...values)).toBeCloseTo(-MATCHUP_SWING, 5);
-        expect(Math.max(...values)).toBeCloseTo(MATCHUP_SWING, 5);
+        expect(Math.min(...values)).toBeCloseTo(-1, 5);
+        expect(Math.max(...values)).toBeCloseTo(1, 5);
+    });
+
+    // The swing is measured per position and differs fivefold across them, so a
+    // single shared constant would quietly reintroduce the flat +/-3 this
+    // replaced. QB must stay the largest and WR the smallest.
+    it('carries a distinct, positive swing for every startable position', () => {
+        ['QB', 'RB', 'WR', 'TE'].forEach((pos) => {
+            expect(MATCHUP_SWING[pos]).toBeGreaterThan(0);
+            expect(MATCHUP_SWING[pos]).toBeLessThanOrEqual(MAX_MATCHUP_SWING);
+        });
+        expect(MATCHUP_SWING.QB).toBeGreaterThan(MATCHUP_SWING.RB);
+        expect(MATCHUP_SWING.RB).toBeGreaterThan(MATCHUP_SWING.WR);
     });
 
     it('the best-ranked defence is the harshest matchup', () => {
@@ -192,7 +204,8 @@ describe('matchups', () => {
         const row = result.rows[0];
         for (let w = 1; w <= SEASON.weeks.length; w += 1) {
             const { points, adjust } = weeklyPoints(row, w, adjustments);
-            expect(Math.abs(adjust)).toBeLessThanOrEqual(MATCHUP_SWING + 1e-9);
+            const swing = MATCHUP_SWING[row.player.position] ?? 0;
+            expect(Math.abs(adjust)).toBeLessThanOrEqual(swing + 1e-9);
             expect(points).toBeGreaterThanOrEqual(0);
             if (opponentFor(row.player, w)) {
                 expect(points).toBeCloseTo(Math.max(0, row.projection.ppg + adjust), 5);

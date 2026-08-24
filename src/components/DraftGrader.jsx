@@ -394,8 +394,10 @@ const DraftGrader = ({ darkMode, allPlayers = [] }) => {
                         <p className={`mt-2 text-[11px] ${ui.muted(darkMode)}`}>
                             The dashed line is the league average; red weeks fall under it. Click a week
                             to see that lineup. Byes come from the {SEASON.year} schedule, injuries from
-                            their return date. Each score is moved up to ±{MATCHUP_SWING} by that
-                            week&apos;s opponent, using the board&apos;s 2026 team-defence ranks. A slot
+                            their return date. Each score is moved by that week&apos;s opponent,
+                            using the board&apos;s 2026 team-defence ranks — up to ±{MATCHUP_SWING.QB} for
+                            a quarterback down to ±{MATCHUP_SWING.WR} for a receiver, measured per
+                            position rather than shared. A slot
                             with nobody left on the roster is filled by a streamer at waiver level,
                             not scored as a zero.
                         </p>

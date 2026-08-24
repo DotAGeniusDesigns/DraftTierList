@@ -58,6 +58,18 @@ const NFLVERSE_WEEK_URL = (season) =>
 // it predicts rookie fantasy PPG at R^2 0.34-0.46 depending on position.
 const NFLVERSE_DRAFT_URL =
     'https://github.com/nflverse/nflverse-data/releases/download/draft_picks/draft_picks.csv';
+// NGS rushing yards over expected per attempt — the one RB card driver that
+// isn't a Sleeper or stats_player_week field. One file, every season, with a
+// season-level row per player (week 0) already aggregated; nflverse only
+// publishes this one pre-gzipped with no plain-.csv sibling, hence
+// cachedPreGzipped below instead of the usual cached().
+const NFLVERSE_NGS_RUSHING_URL =
+    'https://github.com/nflverse/nflverse-data/releases/download/nextgen_stats/ngs_rushing.csv.gz';
+// NGS yards-after-catch over expectation — the TE card's fourth driver. Same
+// release and same shape as the rushing file above (one file, all seasons,
+// season-level rows at week 0, pre-gzipped only).
+const NFLVERSE_NGS_RECEIVING_URL =
+    'https://github.com/nflverse/nflverse-data/releases/download/nextgen_stats/ngs_receiving.csv.gz';
 
 const FETCH_TIMEOUT_MS = 120000;
 
@@ -144,6 +156,24 @@ async function cached(name, url, asBuffer = false) {
     const buf = Buffer.isBuffer(body) ? body : Buffer.from(body, 'utf8');
     fs.writeFileSync(file, zlib.gzipSync(buf));
     return asBuffer ? buf : buf.toString('utf8');
+}
+
+// Same on-disk cache as cached(), for the one feed whose only asset is already
+// gzip-compressed at the source (no plain .csv sibling): decompresses once on
+// fetch so the cache file stays single-gzipped like every other entry here,
+// instead of gzip-on-top-of-gzip.
+async function cachedPreGzipped(name, url) {
+    fs.mkdirSync(CACHE_DIR, { recursive: true });
+    const file = path.join(CACHE_DIR, `${name}.gz`);
+    if (!REFRESH && fs.existsSync(file)) {
+        vlog(`  cache hit  ${name}`);
+        return zlib.gunzipSync(fs.readFileSync(file)).toString('utf8');
+    }
+    vlog(`  fetching   ${name}`);
+    const gz = await fetchWithTimeout(url, true);
+    const text = zlib.gunzipSync(gz).toString('utf8');
+    fs.writeFileSync(file, zlib.gzipSync(Buffer.from(text, 'utf8')));
+    return text;
 }
 
 // Age on Sept 1 of a given season — the reference date the projection model was
@@ -580,6 +610,7 @@ async function main() {
         log(`  ! draft picks unavailable: ${err.message}`);
     }
 
+    const vacatedWrTargets = {};
     let advancedSeasons = 0;
     if (WITH_ADVANCED) {
         log(`Loading nflverse advanced metrics ${ADVANCED_FROM}–${LATEST_SEASON}…`);
@@ -620,6 +651,95 @@ async function main() {
             }
             advancedSeasons += 1;
             vlog(`  ${season}: ${hits} board players enriched`);
+        }
+
+        // ---- RB rushing yards over expected, from NGS -----------------------
+        // One file, every season, one row per player-season already (week '0').
+        // NGS didn't compute an expectation before 2018, so earlier seasons have
+        // no rush_yards_over_expected_per_att and are skipped rather than zeroed.
+        try {
+            const text = await cachedPreGzipped('nflverse-ngs-rushing', NFLVERSE_NGS_RUSHING_URL);
+            const rows = parseCsv(text).filter((r) => r.season_type === 'REG'
+                && r.week === '0' && r.player_position === 'RB');
+            let ryoeHits = 0;
+            for (const row of rows) {
+                const season = Number(row.season);
+                const yoeAtt = Number(row.rush_yards_over_expected_per_att);
+                if (!season || !row.rush_yards_over_expected_per_att || !Number.isFinite(yoeAtt)) continue;
+                const boardId = boardByNamePos.get(`${normalizeName(row.player_display_name)}|RB`);
+                const target = boardId ? stats[boardId]?.[season] : null;
+                if (!target) continue;
+                target.rush = target.rush || {};
+                target.rush.yoeAtt = round(yoeAtt, 3);
+                ryoeHits += 1;
+            }
+            vlog(`  NGS rushing: ${ryoeHits} board RB-seasons enriched`);
+        } catch (err) {
+            log(`  ! NGS rushing unavailable: ${err.message}`);
+        }
+
+        // ---- vacated WR target share, for the rookie landing-spot term ------
+        // Share of each team's most recent WR targets held by receivers who are
+        // no longer on that roster. Rookie WRs are the one case where vacated
+        // opportunity predicts anything (see fit_wide.py) — a veteran's own
+        // stat line already describes his role, a rookie has no line at all.
+        //
+        // Computed over EVERY receiver in the weekly feed rather than the ~400
+        // on the board, because a departed WR2 who never made the board still
+        // vacated his targets. Current team comes from Sleeper, which carries
+        // one for every player in the league.
+        try {
+            const text = await cached(`nflverse-week-${LATEST_SEASON}`,
+                NFLVERSE_WEEK_URL(LATEST_SEASON));
+            const teamNow = new Map();
+            for (const p of Object.values(sleeperPlayers)) {
+                if (p.position === 'WR' && p.full_name) {
+                    teamNow.set(normalizeName(p.full_name), p.team || null);
+                }
+            }
+            const byTeam = new Map();
+            for (const row of parseCsv(text)) {
+                if (row.season_type !== 'REG' || row.position !== 'WR' || !row.team) continue;
+                const tgt = csvNum(row.targets);
+                if (!tgt) continue;
+                const acc = byTeam.get(row.team) || { total: 0, gone: 0 };
+                acc.total += tgt;
+                const now = teamNow.get(normalizeName(row.player_display_name || row.player_name));
+                // undefined = not in Sleeper's index at all, which for a player
+                // who logged targets last season means he is out of the league.
+                if (now !== row.team) acc.gone += tgt;
+                byTeam.set(row.team, acc);
+            }
+            for (const [team, acc] of byTeam) {
+                if (acc.total > 20) vacatedWrTargets[team] = round(acc.gone / acc.total * 100, 1);
+            }
+            vlog(`  vacated WR targets: ${Object.keys(vacatedWrTargets).length} teams`);
+        } catch (err) {
+            log(`  ! vacated WR targets unavailable: ${err.message}`);
+        }
+
+        // ---- TE yards-after-catch over expectation, from NGS ----------------
+        // Same shape as the rushing file. Only TE uses this: it measured
+        // negative for WR, so it is deliberately not attached there.
+        try {
+            const text = await cachedPreGzipped('nflverse-ngs-receiving', NFLVERSE_NGS_RECEIVING_URL);
+            const rows = parseCsv(text).filter((r) => r.season_type === 'REG'
+                && r.week === '0' && r.player_position === 'TE');
+            let yacHits = 0;
+            for (const row of rows) {
+                const season = Number(row.season);
+                const yacOe = Number(row.avg_yac_above_expectation);
+                if (!season || !row.avg_yac_above_expectation || !Number.isFinite(yacOe)) continue;
+                const boardId = boardByNamePos.get(`${normalizeName(row.player_display_name)}|TE`);
+                const target = boardId ? stats[boardId]?.[season] : null;
+                if (!target) continue;
+                target.rec = target.rec || {};
+                target.rec.yacOe = round(yacOe, 3);
+                yacHits += 1;
+            }
+            vlog(`  NGS receiving: ${yacHits} board TE-seasons enriched`);
+        } catch (err) {
+            log(`  ! NGS receiving unavailable: ${err.message}`);
         }
     }
 
@@ -680,6 +800,12 @@ export const PLAYER_STATS_UPDATED_AT = ${JSON.stringify(new Date().toISOString()
 export const PLAYER_STATS_SEASONS = ${JSON.stringify(sortedSeasons)};
 
 export const ADVANCED_METRICS_FROM = ${ADVANCED_FROM};
+
+// Share of each team's ${LATEST_SEASON} WR targets held by receivers no longer on
+// that roster. Feeds the rookie WR landing-spot term in draftScore.js — the one
+// place vacated opportunity carries signal, because a rookie has no stat line
+// of his own to describe the role he will get.
+export const VACATED_WR_TARGETS = ${JSON.stringify(vacatedWrTargets, null, 4)};
 
 export const playerStats = {
 ${entries.join('\n')}

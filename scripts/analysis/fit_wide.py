@@ -11,11 +11,22 @@ import numpy as np
 from metrics import DERIVED, SEASONS, pairs
 from corpus import norm
 from wide_model import DRIVERS, SECONDARY, CONTEXT, SIGN, design, fit_signed, loso
+from rbrate import attach_rb_rate_features
+from ngsrecv import attach_ngs_recv_features
+
+attach_rb_rate_features()
+attach_ngs_recv_features()
 
 OUT = "/home/dotagenius/DraftList/src/utils/projectionModel.js"
 POS = ("QB", "RB", "WR", "TE")
 ALPHAS = [1, 5, 15, 40, 100]
-BLEND = {"WR": [0.7, 0.3], "TE": [0.7, 0.3], "RB": [0.6, 0.3, 0.1], "QB": [0.6, 0.3, 0.1]}
+# Imported, never redeclared. wide_model builds the design matrix from
+# test_levers.BLEND; this is what gets written into projectionModel.js and used
+# at runtime. A second copy here would let the model be fitted on one recency
+# window and applied on another with nothing to catch it.
+from test_levers import BLEND as _BLEND
+BLEND = {k: list(v) for k, v in _BLEND.items()}
+assert set(BLEND) == set(POS), "BLEND must cover exactly the fitted positions"
 # Below this a coefficient is not shrunk, it is off: the sign bounds park
 # collinear inputs at exactly zero. Carrying them would have the model claim to
 # run on inputs that move nothing, and would let one onto the card.
@@ -49,19 +60,67 @@ NOT_ON_CARD = {"team_change"}
 #     looked like the find of the audit at +0.010 for WR; it was reading the
 #     season being predicted, and collapses to +0.0015 once restricted to what
 #     is knowable in August.
+#
+#   - RB ryoe_att (NGS rushing yards over expected per attempt). Shipped briefly
+#     on a leave-one-season-out gain of +0.0033 and then REMOVED: the rolling
+#     origin, which it had not been put through, is positive only at the
+#     earliest origin (+0.0044 at 2018) and negative at all four later ones,
+#     mean -0.0027. rbrate.py still builds it and updateStats.js still joins
+#     `rush.yoeAtt` into playerStats, so re-enabling is one entry here if more
+#     seasons ever change the picture -- but do not re-add it on a LOSO score.
+#
+# TE avg_yac_above_expectation (ngsrecv.py) is the one input here carried on a
+# lighter bar than the rest, and it is the reason the bar is worth stating.
+# Leave-one-season-out +0.0064, and unlike ryoe_att it PASSES the five-origin
+# rolling audit outright: positive at 5/5 origins, mean +0.0083, worst +0.0023,
+# and the gain GROWS as the training window lengthens (+0.0023 -> +0.0152),
+# which is the shape of a real effect rather than noise. WR was tested at the
+# same time and measured negative (-0.0001 to -0.0008), so this is TE-only on
+# purpose, the same way target_share is. It is THIN in the corpus though: NGS
+# publishes only its ~50 qualifying players a season, so just 28% of qualifying
+# TE seasons carry a real value and the rest are median-imputed. On the board
+# coverage is fine -- 18/19 top-150 TEs have a real 2023+ value.
 FEATURES = {
     "QB": ["ppg_half", "pass_yd_pg", "rush_att_pg", "int_pg",
            "pass_td_pg", "rush_yd_pg", "team_change", "durability"],
     "RB": ["ppg_half", "scrim_yd_pg", "age", "tgt_pg", "team_change"],
     "WR": ["ppg_half", "rec_yd_pg", "tgt_pg", "age", "team_change"],
-    "TE": ["ppg_half", "rec_yd_pg", "age", "ypr", "target_share", "team_change"],
+    "TE": ["ppg_half", "rec_yd_pg", "age", "ypr", "target_share", "team_change",
+           "avg_yac_above_expectation"],
 }
+
+ORIGINS = (2018, 2019, 2020, 2021, 2022)
+
+def rolling_mean(pos, feats, alpha):
+    """Mean out-of-sample R2 over five rolling origins: fit through year Y,
+    score every transition after it.
+
+    Alpha used to be picked by leave-one-season-out. LOSO trains on future
+    seasons to predict past ones, so it can reward a fit that never generalises
+    forward -- it scored an RB input at +0.0033 that the rolling origin then
+    showed was negative. Selecting the ridge strength the same flawed way was
+    the same mistake one level up. Switching the criterion is worth +0.0090 of
+    rolling R2 at QB (which moves from alpha 40 to 100 -- the smallest sample
+    wants the most shrinkage), +0.0011 at WR, +0.0006 at RB, and nothing at TE.
+    """
+    X, y, seas, names, _ = design(pos, feats)
+    out = []
+    for origin in ORIGINS:
+        tr, te = seas <= origin, seas > origin
+        if te.sum() < 30:
+            continue
+        beta, mu, sd = fit_signed(X[tr], y[tr], names, alpha)
+        pred = np.c_[np.ones(te.sum()), (X[te] - mu) / sd] @ beta
+        yt = y[te]
+        out.append(1 - ((yt - pred) ** 2).sum() / ((yt - yt.mean()) ** 2).sum())
+    return float(np.mean(out)) if out else float("-inf")
 
 MODEL = {}
 print("Fitting shipped models\n")
 for pos in POS:
     feats = FEATURES[pos]
-    alpha, r2 = max(((a, loso(pos, a, feats)) for a in ALPHAS), key=lambda t: t[1])
+    alpha = max(ALPHAS, key=lambda a: rolling_mean(pos, feats, a))
+    r2 = loso(pos, alpha, feats)   # reported for continuity with earlier runs
     X, y, seas, names, med = design(pos, feats)
     beta, mu, sd = fit_signed(X, y, names, alpha)
     resid = y - (np.c_[np.ones(len(X)), (X - mu) / sd] @ beta)
@@ -120,6 +179,25 @@ HALFLIFE = 5.0
 REF = max(SEASONS) + 1
 BANDS = [(1, 12), (13, 32), (33, 64), (65, 120), (121, 300)]
 
+def vacated_positional(team, pos, year):
+    """Share of `team`'s year-1 opportunity at `pos` held by players who are not
+    on the roster in `year`. Nothing about the rookie's own season enters it."""
+    prior, cur = DERIVED.get(year - 1), DERIVED.get(year)
+    if not team or not prior or not cur:
+        return None
+    total = gone = 0.0
+    for key, rec in prior.items():
+        if rec["pos"] != pos or rec.get("team") != team:
+            continue
+        opp = (rec.get("tgt") or 0) if pos in ("WR", "TE") else (
+            (rec.get("rush_att") or 0) + (rec.get("tgt") or 0))
+        total += opp
+        nxt = cur.get(key)
+        if not nxt or nxt.get("team") != team:
+            gone += opp
+    return (gone / total * 100) if total > 20 else None
+
+ROOKIE_LANDING = None
 rk = {p: [] for p in POS}
 for p in csv.DictReader(open(DP)):
     if p.get("position") not in POS or not p["season"].isdigit():
@@ -166,6 +244,48 @@ for pos in POS:
     # is the cheapest isotonic fix and only ever binds on an inversion this small.
     for i in range(1, len(bands)):
         bands[i]["mean"] = min(bands[i]["mean"], bands[i - 1]["mean"])
+    # ---- landing spot, WR only -------------------------------------------
+    # The opportunity a rookie's new team vacated at his position. CLAUDE.md
+    # recorded this as measured-and-declined for RB (+0.035, terciles
+    # 6.6/8.7/10.9). rookie_landing.py reproduces those RB terciles in-sample
+    # (5.8/7.9/9.7) and then shows they DO NOT HOLD: rolled forward by draft
+    # class, RB gains +0.0016 and +0.0008 at the first two origins and loses
+    # 0.0250 and 0.0365 at the next two, positive at 2/4. That monotone tercile
+    # was an in-sample artifact on n=83.
+    #
+    # WR is the position that survives, and it was never the one claimed. Its
+    # terciles are NOT monotone (4.4/6.3/5.9), but rolled forward it gains at
+    # 4/4 origins -- +0.0114, +0.0157, +0.0231, +0.0261 -- growing as the
+    # training window lengthens, on the largest rookie sample there is (n=297).
+    # That is the shape of a real effect, and the opposite of RB's.
+    #
+    # Mechanistically this is also the one place vacated opportunity SHOULD
+    # work. It is dead for veterans (vacated.py, every position) because a
+    # veteran's own stat line already describes the role he holds. A rookie has
+    # no line, so the job waiting for him is most of what can be known.
+    if pos == "WR":
+        pairs_ls = []
+        for pick, ppg_r, yr in d:
+            key_team = None
+            for key, rec in DERIVED.get(yr, {}).items():
+                if rec["pos"] == "WR" and rec.get("ppg_half") == ppg_r:
+                    key_team = rec.get("team"); break
+            vac = vacated_positional(key_team, "WR", yr) if key_team else None
+            if vac is None:
+                continue
+            b = next((bb for bb in bands if bb["lo"] <= pick <= bb["hi"]), None)
+            if b:
+                pairs_ls.append((vac, ppg_r - b["mean"]))
+        if len(pairs_ls) >= 60:
+            V = np.array([v for v, _ in pairs_ls]); R = np.array([r for _, r in pairs_ls])
+            A = np.c_[V, np.ones(len(V))]
+            cf, *_ = np.linalg.lstsq(A, R, rcond=None)
+            ROOKIE_LANDING = {"coef": float(cf[0]), "intercept": float(cf[1]),
+                              "n": len(pairs_ls)}
+            print(f"  WR landing spot: {cf[0]:+.4f} PPG per point of vacated "
+                  f"target share, n={len(pairs_ls)}")
+        else:
+            ROOKIE_LANDING = None
     ROOKIE[pos] = {"bands": bands, "best": float(y.max()), "n": len(d),
                    "halfLife": HALFLIFE, "refSeason": REF,
                    "hitRateTop12": float(np.mean([b > 8 for a, b, _ in d if a <= 12]))
@@ -277,6 +397,11 @@ with open(OUT, "w") as fh:
 export const PROJECTION_MODEL = {json.dumps(MODEL, indent=4)};
 
 export const ROOKIE_MODEL = {json.dumps(ROOKIE, indent=4)};
+
+// Rookie WR landing spot: PPG added per point of the team's vacated target
+// share. WR only — see the note in fit_wide.py for why RB's larger-looking
+// effect does not survive being rolled forward.
+export const ROOKIE_LANDING = {json.dumps(ROOKIE_LANDING, indent=4)};
 
 export const EXPECTED_TD = {json.dumps({"intercept": float(tdc[0]), "rzAtt": float(tdc[1]),
                                         "rzTgt": float(tdc[2]), "att": float(tdc[3]),

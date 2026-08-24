@@ -12,11 +12,43 @@ import { injuryReport } from './injuryReport';
 import { playerStats } from './playerStats';
 import { buildProjections, REPLACEMENT_RANK } from './draftScore';
 
-// How far a matchup can move a player, in points per game either way. Held
-// deliberately tight. The underlying signal is thin — a defence's points-allowed
-// rating correlates with its own next season at +0.08 for WR and +0.30 for RB —
-// so this is a nudge that reorders close calls, not a lever that decides them.
-export const MATCHUP_SWING = 3;
+// How far a matchup can move a player, in points per game either way — measured
+// per position rather than assumed, and NOT the same number for each.
+//
+// This was one flat 3 for every position, on the reasoning that the signal is
+// thin so the swing should be held tight. The reasoning was right and the number
+// was not: 3 is between three and fifteen times too large.
+//
+// `scripts/analysis/defense.py` measures it directly. For every player-week
+// 2016-2025 it takes the player's deviation from his own season mean (so a
+// defence cannot look good merely for having faced weak offences) against the
+// opponent's PRIOR-season rank versus that position — prior season being what is
+// knowable when a schedule is set. The regression slope from softest to stiffest
+// defence IS the swing, in points, and half of it is the plus-or-minus:
+//
+//     QB  slope +2.02  (p=6e-08, n=4,874)   ->  ±1.01
+//     RB  slope +1.16  (p=2e-10, n=12,910)  ->  ±0.58
+//     TE  slope +0.43  (p=5e-03, n=9,914)   ->  ±0.22
+//     WR  slope +0.38  (p=4e-03, n=20,801)  ->  ±0.19
+//
+// Every slope is positive, so the direction is right everywhere: a worse defence
+// does concede more. But QB is five times the WR figure. A quarterback faces the
+// whole defence and his week is one passing performance; a receiver's week is
+// dominated by target and touchdown noise that swamps the matchup entirely.
+//
+// Note the ordering does NOT follow how well a defensive rating persists
+// year-over-year (RB +0.320, QB +0.243, WR +0.195, TE +0.165). Persistence says
+// whether you can know the matchup in advance; the slope says whether knowing it
+// changes anything. They are different questions and they rank differently.
+//
+// These are a floor: the grader ranks defences by the board's forward-looking
+// consensus ECR, which ought to beat the prior-season points-allowed ranking
+// used to measure this. Historical ECR is not available to check that, so the
+// measured number is used as-is rather than inflated on a hunch.
+export const MATCHUP_SWING = { QB: 1.0, RB: 0.6, TE: 0.2, WR: 0.2 };
+
+// Largest swing any position carries — for copy and for bounds assertions.
+export const MAX_MATCHUP_SWING = Math.max(...Object.values(MATCHUP_SWING));
 
 // The board writes the Rams LAR; the schedule feed writes them LA. Same trap the
 // Draft Kit's team-change flag hit, same fix.
@@ -68,10 +100,14 @@ export const startingSlotCount = (slots) =>
  * which is the market's view of how good that unit will be THIS year, and it
  * updates whenever the board does.
  *
- * Best defence on the board costs an opposing player MATCHUP_SWING; worst gives
- * him the same back. Rank position is used rather than the raw consensus number
- * because the gaps between ranks are uneven and would otherwise bunch most teams
- * around zero. A team with no ranked defence is neutral.
+ * Returns a unitless SHARE per team, running -1 for the best defence on the
+ * board to +1 for the worst. It is not in points, because the points depend on
+ * who is being matched up: `weeklyPoints` scales this by MATCHUP_SWING for the
+ * player's own position, which differs fivefold between QB and WR.
+ *
+ * Rank position is used rather than the raw consensus number because the gaps
+ * between ranks are uneven and would otherwise bunch most teams around zero. A
+ * team with no ranked defence is neutral.
  */
 export const defenseAdjustments = (allPlayers) => {
     const ranked = (allPlayers || [])
@@ -80,8 +116,7 @@ export const defenseAdjustments = (allPlayers) => {
     const map = {};
     if (ranked.length < 2) return map;
     ranked.forEach((player, i) => {
-        const share = i / (ranked.length - 1);
-        map[canonicalTeam(player.team)] = -MATCHUP_SWING + share * 2 * MATCHUP_SWING;
+        map[canonicalTeam(player.team)] = -1 + 2 * (i / (ranked.length - 1));
     });
     return map;
 };
@@ -93,11 +128,16 @@ export const opponentFor = (player, week) =>
 /**
  * A player's expected points in one week: his rate, moved by who he plays.
  * Floored at zero — no matchup is bad enough to score negative.
+ *
+ * The opponent's share is scaled by the swing measured for THIS player's
+ * position, so the same defence moves a quarterback by up to a point and a
+ * receiver by a fifth of one. A position with no measured swing does not move.
  */
 export const weeklyPoints = (row, week, adjustments) => {
     const base = row.projection.ppg;
     const opponent = opponentFor(row.player, week);
-    const adjust = (opponent && adjustments?.[opponent]) || 0;
+    const share = (opponent && adjustments?.[opponent]) || 0;
+    const adjust = share * (MATCHUP_SWING[row.player?.position] ?? 0);
     return { points: Math.max(0, base + adjust), opponent, adjust };
 };
 

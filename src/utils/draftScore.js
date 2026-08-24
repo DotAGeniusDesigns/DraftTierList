@@ -1,7 +1,7 @@
 import {
-    PROJECTION_MODEL, ROOKIE_MODEL, EXPECTED_TD, GAMES_MODEL, SEASON, MODEL_SEASONS,
+    PROJECTION_MODEL, ROOKIE_MODEL, ROOKIE_LANDING, EXPECTED_TD, GAMES_MODEL, SEASON, MODEL_SEASONS,
 } from './projectionModel';
-import { playerStats } from './playerStats';
+import { playerStats, VACATED_WR_TARGETS } from './playerStats';
 import { injuryReport } from './injuryReport';
 
 /*
@@ -70,11 +70,45 @@ const touchdownsOverExpected = (season) => {
  * weight on a knee gets a date four days out; the real distribution of outcomes
  * runs well past it.
  */
+// Games missed BEYOND what the return date already rules out.
+//
+// These began as pure priors. `scripts/analysis/injuries.py` now measures the
+// claim against nflverse's weekly league injury report (2015-2025, 9,536
+// player-weeks), which the earlier comment here wrongly assumed did not exist —
+// it is ESPN that only holds today's report, not the league feed.
+//
+// What the fit settled, and what it did NOT:
+//   - DOUBTFUL belongs next to OUT, not next to QUESTIONABLE. Over the six
+//     weeks after a report, Out costs 4.15 games, Doubtful 3.77, Questionable
+//     2.02; a doubtful player misses that week 99.3% of the time against Out's
+//     100% and Questionable's 40.4%. Doubtful sitting level with Questionable
+//     was simply wrong, and that is corrected below.
+//   - The ABSOLUTE numbers are deliberately NOT taken from that fit. In-season
+//     designations are formal league filings; ESPN's August feed is a different
+//     animal, 65 of its 68 current entries are QUESTIONABLE, and 38 of those
+//     carry no severity language at all ("was on the field for practice")
+//     against 30 that do (Kamara's MCL, "out at least a month"). The league
+//     report's rest-of-season figures — Out 7.81, Doubtful 6.37, Questionable
+//     4.96 — describe a much sicker population than an August watch-list, and
+//     applying them here would dock most of the board five games for nothing.
+//     The fitted table is the right foundation for an IN-SEASON weekly model,
+//     where the designations do mean the same thing; it is the wrong input for
+//     a draft board, so only the ordering is taken from it.
 const DESIGNATION_RISK = {
-    IR: 4, 'PUP-R': 4, 'PUP-P': 2, OUT: 2, DOUBTFUL: 1.5, QUESTIONABLE: 1.5,
+    IR: 4, 'PUP-R': 4, 'PUP-P': 2, OUT: 2, DOUBTFUL: 1.8, QUESTIONABLE: 1.5,
     SUSPENSION: 0, // a ban has an exact end date, so the date is the whole story
 };
 
+// Measured too, with a caveat that matters. Within the league report the
+// testable tiers do nothing at all: grouped by body part, games missed over the
+// next six weeks lands at 0.94x-1.05x the designation's own average, whichever
+// tier the injury falls in. But the two SEVERE tiers could not be tested — clubs
+// file a body part, never a diagnosis ("Knee", 1,531 times; never "torn ACL"),
+// so the acl/achilles/torn and surgery/fracture patterns never match that feed.
+// ESPN's free text, which is what this actually runs against, is far richer
+// ("Knee (MCL, sprain)", "Left ankle (surgery)"), and on an August board that
+// text is doing most of the real discriminating. So the severe tiers stay as
+// untested priors, and the mild ones are known to be near-inert.
 const BODY_PART_SEVERITY = [
     [/acl|achilles|torn|rupture|lisfranc/i, 3],
     [/surgery|fracture|broken/i, 2],
@@ -184,6 +218,8 @@ const featureValue = (season, feature) => {
         case 'ypt': return season.rec?.ypt;
         case 'ypr': return season.rec?.ypr;
         case 'gp': return season.gp;
+        case 'ryoe_att': return season.rush?.yoeAtt;
+        case 'avg_yac_above_expectation': return season.rec?.yacOe;
         case 'td_oe_pg': return touchdownsOverExpected(season);
         case 'age': return season.age;
         default: return undefined;
@@ -332,6 +368,8 @@ const DRIVER_META = {
     ypt: { label: 'Yards per target', unit: '', hint: 'Receiving yards per target', good: 'up' },
     ypr: { label: 'Yards per catch', unit: '', hint: 'Receiving yards per reception — how far downfield the role is', good: 'up' },
     gp: { label: 'Games played', unit: '', hint: 'Games played last season', good: 'up' },
+    ryoe_att: { label: 'Rush yards over expected', unit: '/att', hint: 'NGS-tracked rushing efficiency vs. a defender-position-adjusted expectation', good: 'up' },
+    avg_yac_above_expectation: { label: 'YAC over expected', unit: '/rec', hint: 'NGS-tracked yards after the catch vs. what the coverage at the catch point implied', good: 'up' },
     team_change: { label: 'New team', unit: '', hint: 'Changing teams costs production on average — new scheme, new quarterback', good: 'down' },
     draft_pick_log: { label: 'Draft capital', unit: '', hint: 'Where the player was drafted — pedigree still matters years in', good: 'down' },
     durability: { label: 'Durability', unit: '', hint: 'Share of a full season played, across the career', good: 'up' },
@@ -377,7 +415,24 @@ export const projectPlayer = (playerId, position, boardPlayer) => {
             (b) => draft.pick >= b.lo && draft.pick <= b.hi,
         );
         if (!band) return null;
-        const ppg = Math.max(0, band.mean);
+        // Landing spot, rookie WRs only: the share of his new team's targets
+        // that walked out the door. Vacated opportunity is worthless for
+        // veterans — their own stat line already says what role they hold —
+        // but a rookie has no line, so the job waiting for him is most of what
+        // can be known. WR is also the only position where it survives being
+        // rolled forward by draft class; RB's larger in-sample effect does not
+        // (see fit_wide.py).
+        const vacated = position === 'WR' && ROOKIE_LANDING
+            ? VACATED_WR_TARGETS[canonicalTeam(boardPlayer?.team)]
+            : undefined;
+        // Rounded before they are added, not after, so the card's arithmetic
+        // closes for a reader who takes the band average on screen and applies
+        // the adjustment on screen — the same rule the season total follows.
+        const bandMean = round1(band.mean);
+        const landing = Number.isFinite(vacated)
+            ? round1(ROOKIE_LANDING.intercept + ROOKIE_LANDING.coef * vacated)
+            : 0;
+        const ppg = Math.max(0, bandMean + landing);
         const spread = band.sd;
         const missed = gamesMissedToInjury(playerId);
         const games = projectGames(position, undefined, 0, missed);
@@ -392,7 +447,10 @@ export const projectPlayer = (playerId, position, boardPlayer) => {
             // The comparable group this estimate rests on. Because the projection
             // IS the band mean, what the card cites and what it shows are now the
             // same number rather than two that nearly agree.
-            comparable: { ...band, mean: round1(band.mean) },
+            comparable: { ...band, mean: bandMean },
+            // What the landing spot moved him by, so the card can show the band
+            // average as evidence AND account for the gap to the number shown.
+            landing: landing ? { vacated, adjust: landing } : undefined,
             residSd: spread,
             low: round1(Math.max(0, ppg - spread)),
             // The band constrains the estimate, not the upside: a rookie really

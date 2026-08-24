@@ -82,8 +82,12 @@ its spread there is the widest of any input. The board is not that population.
 
 `FEATURES` in `fit_wide.py` is a **decided set, not a search result.** Each input
 survived a drop-one audit and a five-origin rolling validation (fit through year
-Y, score everything after it) — a harder test than the leave-one-season-out score
-that picks `alpha`. The script asserts nothing fits to zero rather than pruning,
+Y, score everything after it). **`alpha` is now picked the same way.** It used to
+be chosen by leave-one-season-out, which trains on future seasons to predict past
+ones and so can reward a fit that never generalises forward — the same flaw that
+let an RB input score +0.0033 leave-one-season-out while being negative rolled
+forward. Switching the criterion is worth +0.0090 of rolling R² at QB, which
+moves from alpha 40 to 100: the smallest sample wants the most shrinkage. The script asserts nothing fits to zero rather than pruning,
 because a set that needs pruning has not been audited.
 
 Removed deliberately, with the reasons, so they do not creep back:
@@ -134,10 +138,30 @@ The premium exists because **a published return date is a floor, not an
 expectation**: ESPN reports the next re-evaluation. Jeanty left practice unable to
 put weight on a knee and the feed gave a date four days later, which on dates
 alone cost him nothing. `DESIGNATION_RISK` × `BODY_PART_SEVERITY` in
-`draftScore.js` add the expected miss beyond the date. **Both tables are priors,
-not fits** — the feed only ever holds today's report, so there is no history of
-what players carrying a designation actually went on to miss. They live in one
-place so the judgement is visible and tunable.
+`draftScore.js` add the expected miss beyond the date.
+
+**Those tables were priors and are now partly measured.** The claim that no
+history exists was wrong: it is ESPN that holds only today's report, while
+nflverse publishes the weekly league injury report back to 2009.
+`scripts/analysis/injuries.py` fits it over 9,536 player-weeks. What changed:
+**DOUBTFUL moved next to OUT**, where it belongs — over the six weeks after a
+report Out costs 4.15 games, Doubtful 3.77, Questionable 2.02, and a doubtful
+player misses that week 99.3% of the time against Out's 100% and Questionable's
+40.4%. Doubtful tied with Questionable was simply wrong.
+
+**The absolute figures are deliberately NOT taken from that fit.** In-season
+designations are formal league filings; ESPN's August feed is a different
+population — 65 of 68 current entries are QUESTIONABLE, 38 of them with no
+severity language at all against 30 with real ones. The league report's
+rest-of-season figures (Out 7.81, Doubtful 6.37, Questionable 4.96) would dock
+most of the board five games for nothing. That fitted table is the right
+foundation for an **in-season weekly** model, not for a draft board.
+
+`BODY_PART_SEVERITY` is near-inert where it can be tested — every tier lands at
+0.94–1.05× its designation's own average — but the two severe tiers could not be
+tested at all, because clubs file a body part and never a diagnosis ("Knee" 1,531
+times, never "torn ACL"). ESPN's free text is richer, so those stay as untested
+priors rather than disproven ones.
 
 **Career durability is shrunk toward the positional mean** by two seasons' worth
 of prior, so a rookie who played 17 games does not read as a 1.000 iron man on a
@@ -150,11 +174,34 @@ spread is genuinely small. Next-season games by career durability band at RB run
 linear fit tracks those bins to within 0.3. Recent-seasons durability predicts no
 better than career.
 
-Rookies have no stat line and are graded off **the mean of their draft band and
-nothing else** — no fitted curve. The band means are recency-weighted with a
+Rookies are graded off **the mean of their draft band**, plus — for WRs only —
+a landing-spot adjustment. No fitted curve. The band means are recency-weighted with a
 five-year half-life, and forced non-increasing so a later pick can never project
-above an earlier one. The projection therefore equals the average the card cites
-as its evidence, exactly; the range around it is that band's own spread.
+above an earlier one. For everyone but a rookie WR the projection therefore
+equals the average the card cites as its evidence, exactly; the range around it
+is that band's own spread.
+
+**Rookie WRs also carry a landing-spot term** — the share of their new team's
+targets vacated by receivers who left (`VACATED_WR_TARGETS` in `playerStats.js`,
+coefficient in `ROOKIE_LANDING`). This is the one place vacated opportunity
+carries signal: it is dead for veterans at every position (`vacated.py`), because
+a veteran's own stat line already describes the role he holds, while a rookie has
+no line and the job waiting for him is most of what can be known.
+
+**It is WR-only, and the position it is NOT is the surprise.** This file
+previously recorded landing spot as measured-and-declined for *RB* (+0.035,
+monotone terciles 6.6/8.7/10.9). `rookie_landing.py` reproduces those RB terciles
+in-sample (5.8/7.9/9.7) and then shows they do not survive: rolled forward by
+draft class, RB gains at the first two origins and loses 0.025 and 0.037 at the
+next two, positive at 2/4. That monotone pattern was an in-sample artifact on
+n=83. WR's terciles are *not* monotone (4.4/6.3/5.9), yet it gains at 4/4 origins
+— +0.0114, +0.0157, +0.0231, +0.0261 — growing as the training window lengthens,
+on n=297, the largest rookie sample there is.
+
+Because the projection is no longer identical to the cited band average for these
+players, **the card prints the adjustment explicitly**, and the parts are rounded
+before they are added so the arithmetic closes on screen. `draftScore.test.js`
+asserts a rookie's projection equals his band mean plus only what is displayed.
 
 ### Rules that are easy to break
 
@@ -226,11 +273,11 @@ Don't re-add these without new evidence — each was measured and failed:
   zero, and it does nothing: WR +0.0009, RB +0.0003, TE +0.0001, QB +0.0026, all
   at or under the noise floor, and WR ended with *fewer* live inputs than before.
   The tail is genuinely redundant, not badly fitted. See `test_resid.py`.
-- **Rookie levers beyond the band mean** — landing spot (vacated prior-year
-  positional opportunity) is real for RB, +0.035 R² over draft capital with
-  monotone terciles (6.6 → 8.7 → 10.9 PPG, n=215), and positional rank within the
-  class adds +0.026. Both were declined deliberately: the rookie branch is kept to
-  the band mean alone. Age at draft measured as nothing (+0.001).
+- **Rookie levers beyond the band mean** — landing spot is now SHIPPED for WR
+  and confirmed dead for RB; see the Rookies section above, and note the RB
+  finding that used to sit here was an in-sample artifact. Positional rank within
+  the class (+0.026 in-sample) has not been re-tested against a rolling origin and
+  should not be added until it is. Age at draft measured as nothing (+0.001).
 
 **The rookie era trend is real, but only for pass catchers.** Do not repeat the
 mistake of quoting the RB number for all four positions — the year coefficient on
@@ -285,8 +332,27 @@ against what an average team in the same league scores.
 
 ### Matchups
 
-Each weekly score moves by up to **±`MATCHUP_SWING`** (3 points) for that week's
-opponent. `SEASON.schedule` carries who plays whom, derived in `fit_wide.py`.
+Each weekly score moves for that week's opponent by up to **±`MATCHUP_SWING`**,
+which is **per position, not one shared number**: QB ±1.0, RB ±0.6, TE ±0.2,
+WR ±0.2. `SEASON.schedule` carries who plays whom, derived in `fit_wide.py`.
+
+Those figures are measured, not chosen (`scripts/analysis/defense.py`). For every
+player-week 2016–2025, the player's deviation from his own season mean — so a
+defence cannot look good merely for having faced weak offences — is regressed on
+the opponent's prior-season rank against that position. The slope from softest to
+stiffest defence is the swing: QB +2.02 (p=6e-08), RB +1.16 (p=2e-10), TE +0.43,
+WR +0.38, all positive, so a worse defence really does concede more everywhere.
+Half of each slope is the ±.
+
+This replaced a flat ±3 for all positions, which was **three to fifteen times too
+large**. Two things worth keeping straight: a quarterback's matchup matters five
+times a receiver's, because a QB faces the whole defence while a receiver's week
+is dominated by target and touchdown noise; and the ordering does **not** follow
+how well a defensive rating persists year over year (RB +0.320, QB +0.243,
+WR +0.195, TE +0.165). Persistence says whether the matchup is knowable in
+advance, the slope says whether knowing it changes anything, and they rank
+differently. `defenseAdjustments` therefore returns a unitless −1…+1 share and
+`weeklyPoints` scales it by the position's own swing.
 
 **The ranking is the board's own 2026 team-defence ECR, not last season's points
 allowed.** That matters twice over. Historical points-allowed describes a roster

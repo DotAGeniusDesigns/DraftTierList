@@ -348,8 +348,10 @@ const PlayerCard = ({ darkMode, row, positionColors }) => {
                             is his draft slot: round&nbsp;{projection.draft.round},
                             pick&nbsp;{projection.draft.pick}.
                         </p>
-                        {/* This average IS the projection, not a reference point beside it, so
-                            the wording has to match how it is computed, weighting included. */}
+                        {/* This average IS the projection for everyone except a rookie WR,
+                            who also carries a landing-spot adjustment. Where that applies the
+                            adjustment is spelled out below, because the card must never cite
+                            one number as its evidence and print a different one. */}
                         {projection.comparable && (
                             <p className={ui.heading(darkMode)}>
                                 <span className="tabular-nums">
@@ -359,6 +361,23 @@ const PlayerCard = ({ darkMode, row, positionColors }) => {
                                     {' '}(n&nbsp;=&nbsp;{projection.comparable.n})
                                 </span>
                                 <span className={ui.muted(darkMode)}>, weighted toward recent classes.</span>
+                            </p>
+                        )}
+                        {projection.landing && (
+                            <p className={ui.heading(darkMode)}>
+                                <span className="tabular-nums">
+                                    {player.team} vacated{' '}
+                                    <strong>{Math.round(projection.landing.vacated)}%</strong> of its
+                                    targets, worth{' '}
+                                    <strong>
+                                        {projection.landing.adjust > 0 ? '+' : ''}
+                                        {projection.landing.adjust} PPG
+                                    </strong>
+                                </span>
+                                <span className={ui.muted(darkMode)}>
+                                    {' '}— opportunity is most of what can be known about a rookie
+                                    receiver, and the only position where it holds up out of sample.
+                                </span>
                             </p>
                         )}
                         <p>

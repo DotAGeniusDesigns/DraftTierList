@@ -99,10 +99,16 @@ describe('projectPlayer', () => {
         expect(proj.ppg).toBeCloseTo(proj.comparable.mean, 1);
     });
 
-    it('shows every rookie the exact average it projects him at', () => {
+    it("a rookie's projection is his band average plus only what the card shows", () => {
         // The card cites the comparable band as its evidence and then prints the
         // projection. Under the old curve-with-a-ceiling those were two different
-        // numbers for any pick outside the very top.
+        // numbers for any pick outside the very top, with nothing on screen to
+        // explain the gap.
+        //
+        // A rookie WR now also carries a landing-spot adjustment, so the two are
+        // no longer identical — but the gap must be exactly the adjustment the
+        // card displays, never an unexplained difference. Everyone else still
+        // projects at the band mean precisely.
         const rookies = Object.values(playerDatabase).filter((p) => {
             const proj = POSITIONS.includes(p.position)
                 && projectPlayer(p.id, p.position, p);
@@ -111,7 +117,24 @@ describe('projectPlayer', () => {
         expect(rookies.length).toBeGreaterThan(0);
         rookies.forEach((player) => {
             const proj = projectPlayer(player.id, player.position, player);
-            expect(proj.ppg).toBe(proj.comparable.mean);
+            const shown = proj.landing ? proj.landing.adjust : 0;
+            expect(proj.ppg).toBeCloseTo(
+                Math.max(0, proj.comparable.mean + shown), 1,
+            );
+            if (proj.landing) expect(player.position).toBe('WR');
+        });
+    });
+
+    it('gives rookie WRs a landing-spot adjustment and nobody else', () => {
+        const withLanding = Object.values(playerDatabase)
+            .filter((p) => POSITIONS.includes(p.position))
+            .map((p) => [p, projectPlayer(p.id, p.position, p)])
+            .filter(([, proj]) => proj && proj.landing);
+        expect(withLanding.length).toBeGreaterThan(0);
+        withLanding.forEach(([player, proj]) => {
+            expect(proj.isRookie).toBe(true);
+            expect(player.position).toBe('WR');
+            expect(Number.isFinite(proj.landing.vacated)).toBe(true);
         });
     });
 

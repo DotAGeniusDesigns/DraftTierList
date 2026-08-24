@@ -18,9 +18,10 @@ from test_levers import DRIVERS, BLEND, enrich, blended
 SECONDARY = {
     "WR": ["target_share", "wopr", "air_yards_share", "rz_tgt_pg", "td_oe_pg",
            "snap_pct", "ypt", "gp"],
-    "TE": ["tgt_pg", "target_share", "wopr", "rz_tgt_pg", "snap_pct", "gp", "ypr"],
+    "TE": ["tgt_pg", "target_share", "wopr", "rz_tgt_pg", "snap_pct", "gp", "ypr",
+           "avg_yac_above_expectation"],
     "RB": ["opportunity_pg", "rz_att_pg", "td_oe_pg", "rush_share",
-           "weighted_opp_pg", "snap_pct", "target_share", "gp"],
+           "weighted_opp_pg", "snap_pct", "target_share", "gp", "ryoe_att"],
     "QB": ["pass_td_pg", "rush_yd_pg", "pass_rz_att_pg", "cmp_pct", "age", "gp"],
 }
 # Draft capital is deliberately NOT used for players who already have NFL
@@ -43,7 +44,7 @@ SIGN = {
     "rz_tgt_pg": +1, "rz_att_pg": +1, "rush_share": +1, "weighted_opp_pg": +1,
     "snap_pct": +1, "ypt": +1, "ypr": +1, "gp": +1, "pass_yd_pg": +1, "pass_td_pg": +1,
     "rush_att_pg": +1, "rush_yd_pg": +1, "pass_rz_att_pg": +1, "cmp_pct": +1,
-    "durability": +1,
+    "durability": +1, "ryoe_att": +1, "avg_yac_above_expectation": +1,
     "age": -1, "td_oe_pg": -1, "int_pg": -1, "team_change": -1, "draft_pick_log": -1,
 }
 
