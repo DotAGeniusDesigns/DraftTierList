@@ -170,6 +170,31 @@ pedigree standing in for performance — a back with three seasons on tape was
 getting +1.2 PPG from his draft slot. It remains the whole basis of the rookie
 model, where there is nothing else.
 
+**The blend is anchored on the prior season, not the player's own last one.**
+`blendedFeature` walks back from `MODEL_SEASONS[1]`. Anchoring on `seasons[0]`
+meant a player who sat out all of last year had the year before treated as
+yesterday: Joe Mixon missed 2025 entirely and projected off 2024 at full recency
+weight, landing at RB13 with a value-vs-ADP of 100 while unsigned.
+
+A window slot the player was in the league for and has no season in pulls the
+standardised input toward the league average by that slot's weight. A slot he
+*predates* does not — a second-year player is not absent from the season before
+he was drafted. Thin seasons count proportionally: a season counts as
+`gp / GAMES_MODEL[pos].mean` of a data point, capped at one, so a one-game cameo
+is not read as a year of evidence. The reference is the corpus average (~13.6),
+not 17, or every healthy player would look partly absent.
+
+**Free agents get no projection at all.** A stat line describes a job they no
+longer have, and `canonicalTeam` returns undefined for `FA`, so the team-change
+penalty was silently falling back to the league median — the most uncertain case
+on the board was getting the average treatment.
+
+**Rank is computed over the whole board, so the visible list has gaps.** The page
+shows the top 150 by ECR while ranks run over every scored player, so a player the
+model rates highly and the market does not leaves a hole (RB11 → RB13). That is
+the model disagreeing with consensus, not a bug — do not "fix" it by ranking
+within the slice, which would break VORP.
+
 **Projections are built from the full board, then sliced.** Value over
 replacement and the ADP score are relative measures; computing them off the
 visible top 100 puts replacement level inside the starters and inflates

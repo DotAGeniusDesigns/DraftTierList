@@ -250,27 +250,58 @@ const describeSpecial = (feature, value) => {
 };
 
 /**
- * Blends a feature across the player's most recent seasons using the weights the
- * fit chose for that position. Seasons are matched by year rather than by array
- * position so a missed season leaves a real gap instead of silently pulling an
- * older year forward. Age is never blended — a player has one current age.
+ * Blends a feature across the seasons leading into the one being projected.
+ *
+ * The window is anchored on the PRIOR SEASON, not on the player's own most
+ * recent one. Anchoring on the player meant a man who sat out all of last year
+ * had the year before treated as if it were yesterday — Joe Mixon missed 2025
+ * entirely and was being projected off 2024 at full recency weight, which is how
+ * a free agent ended up ranked RB13.
+ *
+ * `absentWeight` is the share of the window the player was in the league for and
+ * has no season in. That is different from a window slot he simply predates: a
+ * second-year player is not absent from the season before he was drafted. The
+ * caller pulls the standardised value toward the league average by that share,
+ * so a missed season costs something instead of quietly renormalising away.
  */
-const blendedFeature = (seasons, feature, blend) => {
+const blendedFeature = (seasons, feature, blend, priorSeason, fullSeason) => {
     const latest = seasons[0];
     if (!latest) return undefined;
-    if (feature === 'age' || !blend?.length) return featureValue(latest, feature);
+    if (feature === 'age' || !blend?.length) {
+        return { value: featureValue(latest, feature), absentWeight: 0 };
+    }
+    const anchor = Number.isFinite(priorSeason) ? priorSeason : latest.season;
+    const oldest = seasons[seasons.length - 1]?.season;
+    // Full credit at the number of games the fit's average player actually
+    // played, not at 17 — the corpus averages under 14, so 17 would make every
+    // healthy player look partly absent and drag the whole board to the mean.
+    const full = fullSeason && fullSeason > 0 ? fullSeason : 17;
 
     let weighted = 0;
     let used = 0;
+    let absent = 0;
     blend.forEach((weight, offset) => {
-        const season = seasons.find((s) => s.season === latest.season - offset);
-        if (!season) return;
-        const value = featureValue(season, feature);
-        if (value === undefined || !Number.isFinite(value)) return;
-        weighted += value * weight;
-        used += weight;
+        const target = anchor - offset;
+        const season = seasons.find((s) => s.season === target);
+        const value = season === undefined ? undefined : featureValue(season, feature);
+        const inLeague = Number.isFinite(oldest) && target > oldest;
+        if (value === undefined || !Number.isFinite(value)) {
+            // In the league that year with no record of it: a season he missed.
+            // Earlier than his first season: he simply did not exist yet.
+            if (inLeague) absent += weight;
+            return;
+        }
+        // A four-game season is not four-seventeenths of a data point in the
+        // model's eyes unless it is told so. The fit never saw a season under
+        // eight games; this is what keeps a one-game cameo from being read as a
+        // full year of evidence.
+        const share = Math.max(0, Math.min(1, (season.gp || 0) / full));
+        weighted += value * weight * share;
+        used += weight * share;
+        absent += weight * (1 - share);
     });
-    return used > 0 ? weighted / used : undefined;
+    if (used <= 0) return { value: undefined, absentWeight: Math.min(absent, 1) };
+    return { value: weighted / used, absentWeight: Math.min(absent, 1) };
 };
 
 // Human-facing copy for each driver. `good` states the direction that helps, so
@@ -316,6 +347,14 @@ export const driverMeta = (feature) => DRIVER_META[feature] || { label: feature,
 export const projectPlayer = (playerId, position, boardPlayer) => {
     const model = PROJECTION_MODEL[position];
     if (!model) return null;
+    // No roster spot, no projection. A free agent's stat line describes a job he
+    // no longer has, and the model has no way to know that — left in, Joe Mixon
+    // projected as RB13 off his 2024 season in Houston and scored 100 on value
+    // vs ADP, which is the board calling the market's biggest write-off its
+    // biggest bargain. `canonicalTeam` also returns undefined for FA, so the
+    // team-change penalty silently fell back to the league median: the most
+    // uncertain case on the board was getting the average treatment.
+    if (!boardPlayer?.team || String(boardPlayer.team).toUpperCase() === 'FA') return null;
 
     const entry = playerStats[playerId];
     const seasons = entry?.seasons || [];
@@ -370,12 +409,23 @@ export const projectPlayer = (playerId, position, boardPlayer) => {
 
     const all = [];
     let ppg = model.intercept;
+    const priorSeason = MODEL_SEASONS[1];
     model.features.forEach((feature, i) => {
-        const raw = CAREER_FEATURES.has(feature)
+        const career = CAREER_FEATURES.has(feature);
+        const blended = career
+            ? undefined
+            : blendedFeature(seasons, feature, model.blend, priorSeason,
+                GAMES_MODEL[position]?.mean);
+        const raw = career
             ? careerFeature(feature, { entry, seasons, boardPlayer })
-            : blendedFeature(seasons, feature, model.blend);
+            : blended?.value;
         const used = raw === undefined || !Number.isFinite(raw) ? model.median[i] : raw;
-        const z = (used - model.mean[i]) / model.sd[i];
+        // A season the player was in the league for and missed pulls the input
+        // toward the league average in proportion to the weight it carried. A
+        // window slot he predates does not — he was not absent from a season
+        // before his first one.
+        const present = 1 - (blended?.absentWeight || 0);
+        const z = ((used - model.mean[i]) / model.sd[i]) * present;
         const contribution = model.coef[i] * z;
         ppg += contribution;
         const meta = driverMeta(feature);
