@@ -213,11 +213,44 @@ for r in csv.DictReader(open(SCHED)):
         d = r.get("gameday")
         if d and (w not in weeks or d < weeks[w]):
             weeks[w] = d
+# Bye weeks, derived rather than transcribed: a team's bye is the week it has no
+# game on the schedule. The draft grader needs these to know who is unavailable
+# in a given week.
+playing = {}
+for r in csv.DictReader(open(SCHED)):
+    if r.get("season") != str(max(SEASONS) + 1) or not r.get("week", "").isdigit():
+        continue
+    for side in ("away_team", "home_team"):
+        if r.get(side):
+            playing.setdefault(r[side], set()).add(int(r["week"]))
+all_weeks = set(weeks)
+byes = {}
+for team, played in sorted(playing.items()):
+    off = sorted(all_weeks - played)
+    if off:
+        byes[team] = off[0]
+
+# Who each team plays each week, so a matchup adjustment does not have to guess.
+# Keyed by team, then week; a week a team does not appear is its bye.
+schedule = {}
+for r in csv.DictReader(open(SCHED)):
+    if r.get("season") != str(max(SEASONS) + 1) or not r.get("week", "").isdigit():
+        continue
+    w = int(r["week"])
+    away, home = r.get("away_team"), r.get("home_team")
+    if away and home:
+        schedule.setdefault(away, {})[w] = home
+        schedule.setdefault(home, {})[w] = away
+
 SEASON = {"year": max(SEASONS) + 1,
           "weeks": [weeks[w] for w in sorted(weeks)] if weeks else [],
-          "games": 17}
+          "games": 17,
+          "byes": byes,
+          "schedule": {t: {str(w): o for w, o in sorted(ws.items())}
+                       for t, ws in sorted(schedule.items())}}
 print(f"  season {SEASON['year']}: {len(SEASON['weeks'])} weeks, "
-      f"week 1 {SEASON['weeks'][0] if SEASON['weeks'] else '?'}")
+      f"week 1 {SEASON['weeks'][0] if SEASON['weeks'] else '?'}, "
+      f"{len(byes)} teams with a bye (weeks {min(byes.values())}-{max(byes.values())})")
 
 rows = [r for s in SEASONS for r in DERIVED[s].values() if r["pos"] in ("RB", "WR", "TE")]
 Xt = np.array([[r["rz_att"], r["rz_tgt"], max(r["rush_att"] - r["rz_att"], 0),

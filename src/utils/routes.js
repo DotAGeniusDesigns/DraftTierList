@@ -7,6 +7,7 @@ export const NAV_ROUTES = [
     // `beta` puts a tag on the nav entry and is the flag the page reads for its
     // own header, so the two can never disagree about what is still in beta.
     { path: '/draft-kit', label: 'Draft Kit', shortLabel: 'Kit', icon: 'kit', beta: true },
+    { path: '/draft-grader', label: 'Draft Grader', shortLabel: 'Grader', icon: 'grader', beta: true },
     { path: '/offseason', label: 'Offseason HQ', shortLabel: 'Offseason', icon: 'offseason' },
     { path: '/draft-lottery', label: 'Draft Lottery', shortLabel: 'Lottery', icon: 'lottery' },
     // League Hub (src/components/LeagueHub.jsx, LeagueHubCreate.jsx) is built

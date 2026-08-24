@@ -62,6 +62,9 @@ const LeagueHub = React.lazy(() => import('./components/LeagueHub'));
 // Lazy on purpose: DraftKit pulls in playerStats.js (~700KB of season history),
 // which would otherwise more than double the main bundle for every visitor.
 const DraftKit = React.lazy(() => import('./components/DraftKit'));
+// Same reason: the grader runs on the Draft Kit's projections, so it pulls in
+// playerStats.js too. Both must stay lazy or the main bundle doubles.
+const DraftGrader = React.lazy(() => import('./components/DraftGrader'));
 
 // The five user-set flags, in the order they appear on a player row.
 const FLAG_FILTERS = {
@@ -1080,6 +1083,22 @@ function App() {
                             )}
                         >
                             <DraftLottery darkMode={darkMode} />
+                        </React.Suspense>
+                    )}
+                />
+                <Route
+                    path="/draft-grader"
+                    element={(
+                        <React.Suspense
+                            fallback={(
+                                <div className="container mx-auto max-w-7xl px-4 py-12">
+                                    <p className={`text-sm ${ui.muted(darkMode)}`} role="status">
+                                        Loading draft grader…
+                                    </p>
+                                </div>
+                            )}
+                        >
+                            <DraftGrader darkMode={darkMode} allPlayers={players} />
                         </React.Suspense>
                     )}
                 />

@@ -253,6 +253,60 @@ Untestable with current feeds: **coordinator changes** (no nflverse feed carries
 OC history) and **depth-chart rank** (`depth_charts` only goes back to 2024 — two
 transition pairs).
 
+## Draft Grader
+
+`/draft-grader` — beta, same `beta: true` flag on its route. Takes a roster
+(manual search or a Sleeper league id) and reports expected points per week
+against what an average team in the same league scores.
+
+- `src/utils/draftGrader.js` — availability, lineup optimiser, league average,
+  grade. `src/components/DraftGrader.jsx` — the page. Lazy-loaded in `App.jsx`
+  and **must stay that way**: it runs on the Draft Kit's projections, so it pulls
+  `playerStats.js` with it.
+- **The league average is the top `slots × teams` at each position.** The
+  starters at a position across a whole league are near enough its top N, so
+  averaging that group gives what an average manager gets from that slot. Flex is
+  the best remaining flex-eligible players after the dedicated slots.
+- **Lineups are set a week at a time.** Byes come from `SEASON.byes` (derived in
+  `fit_wide.py` — a team's bye is the week it has no game) and injuries from the
+  return date. This is the whole point: a roster can grade A- on the season and
+  still have both starting backs on bye in week 6, which is invisible in a
+  season-average number.
+- **A slot with nobody eligible is streamed, not zeroed.** Nobody leaves a lineup
+  spot empty on a bye; they take whoever is on waivers. The streamer is worth the
+  average of the `teams` players starting at `REPLACEMENT_RANK` for that position,
+  scaled to league size — this codebase already defines that rank as the waiver
+  line. Scoring an empty slot as zero made a bye look like a catastrophe instead
+  of the mild tax it is.
+- Greedy filling is optimal because slot types are nested — every flex-eligible
+  player is also eligible for his own position's slot — so filling dedicated
+  slots first never strands a better flex option.
+- Half-PPR only, like the Draft Kit, and stated on the page.
+
+### Matchups
+
+Each weekly score moves by up to **±`MATCHUP_SWING`** (3 points) for that week's
+opponent. `SEASON.schedule` carries who plays whom, derived in `fit_wide.py`.
+
+**The ranking is the board's own 2026 team-defence ECR, not last season's points
+allowed.** That matters twice over. Historical points-allowed describes a roster
+that has since changed, and it barely predicts itself anyway — a defence's rating
+correlates with its own next season at **WR +0.08** (negative in two of the last
+four transitions), QB +0.12, TE +0.19, RB +0.30. The board's DST ranks are a
+consensus view of how good each unit will be *this* year, and they update
+whenever the board does, so nothing needs regenerating.
+
+Rank *position* is mapped linearly onto ±3 rather than the raw ECR, because the
+consensus gaps are uneven (173, 177, 180 … then a jump to 284) and raw numbers
+would bunch most teams near zero. Teams with no ranked defence are neutral.
+
+The swing is held tight on purpose given how thin the underlying signal is: it
+reorders close calls rather than deciding them. It does genuinely change lineups
+— a +2.8 draw can promote a 12.0 back over a 9.4 receiver in the flex — but over
+18 weeks a team faces good and bad defences, so the season grade barely moves.
+That is the season-long strength-of-schedule rejection showing up again, and it
+is why the adjustment belongs in the weekly view rather than in the projection.
+
 ## Front-end conventions
 
 - Dark mode is a `darkMode` boolean threaded down as a prop, persisted via

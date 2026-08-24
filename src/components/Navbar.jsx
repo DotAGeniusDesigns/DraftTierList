@@ -46,6 +46,24 @@ const NavIcon = ({ name }) => {
                 <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
             </svg>
         ),
+        grader: (
+            // A report card: a page with a mark on it.
+            <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 shrink-0">
+                <path
+                    d="M5 2.5h7.5L16 6v11.5H5z"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinejoin="round"
+                />
+                <path
+                    d="M7.5 11.5l2 2 3.5-4.5"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+            </svg>
+        ),
         kit: (
             <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4 shrink-0">
                 <path
@@ -183,8 +201,8 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
                 <span>{item.label}</span>
             ) : (
                 <>
-                    <span className="hidden xl:inline">{item.label}</span>
-                    <span className="xl:hidden">{item.shortLabel}</span>
+                    <span className="hidden 2xl:inline">{item.label}</span>
+                    <span className="2xl:hidden">{item.shortLabel}</span>
                 </>
             )}
             {item.beta && <BetaTag inMenu={mobileMenu} />}
