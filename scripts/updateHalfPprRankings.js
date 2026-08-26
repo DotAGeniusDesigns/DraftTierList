@@ -10,7 +10,7 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const RAW_FILE = path.join(__dirname, 'rawTierList2026.txt');
-const INPUT = process.argv[2] || path.join(__dirname, 'halfPprRankings2026-08-22.txt');
+const INPUT = process.argv[2] || path.join(__dirname, 'halfPprRankings2026-08-26.txt');
 
 const TEAM_ALIASES = { JAC: 'JAX' };
 // Default board tier sizes: 12 (×2), 20 (×4), 36 (×4), then remainder in tier 11.
@@ -46,13 +46,16 @@ const NEW_PLAYER_META = {
     'cj daniels|LAR': { name: 'CJ Daniels', position: 'WR' },
     'roschon johnson|CHI': { name: 'Roschon Johnson', position: 'RB' },
     'demarcus robinson|SF': { name: 'Demarcus Robinson', position: 'WR' },
+    'colbie young|CIN': { name: 'Colbie Young', position: 'WR' },
+    'devontez walker|BAL': { name: 'Devontez Walker', position: 'WR' },
+    'tennessee titans|TEN': { name: 'Tennessee Titans', position: 'DST' },
 };
 
 const DST_NAME_HINTS = [
     'texans', 'broncos', 'seahawks', 'rams', 'eagles', 'jaguars', 'patriots',
     'steelers', 'chargers', 'vikings', 'ravens', 'chiefs', 'packers', 'lions',
     'bills', 'browns', 'falcons', '49ers', 'saints', 'colts', 'bears',
-    'panthers', 'cowboys', 'giants', 'buccaneers', 'bengals',
+    'panthers', 'cowboys', 'giants', 'buccaneers', 'bengals', 'titans',
 ];
 
 const BYE = {

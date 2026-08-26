@@ -35,7 +35,7 @@ only rewrites when something actually changed. All support `--dry-run` and
 `--verbose`. Raw feed downloads are cached under `.cache/nflstats/` (gitignored);
 pass `--refresh` to bypass.
 
-`playerDatabase.js` is the roster source of truth — 399 players keyed by a slug
+`playerDatabase.js` is the roster source of truth — 400 players keyed by a slug
 id. Anything reading a persisted id must run it through `migratePlayerId` first
 (see `playerData.js`), or renamed players silently vanish from saved boards.
 
