@@ -126,6 +126,19 @@ export const opponentFor = (player, week) =>
     SEASON.schedule?.[canonicalTeam(player?.team)]?.[String(week)];
 
 /**
+ * The player's bye week, keyed through the same alias map as the schedule.
+ * `SEASON.byes` is written in nflverse abbreviations (the Rams are LA), so a
+ * raw board team (LAR) looked up directly never matches — which silently gave
+ * every Rams player an 18-game schedule.
+ */
+export const byeWeek = (team) => SEASON.byes?.[canonicalTeam(team)];
+
+// Week kickoff dates, parsed once — `isAvailable` runs per player per week per
+// grade, and re-parsing the same 18 date strings each call added up to nothing
+// but waste.
+const WEEK_KICKOFFS = (SEASON.weeks || []).map((day) => Date.parse(`${day}T00:00:00Z`));
+
+/**
  * A player's expected points in one week: his rate, moved by who he plays.
  * Floored at zero — no matchup is bad enough to score negative.
  *
@@ -151,11 +164,11 @@ export const weeklyPoints = (row, week, adjustments) => {
  */
 export const isAvailable = (player, week) => {
     if (!player) return false;
-    if (SEASON.byes?.[player.team] === week) return false;
+    if (byeWeek(player.team) === week) return false;
     const injury = injuryReport[player.id];
     if (injury?.returnDate) {
-        const kickoff = SEASON.weeks?.[week - 1];
-        if (kickoff && Date.parse(`${kickoff}T00:00:00Z`) < Date.parse(`${injury.returnDate}T00:00:00Z`)) {
+        const kickoff = WEEK_KICKOFFS[week - 1];
+        if (kickoff && kickoff < Date.parse(`${injury.returnDate}T00:00:00Z`)) {
             return false;
         }
     }
@@ -207,6 +220,9 @@ const streamerFor = (eligible, levels) =>
  */
 export const bestLineup = (rows, slots, levels, scoreOf) => {
     const score = scoreOf || ((row) => ({ points: row.projection.ppg }));
+    // A player's score doesn't depend on which slot he fills, so score each row
+    // once instead of once per slot.
+    const scores = new Map(rows.map((row) => [row.player.id, score(row)]));
     const order = fillOrder(slots);
     const taken = new Set();
     const lineup = [];
@@ -221,7 +237,7 @@ export const bestLineup = (rows, slots, levels, scoreOf) => {
             if (!eligible.includes(row.player.position)) return;
             // Scored on the matchup-adjusted number, not the season rate, so a
             // brutal draw can genuinely bench a player behind a team-mate.
-            const scored = score(row);
+            const scored = scores.get(row.player.id);
             if (!pick || scored.points > best.points) { pick = row; best = scored; }
         });
         if (pick) {
@@ -245,7 +261,11 @@ export const gradeWeeks = (rows, slots, levels, adjustments) => {
     const weeks = [];
     const count = SEASON.weeks?.length || 18;
     for (let week = 1; week <= count; week += 1) {
-        const available = rows.filter((row) => isAvailable(row.player, week));
+        const available = [];
+        const unavailable = [];
+        rows.forEach((row) => {
+            (isAvailable(row.player, week) ? available : unavailable).push(row);
+        });
         const { lineup, points, streamed } = bestLineup(
             available, slots, levels, (row) => weeklyPoints(row, week, adjustments),
         );
@@ -257,7 +277,7 @@ export const gradeWeeks = (rows, slots, levels, adjustments) => {
             // actually looks like, so it is surfaced rather than folded into a
             // lower score.
             streamed,
-            unavailable: rows.filter((row) => !isAvailable(row.player, week)),
+            unavailable,
         });
     }
     return weeks;

@@ -7,7 +7,7 @@ import { SEASON } from '../utils/projectionModel';
 import { NAV_ROUTES } from '../utils/routes';
 import { fetchLeague, fetchLeagueRosters, fetchLeagueUsers } from '../utils/sleeperLeague';
 import {
-    DEFAULT_LEAGUE, MATCHUP_SWING, SLOT_TYPES, gradeRoster, leagueFromSleeper,
+    DEFAULT_LEAGUE, MATCHUP_SWING, SLOT_TYPES, byeWeek, gradeRoster, leagueFromSleeper,
     rosterFromSleeper, startingSlotCount,
 } from '../utils/draftGrader';
 
@@ -495,7 +495,7 @@ const DraftGrader = ({ darkMode, allPlayers = [] }) => {
                                                 >
                                                     {row.player.name}
                                                     <span className={ui.muted(darkMode)}>
-                                                        {SEASON.byes?.[row.player.team] === w.week ? 'bye' : 'injured'}
+                                                        {byeWeek(row.player.team) === w.week ? 'bye' : 'injured'}
                                                     </span>
                                                 </span>
                                             ))}

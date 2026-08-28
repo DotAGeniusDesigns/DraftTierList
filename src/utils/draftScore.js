@@ -135,17 +135,20 @@ const injuryRisk = (entry) => {
  * that costs nothing and a knee that costs a month, and the date attached to the
  * second is usually the next check-up rather than a return to play.
  */
+// Parsed once at module load: the same 18 week strings were being re-parsed
+// for every injured player on every board build.
+const WEEK_STARTS = (SEASON?.weeks || []).map((day) => Date.parse(`${day}T00:00:00Z`));
+
 const gamesMissedToInjury = (playerId) => {
     const entry = injuryReport[playerId];
     if (!entry) return 0;
-    const weeks = SEASON?.weeks || [];
     let missed = 0;
     const back = Date.parse(`${entry.returnDate}T00:00:00Z`);
-    if (weeks.length && Number.isFinite(back)) {
-        const missedWeeks = weeks.filter((day) => Date.parse(`${day}T00:00:00Z`) < back).length;
+    if (WEEK_STARTS.length && Number.isFinite(back)) {
+        const missedWeeks = WEEK_STARTS.filter((start) => start < back).length;
         // A 17-game season runs over 18 weeks, so a missed week costs slightly
         // less than a whole game once the bye is spread across the schedule.
-        missed = missedWeeks * (SEASON.games / weeks.length);
+        missed = missedWeeks * (SEASON.games / WEEK_STARTS.length);
     }
     return Math.min(SEASON.games, missed + injuryRisk(entry));
 };
@@ -587,14 +590,19 @@ export const buildProjections = (players) => {
         // Short pool: fall back to the last player rather than dropping to zero,
         // which would inflate every VORP at that position.
         const baseline = list[Math.min(cutoff, list.length) - 1];
-        replacement[position] = baseline ? totalOf(baseline) : 0;
+        replacement[position] = baseline
+            ? { points: totalOf(baseline), ppg: baseline.projection.ppg }
+            : { points: 0, ppg: 0 };
     });
 
     rows.forEach((row) => {
-        row.replacementPoints = replacement[row.player.position] ?? 0;
-        row.replacementPpg = row.projection.games
-            ? round1(row.replacementPoints / row.projection.games)
-            : 0;
+        const base = replacement[row.player.position] || { points: 0, ppg: 0 };
+        row.replacementPoints = base.points;
+        // The replacement player's own rate. This used to divide his season
+        // total by THIS row's projected games, which showed a different — and
+        // for injury-shortened players, inflated — "replacement PPG" on every
+        // card at the same position.
+        row.replacementPpg = round1(base.ppg);
         row.vorp = Math.round(totalOf(row) - row.replacementPoints);
     });
 

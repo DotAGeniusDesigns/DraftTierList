@@ -14,6 +14,14 @@ const ROUTE_META = {
         title: 'Draft Range',
         description: 'See who is likely available at your draft pick using ADP-based range projections.',
     },
+    '/draft-kit': {
+        title: 'Draft Kit',
+        description: '2026 fantasy football projections for the top 150 players — points per game, projected games, value over replacement, and value vs ADP.',
+    },
+    '/draft-grader': {
+        title: 'Draft Grader',
+        description: 'Grade your fantasy draft: import a Sleeper roster or build one by hand, and see expected points per week against an average team in your league.',
+    },
     '/offseason': {
         title: 'Offseason HQ',
         description: '2026 coaching changes, roster moves, projected depth charts, and camp news for every NFL team.',
@@ -35,6 +43,16 @@ const ROUTE_META = {
     '/draft-scheduler': { title: 'Draft Scheduler', noindex: true },
 };
 
+// Routes with a path parameter can't be looked up exactly. Order matters:
+// '/league-hub' must be checked before the shorter '/league/' prefix.
+const DYNAMIC_ROUTE_META = [
+    ['/league-hub', { title: 'League Hub', noindex: true }],
+    ['/league/', { title: 'League Hub', noindex: true }],
+];
+
+const metaForPath = (pathname) => ROUTE_META[pathname]
+    || DYNAMIC_ROUTE_META.find(([prefix]) => pathname.startsWith(prefix))?.[1];
+
 const setMetaTag = (selector, attribute, name, content) => {
     if (!content) return;
     let element = document.querySelector(`${selector}[${attribute}="${name}"]`);
@@ -54,7 +72,7 @@ const RouteHead = () => {
     }, [pathname]);
 
     useEffect(() => {
-        const known = ROUTE_META[pathname];
+        const known = metaForPath(pathname);
         const meta = known || {
             title: 'Page Not Found',
             description: 'This page does not exist on Fantasy Toolkit.',

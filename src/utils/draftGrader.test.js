@@ -2,8 +2,8 @@ import { playerDatabase } from './playerDatabase';
 import { SEASON } from './projectionModel';
 import { injuryReport } from './injuryReport';
 import {
-    DEFAULT_LEAGUE, MATCHUP_SWING, MAX_MATCHUP_SWING, bestLineup, defenseAdjustments, gradeFor, gradeRoster,
-    isAvailable, leagueAverage, opponentFor, startingSlotCount, weeklyPoints,
+    DEFAULT_LEAGUE, MATCHUP_SWING, MAX_MATCHUP_SWING, bestLineup, byeWeek, defenseAdjustments, gradeFor,
+    gradeRoster, isAvailable, leagueAverage, opponentFor, startingSlotCount, weeklyPoints,
 } from './draftGrader';
 
 const board = Object.values(playerDatabase).filter((p) => p.ecr);
@@ -20,13 +20,30 @@ describe('availability', () => {
     });
 
     it('sits an injured player until his return date', () => {
+        // Bounded above by the season's last kickoff, not just below by
+        // week 4 — a season-ending IR return date (past week 18) is a real
+        // case on the board, and picking one here would make this a test of
+        // "still hurt at the end of the season" rather than "back mid-season".
         const id = Object.keys(injuryReport).find((key) => {
             const back = Date.parse(injuryReport[key].returnDate);
-            return playerDatabase[key] && back > Date.parse(SEASON.weeks[3]);
+            return playerDatabase[key]
+                && back > Date.parse(SEASON.weeks[3])
+                && back <= Date.parse(SEASON.weeks[SEASON.weeks.length - 1]);
         });
         const player = playerDatabase[id];
         expect(isAvailable(player, 1)).toBe(false);
         expect(isAvailable(player, 18)).toBe(true);
+    });
+
+    it('sits a player whose board team is an alias of the schedule key', () => {
+        // SEASON.byes is keyed in nflverse abbreviations — the Rams are LA —
+        // while the board writes LAR. Looked up raw, every Rams player silently
+        // skipped his bye.
+        const ram = board.find((p) => p.team === 'LAR');
+        expect(ram).toBeDefined();
+        expect(SEASON.byes[ram.team]).toBeUndefined();
+        expect(byeWeek(ram.team)).toBe(SEASON.byes.LA);
+        expect(isAvailable(ram, SEASON.byes.LA)).toBe(false);
     });
 
     it('every team has exactly one bye, between weeks 5 and 14', () => {
