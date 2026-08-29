@@ -54,7 +54,7 @@ const LoginPage = ({ darkMode }) => {
             footer={(
                 <>
                     New here?{' '}
-                    <Link to="/signup" className="font-semibold text-emerald-500 hover:text-emerald-400">
+                    <Link to="/signup" className="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400">
                         Create an account
                     </Link>
                 </>
@@ -91,7 +91,7 @@ const LoginPage = ({ darkMode }) => {
                 <div className="flex justify-end">
                     <Link
                         to="/forgot-password"
-                        className="text-sm font-semibold text-emerald-500 hover:text-emerald-400"
+                        className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400"
                     >
                         Forgot your password?
                     </Link>

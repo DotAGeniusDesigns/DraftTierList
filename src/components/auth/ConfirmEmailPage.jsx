@@ -41,7 +41,7 @@ const ConfirmEmailPage = ({ darkMode }) => {
             title="Confirm email"
             subtitle="Finish changing the email address on your account."
             footer={(
-                <Link to="/profile" className="font-semibold text-emerald-500 hover:text-emerald-400">
+                <Link to="/profile" className="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400">
                     Back to profile
                 </Link>
             )}

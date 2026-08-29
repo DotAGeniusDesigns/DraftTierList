@@ -17,7 +17,7 @@ const ComingSoonPage = ({
                         <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 text-3xl shadow-glow">
                             {icon}
                         </div>
-                        <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-emerald-500">
+                        <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400">
                             Coming Soon
                         </p>
                         <h1 className={`font-display text-3xl font-bold tracking-tight sm:text-4xl ${ui.heading(darkMode)}`}>
@@ -46,7 +46,7 @@ const ComingSoonPage = ({
                                         key={feature.title}
                                         className={`${ui.cardInset(darkMode)} flex items-start gap-3 p-4`}
                                     >
-                                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-sm text-emerald-500">
+                                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-sm text-emerald-600 dark:text-emerald-400">
                                             ✓
                                         </span>
                                         <div>

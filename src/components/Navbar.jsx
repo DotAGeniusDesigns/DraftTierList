@@ -170,7 +170,7 @@ const Navbar = ({ darkMode, onToggleDarkMode }) => {
         <span
             className={`rounded px-1 py-px text-[9px] font-bold uppercase leading-[1.4] tracking-wide ${
                 inMenu ? 'ml-auto' : ''
-            } ${darkMode ? 'bg-amber-400/15 text-amber-300' : 'bg-amber-100 text-amber-700'}`}
+            } ${darkMode ? 'bg-slate-950/80 text-emerald-400' : 'bg-amber-100 text-amber-700'}`}
         >
             Beta
         </span>

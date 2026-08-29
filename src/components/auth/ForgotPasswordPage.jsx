@@ -86,7 +86,7 @@ const ForgotPasswordPage = ({ darkMode }) => {
             footer={(
                 <>
                     Remembered it?{' '}
-                    <Link to="/login" className="font-semibold text-emerald-500 hover:text-emerald-400">
+                    <Link to="/login" className="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400">
                         Back to sign in
                     </Link>
                 </>

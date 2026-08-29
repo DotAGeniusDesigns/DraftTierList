@@ -815,7 +815,7 @@ function App() {
                                                         setScoringFormat(option.id);
                                                         setIsScoringDropdownOpen(false);
                                                     }}
-                                                    className="h-4 w-4 border-slate-300 text-emerald-500 focus:ring-emerald-500/30 disabled:cursor-not-allowed"
+                                                    className="h-4 w-4 border-slate-300 text-emerald-600 dark:text-emerald-400 focus:ring-emerald-500/30 disabled:cursor-not-allowed"
                                                 />
                                                 <span className={`text-sm font-medium ${ui.heading(darkMode)}`}>
                                                     {option.label}
@@ -848,7 +848,7 @@ function App() {
                                                     type="checkbox"
                                                     checked={positionFilters.includes(position)}
                                                     onChange={() => handlePositionFilterChange(position)}
-                                                    className="h-4 w-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500/30"
+                                                    className="h-4 w-4 rounded border-slate-300 text-emerald-600 dark:text-emerald-400 focus:ring-emerald-500/30"
                                                 />
                                                 <span {...getPositionTagStyle(position)}>
                                                     {position}
@@ -881,7 +881,7 @@ function App() {
                                                     type="checkbox"
                                                     checked={flagFilters.includes(key)}
                                                     onChange={() => handleFlagFilterChange(key)}
-                                                    className="h-4 w-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500/30"
+                                                    className="h-4 w-4 rounded border-slate-300 text-emerald-600 dark:text-emerald-400 focus:ring-emerald-500/30"
                                                 />
                                                 <svg className={`h-4 w-4 ${flag.tone}`} fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                                     <path fillRule="evenodd" d={FLAG_ICONS[key]} clipRule="evenodd" />

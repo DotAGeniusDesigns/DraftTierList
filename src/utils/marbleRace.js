@@ -247,7 +247,7 @@ export function createMarbleRace(canvas, callbacks = {}) {
             const label = yardMarker(toGo);
             if (label === 0) continue; // goal lines are drawn separately
             g.save();
-            g.font = `800 ${mid ? 44 : 36}px "Inter", system-ui, sans-serif`;
+            g.font = `800 ${mid ? 44 : 36}px "Barlow", system-ui, sans-serif`;
             g.textAlign = 'center';
             g.textBaseline = 'middle';
             g.fillStyle = `rgba(255,255,255,${mid ? 0.17 : 0.12})`;
@@ -293,7 +293,7 @@ export function createMarbleRace(canvas, callbacks = {}) {
         // deep as it was.
         g.save();
         if ('letterSpacing' in g) g.letterSpacing = '8px';
-        g.font = '800 34px "Fraunces", "Inter", system-ui, sans-serif';
+        g.font = '800 34px "Barlow Condensed", "Barlow", system-ui, sans-serif';
         g.textAlign = 'center';
         g.textBaseline = 'middle';
         g.fillStyle = 'rgba(209,250,229,0.75)';
@@ -915,11 +915,11 @@ export function createMarbleRace(canvas, callbacks = {}) {
                 // Once a team scores, its label becomes the pick it just won —
                 // the ordinal alone, because a full board ends up stacked in one
                 // end zone and the long form turns that into a smear.
-                ctx.font = '700 11px "Inter", system-ui, sans-serif';
+                ctx.font = '700 11px "Barlow", system-ui, sans-serif';
                 ctx.fillStyle = pos === 0 ? '#fbbf24' : 'rgba(244,244,245,0.88)';
                 ctx.fillText(ordinal(pos + 1), x, y - r - 7);
             } else {
-                ctx.font = 'bold 10px "Inter", Arial';
+                ctx.font = 'bold 10px "Barlow", Arial';
                 ctx.fillStyle = m.color;
                 ctx.fillText(m.name, x, y - r - 7);
             }
@@ -928,7 +928,7 @@ export function createMarbleRace(canvas, callbacks = {}) {
 
         if (!raceStarted) {
             ctx.save();
-            ctx.font = '600 13px "Inter", system-ui, sans-serif';
+            ctx.font = '600 13px "Barlow", system-ui, sans-serif';
             ctx.fillStyle = 'rgba(244,244,245,0.32)'; ctx.textAlign = 'center';
             ctx.fillText('Kick off to set your draft order', W / 2, 150);
             ctx.restore();
@@ -955,13 +955,13 @@ export function createMarbleRace(canvas, callbacks = {}) {
             ctx.fill();
             ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
             if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(panelX, 8, panelW, bh, 10); ctx.stroke(); }
-            ctx.font = '700 9px "Inter", system-ui, sans-serif'; ctx.textAlign = 'left';
+            ctx.font = '700 9px "Barlow", system-ui, sans-serif'; ctx.textAlign = 'left';
             ctx.fillStyle = 'rgba(244,244,245,0.4)';
             ctx.fillText('DRAFT ORDER', panelX + 12, 22);
             ranked.forEach((m, i) => {
                 const yy = 38 + i * 18;
                 ctx.textAlign = 'left';
-                ctx.font = '600 11px "Inter", system-ui, sans-serif';
+                ctx.font = '600 11px "Barlow", system-ui, sans-serif';
                 ctx.fillStyle = 'rgba(244,244,245,0.4)';
                 ctx.fillText(`${i + 1}`, panelX + 10, yy);
                 ctx.fillStyle = m.color;
@@ -973,7 +973,7 @@ export function createMarbleRace(canvas, callbacks = {}) {
 
                 // Distance still to travel, in the language of the field.
                 ctx.textAlign = 'right';
-                ctx.font = '600 10px "Inter", system-ui, sans-serif';
+                ctx.font = '600 10px "Barlow", system-ui, sans-serif';
                 ctx.fillStyle = m.finished ? 'rgba(52,211,153,0.9)' : 'rgba(244,244,245,0.42)';
                 ctx.fillText(
                     m.finished ? pickLabel(finishOrder.indexOf(m)) : `${Math.ceil(yardsToGoAt(m.body.position.y))} yd`,

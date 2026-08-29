@@ -375,21 +375,24 @@ is why the adjustment belongs in the weekly view rather than in the projection.
 
 ## Front-end conventions
 
-- **The theme is "Press Box"** — warm newsprint paper, Fraunces serif headlines
-  (h1–h3, via `index.css`), Inter body, crimson accent, flat hairline shadows,
-  crisp corners. It is implemented as a token remap in `tailwind.config.js`:
-  `slate` is the warm neutral scale (paper at the light end, mahogany at the
-  dark end — dark mode is red-brown surfaces with cream type), `emerald` is
-  the brand accent (crimson at 500+, cream/gold at 300–400 since those are the
-  shades dark mode reads accents in), `teal` is the rust gradient partner, and
-  `white` is paper `#fdfaf3`.
-  So `text-emerald-600` in a component means "accent text", not green — do not
-  "fix" the names, the remap is the mechanism that themes 35+ files at once.
-- Because of that remap, anything that semantically means *good* must use the
-  untouched `green` family (positive deltas, grade A, confidence "high", the
-  Upside flag, success alerts, the live-sync dot) — a positive signal rendered
-  in `emerald` comes out crimson and reads as an error. The football field in
-  `marbleRace.js` keeps its literal greens; the end zone is turf, not a token.
+- **The theme is "Volt Gridiron"** — OLED near-black surfaces, electric
+  volt-lime accent (#ccff00), uppercase Barlow Condensed headlines (h1–h3, via
+  `index.css`), Barlow body. It is implemented as a token remap in
+  `tailwind.config.js`: `slate` is the cool near-black neutral scale, `emerald`
+  is the volt accent family, `teal` is lime (its gradient partner). So
+  `bg-emerald-500` in a component means "volt fill", not green — do not "fix"
+  the names, the remap is the mechanism that themes 35+ files at once.
+- Volt is a **fill color, never white-carrying and never text-on-white**:
+  anything sitting on a volt fill uses `text-slate-950`, and shared accent
+  labels are written `text-emerald-600 dark:text-emerald-400` (olive in light
+  mode, bright volt in dark). `darkMode: 'class'` in the Tailwind config makes
+  `dark:` variants follow the `html.dark` class App.jsx toggles — this pattern
+  depends on it.
+- Anything that semantically means *good* must use the untouched `green`
+  family (positive deltas, grade A, confidence "high", the Upside flag,
+  success alerts, the live-sync dot) — true green, distinct from the
+  yellow-green volt. The football field in `marbleRace.js` keeps its literal
+  greens; the end zone is turf, not a token.
 - Dark mode is a `darkMode` boolean threaded down as a prop, persisted via
   `useLocalStorage('dark-mode')`. There is no theme context.
 - Styling helpers live in `src/utils/uiTheme.js` (`ui.card(dark)`, `ui.btn(dark)`,

@@ -10,7 +10,7 @@ const NotFoundPage = ({ darkMode }) => (
             <div className="mx-auto mb-6 flex justify-center">
                 <BrandLogo className="h-16 w-16 sm:h-20 sm:w-20" />
             </div>
-            <p className="mb-2 text-sm font-bold uppercase tracking-[0.2em] text-emerald-500">
+            <p className="mb-2 text-sm font-bold uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400">
                 404
             </p>
             <h1 className={`font-display text-3xl font-bold tracking-tight sm:text-4xl ${ui.heading(darkMode)}`}>

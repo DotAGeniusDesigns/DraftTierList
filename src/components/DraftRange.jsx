@@ -171,7 +171,7 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
         <div className="p-4 sm:p-6">
             <div className="mx-auto max-w-6xl">
                 <div className="mb-6">
-                    <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-500">
+                    <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400">
                         Draft Tool
                     </p>
                     <h1 className={`font-display text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl ${ui.heading(darkMode)}`}>
@@ -234,7 +234,7 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
                                             }
                                         }}
                                         className={`cursor-pointer rounded-lg px-3 py-2 text-sm font-semibold transition ${positionFilter.includes(position)
-                                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-glow'
+                                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-glow'
                                             : darkMode
                                                 ? 'bg-slate-800/70 text-slate-300 ring-1 ring-white/5 hover:bg-slate-700/70'
                                                 : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'
@@ -320,7 +320,7 @@ const DraftRange = ({ darkMode, allPlayers = [] }) => {
                     {Object.entries(availablePlayers).map(([round, data]) => (
                         <div key={round} className={`${ui.card(darkMode)} overflow-hidden`}>
                             <div className={`flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-5 py-4 sm:px-6 ${darkMode ? 'border-white/5' : 'border-slate-100'}`}>
-                                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-sm font-bold text-white shadow-glow">
+                                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-sm font-bold text-slate-950 shadow-glow">
                                     {round}
                                 </span>
                                 <div className="min-w-0">

@@ -9,7 +9,7 @@
 
   body {
     margin: 0;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Barlow', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     touch-action: manipulation;
@@ -30,20 +30,22 @@
     font-family: inherit;
   }
 
-  /* Press Box: headlines are serif across the app. h4+ stay in the body face
-     so dense stat blocks don't turn into a wall of serifs. */
+  /* Volt Gridiron: headlines are uppercase condensed across the app. h4+
+     stay in the body face so dense stat blocks keep their legibility. */
   h1,
   h2,
   h3 {
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: 'Barlow Condensed', system-ui, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
   }
 
   ::selection {
-    background: rgba(179, 48, 28, 0.2);
+    background: rgba(204, 255, 0, 0.3);
   }
 
   :focus-visible {
-    outline: 2px solid rgba(179, 48, 28, 0.55);
+    outline: 2px solid rgba(204, 255, 0, 0.6);
     outline-offset: 2px;
   }
 
@@ -73,12 +75,12 @@
   }
 
   .tier-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(120, 113, 108, 0.35);
+    background: rgba(107, 114, 97, 0.35);
     border-radius: 999px;
   }
 
   .tier-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(120, 113, 108, 0.55);
+    background: rgba(107, 114, 97, 0.55);
   }
 
   .avatar-ring {
@@ -132,14 +134,14 @@
 }
 
 @layer utilities {
+  /* Volt is a fill color, unreadable as text on white — light mode reads the
+     brand gradient in olive→lime, dark mode in full volt→lime. */
   .text-gradient-brand {
-    @apply bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent;
   }
 
-  /* On mahogany, the brand headline is cream/gold — the crimson gradient
-     stays for light mode only. */
   html.dark .text-gradient-brand {
-    background-image: linear-gradient(to right, #f0dcae, #d9b985);
+    background-image: linear-gradient(to right, #ccff00, #a3e635);
   }
 
   .animate-result-in {

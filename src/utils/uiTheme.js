@@ -64,7 +64,7 @@ export const ui = {
             : 'inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/30',
 
     btnPrimary: () =>
-        'inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-3.5 py-2 text-sm font-semibold text-white shadow-glow transition hover:from-emerald-400 hover:to-teal-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/50',
+        'inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-3.5 py-2 text-sm font-semibold text-slate-950 shadow-glow transition hover:from-emerald-400 hover:to-teal-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/50',
 
     navSegment: (dark) =>
         dark
@@ -76,7 +76,7 @@ export const ui = {
             'inline-flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-semibold transition sm:px-3 sm:text-sm';
         if (active) {
             return dark
-                ? `${base} bg-emerald-500 text-white shadow-sm shadow-emerald-900/30`
+                ? `${base} bg-emerald-500 text-slate-950 shadow-sm`
                 : `${base} bg-white text-emerald-700 shadow-sm ring-1 ring-slate-200/60`;
         }
         return dark

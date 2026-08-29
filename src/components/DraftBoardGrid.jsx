@@ -101,7 +101,7 @@ const DraftBoardGrid = ({ darkMode, players, teamCount, onClose }) => {
             }`}>
                 <div className={`flex shrink-0 items-center justify-between gap-3 border-b px-5 py-4 ${darkMode ? 'border-white/5' : 'border-slate-100'}`}>
                     <div>
-                        <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-500">Draft Mode</p>
+                        <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Draft Mode</p>
                         <h2 className={`text-lg font-bold ${ui.heading(darkMode)}`}>Draft Board</h2>
                     </div>
                     <button

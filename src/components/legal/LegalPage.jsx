@@ -21,7 +21,7 @@ export const LegalList = ({ children }) => (
 const LegalPage = ({ darkMode, title, effectiveDate, summary, children }) => (
     <div className="container mx-auto max-w-3xl px-4 py-8 sm:py-12">
         <div className={`${ui.card(darkMode)} p-6 sm:p-10`}>
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-500">
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400">
                 Legal
             </p>
             <h1 className={`font-display text-2xl font-bold tracking-tight sm:text-3xl ${ui.heading(darkMode)}`}>

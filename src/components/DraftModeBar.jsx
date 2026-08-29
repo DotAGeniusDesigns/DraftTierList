@@ -28,7 +28,7 @@ const DraftModeBar = ({ darkMode, teamCount, draftedCount, lastPickName, onShowG
                         : 'bg-white/95'
                 }`}
             >
-                <span className="hidden shrink-0 items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-500 sm:inline-flex">
+                <span className="hidden shrink-0 items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 sm:inline-flex">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                     Draft Mode
                 </span>

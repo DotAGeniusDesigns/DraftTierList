@@ -73,7 +73,7 @@ const AccountMenu = ({ darkMode, compact = false }) => {
                     setLogoutState((prev) => ({ ...prev, error: null }));
                     setOpen((prev) => !prev);
                 }}
-                className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-sm font-bold text-white shadow-glow transition hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-emerald-400/50 sm:h-10 sm:w-10"
+                className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-sm font-bold text-slate-950 shadow-glow transition hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-emerald-400/50 sm:h-10 sm:w-10"
                 aria-haspopup="true"
                 aria-expanded={open}
                 aria-label={`Account menu for ${user.username}`}

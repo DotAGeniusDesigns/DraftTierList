@@ -140,7 +140,7 @@ const ExportImport = ({ players, scoringFormat, onImportPlayers, darkMode }) => 
                     disabled={isSharing}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${isSharing
                             ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-                            : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                            : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950'
                         }`}
                 >
                     {isSharing ? 'Building link...' : '🔗 Copy Share Link'}

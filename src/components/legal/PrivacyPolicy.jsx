@@ -131,7 +131,7 @@ const PrivacyPolicy = ({ darkMode }) => (
                             href={processor.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-semibold text-emerald-500 hover:text-emerald-400"
+                            className="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400"
                         >
                             Privacy policy
                         </a>
@@ -162,7 +162,7 @@ const PrivacyPolicy = ({ darkMode }) => (
 
         <LegalSection darkMode={darkMode} id="your-rights" title="Your choices and rights">
             <p>Most of this is self-serve from your{' '}
-                <Link to="/profile" className="font-semibold text-emerald-500 hover:text-emerald-400">
+                <Link to="/profile" className="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400">
                     profile page
                 </Link>:
             </p>
@@ -186,7 +186,7 @@ const PrivacyPolicy = ({ darkMode }) => (
                 email us at{' '}
                 <a
                     href={`mailto:${CONTACT_EMAIL}`}
-                    className="font-semibold text-emerald-500 hover:text-emerald-400"
+                    className="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400"
                 >
                     {CONTACT_EMAIL}
                 </a>
@@ -199,7 +199,7 @@ const PrivacyPolicy = ({ darkMode }) => (
                 Questions about this policy or your data? Email{' '}
                 <a
                     href={`mailto:${CONTACT_EMAIL}`}
-                    className="font-semibold text-emerald-500 hover:text-emerald-400"
+                    className="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400"
                 >
                     {CONTACT_EMAIL}
                 </a>
@@ -233,7 +233,7 @@ const PrivacyPolicy = ({ darkMode }) => (
         <LegalSection darkMode={darkMode} id="related" title="Related">
             <p>
                 See also our{' '}
-                <Link to="/terms" className="font-semibold text-emerald-500 hover:text-emerald-400">
+                <Link to="/terms" className="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400">
                     Terms of Service
                 </Link>.
             </p>

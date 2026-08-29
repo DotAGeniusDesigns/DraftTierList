@@ -249,7 +249,7 @@ const TeamCard = ({ abbr, team, info, liveNews, depthChart, darkMode, open, onTo
                             {team.name}
                         </h3>
                         {isNewHc && (
-                            <span className="inline-flex items-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white shadow-glow">
+                            <span className="inline-flex items-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-950 shadow-glow">
                                 New HC
                             </span>
                         )}
@@ -272,7 +272,7 @@ const TeamCard = ({ abbr, team, info, liveNews, depthChart, darkMode, open, onTo
                     <div className="mb-4 grid grid-cols-1 gap-3 md:grid-cols-3">
                         <MoveList
                             title="Key Additions"
-                            accent="text-emerald-500"
+                            accent="text-emerald-600 dark:text-emerald-400"
                             moves={info.additions}
                             darkMode={darkMode}
                             emptyLabel="No major additions"
@@ -317,7 +317,7 @@ const TeamCard = ({ abbr, team, info, liveNews, depthChart, darkMode, open, onTo
                             darkMode ? 'bg-emerald-500/[0.06]' : 'bg-emerald-50/70'
                         }`}
                     >
-                        <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-500">
+                        <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-600 dark:text-emerald-400">
                             2026 Key Points
                         </p>
                         <ul className="space-y-2">
@@ -326,7 +326,7 @@ const TeamCard = ({ abbr, team, info, liveNews, depthChart, darkMode, open, onTo
                                     <svg
                                         viewBox="0 0 20 20"
                                         fill="currentColor"
-                                        className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500"
+                                        className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400"
                                         aria-hidden="true"
                                     >
                                         <path fillRule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.5 7.5a1 1 0 01-1.42 0l-3.5-3.5a1 1 0 111.42-1.42l2.79 2.79 6.79-6.79a1 1 0 011.42 0z" clipRule="evenodd" />
@@ -420,7 +420,7 @@ const OffseasonHub = ({ darkMode }) => {
     return (
         <div className="container mx-auto max-w-5xl px-3 py-5 sm:px-4 sm:py-8">
             <div className="mb-5">
-                <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-500">
+                <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400">
                     2026 Season
                 </p>
                 <h1 className={`font-display text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl ${ui.heading(darkMode)}`}>
@@ -485,7 +485,7 @@ const OffseasonHub = ({ darkMode }) => {
                                 onClick={() => setDivisionFilter(division)}
                                 className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition sm:text-sm ${
                                     active
-                                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-glow'
+                                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-glow'
                                         : darkMode
                                             ? 'bg-slate-800/70 text-slate-300 ring-1 ring-white/5 hover:bg-slate-700/70'
                                             : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'

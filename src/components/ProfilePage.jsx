@@ -262,7 +262,7 @@ const ProfilePage = ({ darkMode, players, scoringFormat, onLoadBoard }) => {
     return (
         <div className="container mx-auto max-w-3xl px-3 py-6 sm:px-4 sm:py-10">
             <div className="mb-6">
-                <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-500">
+                <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400">
                     Account
                 </p>
                 <h1 className={`font-display text-2xl font-bold tracking-tight sm:text-3xl ${ui.heading(darkMode)}`}>
@@ -283,7 +283,7 @@ const ProfilePage = ({ darkMode, players, scoringFormat, onLoadBoard }) => {
                 {/* Overview */}
                 <div className={`${ui.card(darkMode)} flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6`}>
                     <div className="flex min-w-0 items-center gap-4">
-                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 text-xl font-bold text-white shadow-glow">
+                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 text-xl font-bold text-slate-950 shadow-glow">
                             {user.username.slice(0, 2).toUpperCase()}
                         </div>
                         <div className="min-w-0">

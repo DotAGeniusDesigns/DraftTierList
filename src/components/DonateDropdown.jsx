@@ -159,7 +159,7 @@ export const DonatePanel = ({ darkMode, onClose }) => (
     >
         <div className="mb-4 flex items-start justify-between gap-3">
             <div className="min-w-0">
-                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-500">
+                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-600 dark:text-emerald-400">
                     Support the project
                 </p>
                 <h2 className={`mt-1 text-base font-bold sm:text-lg ${ui.heading(darkMode)}`}>

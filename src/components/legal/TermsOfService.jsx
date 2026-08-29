@@ -54,7 +54,7 @@ const TermsOfService = ({ darkMode }) => (
             </LegalList>
             <p>
                 You can delete your account at any time from your{' '}
-                <Link to="/profile" className="font-semibold text-emerald-500 hover:text-emerald-400">
+                <Link to="/profile" className="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400">
                     profile page
                 </Link>. We may suspend or terminate accounts that breach these terms, or that we
                 reasonably believe are being used to harm the service or other users.
@@ -170,7 +170,7 @@ const TermsOfService = ({ darkMode }) => (
             </p>
             <p>
                 Read our{' '}
-                <Link to="/privacy" className="font-semibold text-emerald-500 hover:text-emerald-400">
+                <Link to="/privacy" className="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400">
                     Privacy Policy
                 </Link>.
             </p>

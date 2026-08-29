@@ -119,7 +119,7 @@ const SignupPage = ({ darkMode }) => {
             footer={(
                 <>
                     Already have an account?{' '}
-                    <Link to="/login" className="font-semibold text-emerald-500 hover:text-emerald-400">
+                    <Link to="/login" className="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400">
                         Sign in
                     </Link>
                 </>
@@ -196,15 +196,15 @@ const SignupPage = ({ darkMode }) => {
                             disabled={submitting}
                             aria-invalid={Boolean(fieldErrors.acceptedTerms)}
                             aria-describedby={fieldErrors.acceptedTerms ? 'accepted-terms-error' : undefined}
-                            className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500/30"
+                            className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-emerald-600 dark:text-emerald-400 focus:ring-emerald-500/30"
                         />
                         <span className={`text-sm leading-relaxed ${ui.muted(darkMode)}`}>
                             I agree to the{' '}
-                            <Link to="/terms" className="font-semibold text-emerald-500 hover:text-emerald-400">
+                            <Link to="/terms" className="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400">
                                 Terms of Service
                             </Link>{' '}
                             and{' '}
-                            <Link to="/privacy" className="font-semibold text-emerald-500 hover:text-emerald-400">
+                            <Link to="/privacy" className="font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-400">
                                 Privacy Policy
                             </Link>
                             .
