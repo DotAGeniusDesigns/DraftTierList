@@ -9,7 +9,7 @@
 
   body {
     margin: 0;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     touch-action: manipulation;
@@ -30,12 +30,20 @@
     font-family: inherit;
   }
 
+  /* Press Box: headlines are serif across the app. h4+ stay in the body face
+     so dense stat blocks don't turn into a wall of serifs. */
+  h1,
+  h2,
+  h3 {
+    font-family: 'Fraunces', Georgia, serif;
+  }
+
   ::selection {
-    background: rgba(16, 185, 129, 0.25);
+    background: rgba(179, 48, 28, 0.2);
   }
 
   :focus-visible {
-    outline: 2px solid rgba(16, 185, 129, 0.6);
+    outline: 2px solid rgba(179, 48, 28, 0.55);
     outline-offset: 2px;
   }
 
@@ -65,12 +73,12 @@
   }
 
   .tier-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(100, 116, 139, 0.35);
+    background: rgba(120, 113, 108, 0.35);
     border-radius: 999px;
   }
 
   .tier-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(100, 116, 139, 0.55);
+    background: rgba(120, 113, 108, 0.55);
   }
 
   .avatar-ring {

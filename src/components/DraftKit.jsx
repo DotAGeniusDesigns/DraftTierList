@@ -58,8 +58,8 @@ const CONFIDENCE = {
 // projection it was qualifying.
 const CONFIDENCE_TONE = {
     high: (dark) => (dark
-        ? 'bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20'
-        : 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'),
+        ? 'bg-green-400/10 text-green-300 ring-1 ring-green-400/20'
+        : 'bg-green-50 text-green-700 ring-1 ring-green-200'),
     medium: (dark) => (dark
         ? 'bg-sky-400/10 text-sky-300 ring-1 ring-sky-400/20'
         : 'bg-sky-50 text-sky-700 ring-1 ring-sky-200'),
@@ -173,7 +173,7 @@ const DriverBar = ({ darkMode, driver, axis }) => {
                 <div
                     className={`absolute inset-y-0 rounded-full ${
                         positive
-                            ? (darkMode ? 'bg-emerald-400' : 'bg-emerald-500')
+                            ? (darkMode ? 'bg-green-400' : 'bg-green-500')
                             : (darkMode ? 'bg-rose-400' : 'bg-rose-500')
                     }`}
                     style={positive
@@ -185,7 +185,7 @@ const DriverBar = ({ darkMode, driver, axis }) => {
             <div
                 className={`w-11 shrink-0 text-right text-[13px] font-bold tabular-nums ${
                     positive
-                        ? (darkMode ? 'text-emerald-300' : 'text-emerald-600')
+                        ? (darkMode ? 'text-green-300' : 'text-green-600')
                         : (darkMode ? 'text-rose-300' : 'text-rose-600')
                 }`}
             >
@@ -331,7 +331,7 @@ const PlayerCard = ({ darkMode, row, positionColors }) => {
                         label="vs ADP"
                         sub={describeAdpGap(adpGap)}
                         tone={adpScore >= 66
-                            ? (darkMode ? 'text-emerald-300' : 'text-emerald-600')
+                            ? (darkMode ? 'text-green-300' : 'text-green-600')
                             : adpScore <= 33
                                 ? (darkMode ? 'text-rose-300' : 'text-rose-600')
                                 : undefined}
@@ -426,7 +426,7 @@ const PlayerCard = ({ darkMode, row, positionColors }) => {
                                 <span
                                     className={`text-[11px] font-semibold tabular-nums ${
                                         projection.otherContribution >= 0
-                                            ? (darkMode ? 'text-emerald-300' : 'text-emerald-600')
+                                            ? (darkMode ? 'text-green-300' : 'text-green-600')
                                             : (darkMode ? 'text-rose-300' : 'text-rose-600')
                                     }`}
                                 >

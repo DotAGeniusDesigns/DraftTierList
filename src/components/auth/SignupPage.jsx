@@ -21,7 +21,7 @@ const StrengthMeter = ({ darkMode, password }) => {
     const { score, label } = useMemo(() => passwordStrength(password), [password]);
     if (!password) return null;
 
-    const tone = score <= 1 ? 'bg-rose-500' : score === 2 ? 'bg-amber-500' : 'bg-emerald-500';
+    const tone = score <= 1 ? 'bg-rose-500' : score === 2 ? 'bg-amber-500' : 'bg-green-500';
 
     return (
         <div className="mt-2">

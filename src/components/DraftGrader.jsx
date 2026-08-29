@@ -27,7 +27,7 @@ const SLOT_KEYS = ['QB', 'RB', 'WR', 'TE', 'FLEX', 'SUPERFLEX'];
 
 const GRADE_TONE = (grade, dark) => {
     const letter = grade[0];
-    if (letter === 'A') return dark ? 'text-emerald-300' : 'text-emerald-600';
+    if (letter === 'A') return dark ? 'text-green-300' : 'text-green-600';
     if (letter === 'B') return dark ? 'text-sky-300' : 'text-sky-600';
     if (letter === 'C') return dark ? 'text-amber-300' : 'text-amber-600';
     return dark ? 'text-rose-300' : 'text-rose-600';
@@ -81,7 +81,7 @@ const WeekBars = ({ darkMode, weeks, average, selected, onSelect }) => {
                             } ${
                                 w.points < average
                                     ? (darkMode ? 'bg-rose-400' : 'bg-rose-400')
-                                    : (darkMode ? 'bg-emerald-400' : 'bg-emerald-500')
+                                    : (darkMode ? 'bg-green-400' : 'bg-green-500')
                             }`}
                             style={{ height: height(w.points) }}
                         />
@@ -360,7 +360,7 @@ const DraftGrader = ({ darkMode, allPlayers = [] }) => {
                             <div>
                                 <div className={`font-display text-[32px] leading-none ${
                                     result.differential >= 0
-                                        ? (darkMode ? 'text-emerald-300' : 'text-emerald-600')
+                                        ? (darkMode ? 'text-green-300' : 'text-green-600')
                                         : (darkMode ? 'text-rose-300' : 'text-rose-600')
                                 }`}
                                 >
@@ -415,7 +415,7 @@ const DraftGrader = ({ darkMode, allPlayers = [] }) => {
                                     <span className={`text-sm font-semibold tabular-nums ${
                                         w.points < result.average.total
                                             ? (darkMode ? 'text-rose-300' : 'text-rose-600')
-                                            : (darkMode ? 'text-emerald-300' : 'text-emerald-600')
+                                            : (darkMode ? 'text-green-300' : 'text-green-600')
                                     }`}
                                     >
                                         {w.points.toFixed(1)} pts
@@ -443,7 +443,7 @@ const DraftGrader = ({ darkMode, allPlayers = [] }) => {
                                                         <span
                                                             className={`shrink-0 text-[11px] tabular-nums ${
                                                                 adjust > 0.2
-                                                                    ? (darkMode ? 'text-emerald-300' : 'text-emerald-600')
+                                                                    ? (darkMode ? 'text-green-300' : 'text-green-600')
                                                                     : adjust < -0.2
                                                                         ? (darkMode ? 'text-rose-300' : 'text-rose-600')
                                                                         : ui.muted(darkMode)

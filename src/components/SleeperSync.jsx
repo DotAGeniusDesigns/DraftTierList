@@ -9,7 +9,7 @@ import { ui } from '../utils/uiTheme';
 const STATUS_META = {
     idle: { dot: 'bg-slate-400', label: 'Not connected' },
     connecting: { dot: 'bg-amber-400 animate-pulse', label: 'Connecting...' },
-    live: { dot: 'bg-emerald-500 animate-pulse', label: 'Live' },
+    live: { dot: 'bg-green-500 animate-pulse', label: 'Live' },
     error: { dot: 'bg-rose-500', label: 'Reconnecting' },
 };
 

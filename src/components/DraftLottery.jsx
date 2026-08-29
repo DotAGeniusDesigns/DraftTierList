@@ -90,7 +90,7 @@ async function buildResultsImage({ startedAt, order }) {
     ctx.fillStyle = '#0b0e13';
     ctx.fillRect(0, 0, W, H);
     const glow = ctx.createRadialGradient(W / 2, -60, 0, W / 2, -60, 460);
-    glow.addColorStop(0, 'rgba(16,185,129,0.20)');
+    glow.addColorStop(0, 'rgba(205,98,71,0.20)');
     glow.addColorStop(1, 'transparent');
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, W, 300);
@@ -99,17 +99,17 @@ async function buildResultsImage({ startedAt, order }) {
     ctx.textAlign = 'left';
     ctx.save();
     if ('letterSpacing' in ctx) ctx.letterSpacing = '3px';
-    ctx.fillStyle = '#34d399';
-    ctx.font = '700 12px "DM Sans", system-ui, sans-serif';
+    ctx.fillStyle = '#cd6247';
+    ctx.font = '700 12px "Inter", system-ui, sans-serif';
     ctx.fillText('FANTASY TOOLKIT', padX, 50);
     ctx.restore();
 
     ctx.fillStyle = '#f4f4f5';
-    ctx.font = '800 34px "Bricolage Grotesque", "DM Sans", system-ui, sans-serif';
+    ctx.font = '800 34px "Fraunces", "Inter", system-ui, sans-serif';
     ctx.fillText('Draft Order', padX, 92);
 
     ctx.fillStyle = '#8b95a7';
-    ctx.font = '500 14px "DM Sans", system-ui, sans-serif';
+    ctx.font = '500 14px "Inter", system-ui, sans-serif';
     ctx.fillText(`Race started ${formatStarted(startedAt)}`, padX, 120);
 
     // Divider
@@ -125,13 +125,13 @@ async function buildResultsImage({ startedAt, order }) {
         const top = headerH + i * rowH;
         const mid = top + rowH / 2;
         if (i === 0) {
-            ctx.fillStyle = 'rgba(16,185,129,0.10)';
+            ctx.fillStyle = 'rgba(205,98,71,0.12)';
             drawRoundRect(ctx, padX - 14, top + 2, W - 2 * (padX - 14), rowH - 6, 10);
             ctx.fill();
         }
         ctx.textAlign = 'left';
-        ctx.fillStyle = i === 0 ? '#34d399' : '#6f7787';
-        ctx.font = '700 15px "DM Sans", system-ui, sans-serif';
+        ctx.fillStyle = i === 0 ? '#cd6247' : '#6f7787';
+        ctx.font = '700 15px "Inter", system-ui, sans-serif';
         ctx.fillText(String(i + 1), padX, mid + 5);
 
         ctx.fillStyle = t.color;
@@ -140,25 +140,25 @@ async function buildResultsImage({ startedAt, order }) {
         ctx.fill();
 
         ctx.fillStyle = '#f4f4f5';
-        ctx.font = '600 16px "DM Sans", system-ui, sans-serif';
+        ctx.font = '600 16px "Inter", system-ui, sans-serif';
         ctx.fillText(t.name, padX + 62, mid + 5);
 
         ctx.textAlign = 'right';
         ctx.fillStyle = '#8b95a7';
-        ctx.font = '500 13px "DM Sans", system-ui, sans-serif';
+        ctx.font = '500 13px "Inter", system-ui, sans-serif';
         ctx.fillText(t.finished ? `${(t.finishTime / 1000).toFixed(2)}s` : 'DNF', W - padX, mid + 5);
     });
 
     // Footer
     ctx.textAlign = 'left';
     ctx.fillStyle = '#5b6472';
-    ctx.font = '500 12px "DM Sans", system-ui, sans-serif';
+    ctx.font = '500 12px "Inter", system-ui, sans-serif';
     ctx.fillText('Draft Lottery · first to the end zone picks first', padX, H - 24);
     const winner = order[0];
     if (winner) {
         ctx.textAlign = 'right';
-        ctx.fillStyle = '#34d399';
-        ctx.font = '700 12px "DM Sans", system-ui, sans-serif';
+        ctx.fillStyle = '#cd6247';
+        ctx.font = '700 12px "Inter", system-ui, sans-serif';
         ctx.fillText(`1st pick  ${winner.name}`, W - padX, H - 24);
     }
 

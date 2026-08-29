@@ -111,9 +111,12 @@ export const ui = {
             error: dark
                 ? 'border-rose-500/25 bg-rose-500/10 text-rose-200'
                 : 'border-rose-200 bg-rose-50 text-rose-700',
+            // Real green, not the accent: `emerald` is remapped to the brand
+            // crimson in tailwind.config.js, and a success banner in red
+            // reads as a failure.
             success: dark
-                ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-200'
-                : 'border-emerald-200 bg-emerald-50 text-emerald-700',
+                ? 'border-green-500/25 bg-green-500/10 text-green-200'
+                : 'border-green-200 bg-green-50 text-green-700',
             info: dark
                 ? 'border-sky-500/25 bg-sky-500/10 text-sky-200'
                 : 'border-sky-200 bg-sky-50 text-sky-700',

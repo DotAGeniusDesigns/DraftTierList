@@ -134,7 +134,7 @@ const rankTone = (rank, darkMode) => {
         return { text: ui.muted(darkMode), wrap: darkMode ? 'bg-slate-800/50 ring-white/5' : 'bg-slate-100 ring-slate-200' };
     }
     if (rank <= 10) {
-        return { text: darkMode ? 'text-emerald-300' : 'text-emerald-700', wrap: darkMode ? 'bg-emerald-500/10 ring-emerald-500/20' : 'bg-emerald-50 ring-emerald-200' };
+        return { text: darkMode ? 'text-green-300' : 'text-green-700', wrap: darkMode ? 'bg-green-500/10 ring-green-500/20' : 'bg-green-50 ring-green-200' };
     }
     if (rank <= 22) {
         return { text: darkMode ? 'text-amber-300' : 'text-amber-700', wrap: darkMode ? 'bg-amber-500/10 ring-amber-500/20' : 'bg-amber-50 ring-amber-200' };

@@ -68,7 +68,7 @@ const DraftGrader = React.lazy(() => import('./components/DraftGrader'));
 
 // The five user-set flags, in the order they appear on a player row.
 const FLAG_FILTERS = {
-    upside: { label: 'Upside', field: 'isUpside', tone: 'text-emerald-500' },
+    upside: { label: 'Upside', field: 'isUpside', tone: 'text-green-500' },
     risky: { label: 'Risky', field: 'isRisky', tone: 'text-amber-500' },
     handcuff: { label: 'Handcuff', field: 'isHandcuff', tone: 'text-sky-500' },
     favorite: { label: 'Favorite', field: 'isFavorite', tone: 'text-yellow-500' },

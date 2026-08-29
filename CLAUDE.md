@@ -375,6 +375,18 @@ is why the adjustment belongs in the weekly view rather than in the projection.
 
 ## Front-end conventions
 
+- **The theme is "Press Box"** — warm newsprint paper, Fraunces serif headlines
+  (h1–h3, via `index.css`), Inter body, crimson accent, flat hairline shadows,
+  crisp corners. It is implemented as a token remap in `tailwind.config.js`:
+  `slate` is the warm paper/ink neutral scale, `emerald` is the crimson brand
+  accent, `teal` is its rust gradient partner, and `white` is paper `#fdfaf3`.
+  So `text-emerald-600` in a component means "accent text", not green — do not
+  "fix" the names, the remap is the mechanism that themes 35+ files at once.
+- Because of that remap, anything that semantically means *good* must use the
+  untouched `green` family (positive deltas, grade A, confidence "high", the
+  Upside flag, success alerts, the live-sync dot) — a positive signal rendered
+  in `emerald` comes out crimson and reads as an error. The football field in
+  `marbleRace.js` keeps its literal greens; the end zone is turf, not a token.
 - Dark mode is a `darkMode` boolean threaded down as a prop, persisted via
   `useLocalStorage('dark-mode')`. There is no theme context.
 - Styling helpers live in `src/utils/uiTheme.js` (`ui.card(dark)`, `ui.btn(dark)`,

@@ -8,26 +8,26 @@ const BrandLogo = ({ className = 'h-10 w-10' }) => (
         className={className}
         aria-hidden="true"
     >
-        <rect x="2" y="2" width="44" height="44" rx="11" fill="#0f172a" />
+        <rect x="2" y="2" width="44" height="44" rx="8" fill="#1c1917" />
         <rect
             x="2"
             y="2"
             width="44"
             height="44"
-            rx="11"
-            stroke="#10b981"
+            rx="8"
+            stroke="#cd6247"
             strokeWidth="1.5"
-            strokeOpacity="0.35"
+            strokeOpacity="0.4"
         />
-        {/* F — emerald */}
+        {/* F — crimson */}
         <path
             d="M13 11h11v3.5H16.5v5.25H23V23H16.5v14H13V11z"
-            fill="#10b981"
+            fill="#cd6247"
         />
-        {/* T — white */}
+        {/* T — paper */}
         <path
             d="M27 11h12v3.5H33.25v17.5H29.5V14.5H27V11z"
-            fill="#ffffff"
+            fill="#fdfaf3"
         />
     </svg>
 );
