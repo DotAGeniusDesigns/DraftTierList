@@ -136,6 +136,12 @@
     @apply bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent;
   }
 
+  /* On mahogany, the brand headline is cream/gold — the crimson gradient
+     stays for light mode only. */
+  html.dark .text-gradient-brand {
+    background-image: linear-gradient(to right, #f0dcae, #d9b985);
+  }
+
   .animate-result-in {
     animation: result-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }

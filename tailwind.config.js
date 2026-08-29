@@ -38,25 +38,31 @@ module.exports = {
             },
             colors: {
                 white: '#fdfaf3',
+                // The dark end (700–950) is mahogany, not near-black: dark mode
+                // is rich red-brown surfaces with cream type, per user request.
                 slate: {
                     50: '#f6f0e4',
                     100: '#f0e9d9',
                     200: '#e0d6c2',
-                    300: '#cbbda2',
+                    300: '#cfc0a4',
                     400: '#867c6d',
                     500: '#6b6255',
                     600: '#57503f',
-                    700: '#453f36',
-                    800: '#2b251d',
-                    900: '#1e1913',
-                    950: '#14100b',
+                    700: '#54382a',
+                    800: '#462b20',
+                    900: '#38221a',
+                    950: '#291811',
                 },
+                // 300/400 are the shades dark mode uses for accent text, and
+                // on mahogany the accent is cream/gold, not light crimson.
+                // 500+ (light mode's accent text and all solid fills) stay
+                // crimson in both modes.
                 emerald: {
                     50: '#faeee6',
                     100: '#f5ddd0',
                     200: '#ecc1ab',
-                    300: '#de9678',
-                    400: '#cd6247',
+                    300: '#f0dcae',
+                    400: '#dcbd8c',
                     500: '#b3301c',
                     600: '#9c2715',
                     700: '#84220f',
@@ -109,7 +115,7 @@ module.exports = {
             },
             backgroundImage: {
                 'app-light': 'linear-gradient(180deg, #f7f2e9 0%, #f2ebdd 100%)',
-                'app-dark': 'radial-gradient(ellipse 70% 45% at 50% -10%, rgba(179, 48, 28, 0.07), transparent), linear-gradient(180deg, #16120e 0%, #1e1913 100%)',
+                'app-dark': 'radial-gradient(ellipse 70% 45% at 50% -10%, rgba(240, 220, 174, 0.07), transparent), linear-gradient(180deg, #2e1b13 0%, #3b241b 100%)',
             },
         },
     },
